@@ -1,10 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { APIProvider } from '@vis.gl/react-google-maps';
 import { EventDetailPanel } from './components/EventDetailPanel';
 import { FilterToolbar } from './components/FilterToolbar';
 import { Header } from './components/Header';
 import { ImportModal } from './components/ImportModal';
-import { MapView } from './components/MapView';
 import { PeopleDirectoryView } from './components/PeopleDirectoryView';
 import { PersonPhotoModal } from './components/PersonPhotoModal';
 import { PlaceTimelineView } from './components/PlaceTimelineView';
@@ -37,6 +35,7 @@ import {
   mergeHistoricalDatabases,
   parseHistoricalJson,
   sortEventsChronologically,
+  toggleSelectedEventId,
 } from './utils/timelineParser';
 import {
   fetchWikipediaPortraitsBatch,
@@ -49,11 +48,6 @@ const STORAGE_KEY_PEOPLE = 'history_timeline_archive_people_v1';
 const STORAGE_KEY_COLORS = 'history_timeline_archive_colors_v1';
 const STORAGE_KEY_COLOR_LABELS = 'history_timeline_archive_color_labels_v1';
 const STORAGE_KEY_WIKI_CHECKED = 'history_timeline_archive_wiki_checked_v1';
-
-const GOOGLE_MAPS_API_KEY: string =
-  import.meta.env.VITE_GOOGLE_MAPS_API_KEY ||
-  (globalThis as { GOOGLE_MAPS_API_KEY?: string }).GOOGLE_MAPS_API_KEY ||
-  '';
 
 const DEFAULT_FILTERS: TimelineFilters = {
   search: '',
@@ -147,14 +141,6 @@ export default function App() {
     null
   );
   const [isFetchingWiki, setIsFetchingWiki] = useState(false);
-  const [mapsQuotaExceeded, setMapsQuotaExceeded] = useState(false);
-
-  useEffect(() => {
-    const handleQuotaExceeded = () => setMapsQuotaExceeded(true);
-    window.addEventListener('gmp-quota-exceeded', handleQuotaExceeded);
-    return () =>
-      window.removeEventListener('gmp-quota-exceeded', handleQuotaExceeded);
-  }, []);
 
   useEffect(() => {
     if (!isPlacesDetailOpen) return;
@@ -299,14 +285,20 @@ export default function App() {
 
   const selectedEvent = useMemo(
     () =>
-      database.events.find((e) => e.id === selectedEventId) ??
-      filteredEvents[0] ??
-      null,
-    [database.events, filteredEvents, selectedEventId]
+      selectedEventId
+        ? database.events.find((e) => e.id === selectedEventId) ?? null
+        : null,
+    [database.events, selectedEventId]
   );
 
   const handleSelectEvent = (eventId: string) => {
-    setSelectedEventId(eventId);
+    const nextId = toggleSelectedEventId(selectedEventId, eventId);
+    setSelectedEventId(nextId);
+    if (nextId === null) {
+      setIsPlacesDetailOpen(false);
+      setIsMobileDetailOpen(false);
+      return;
+    }
     if (activeView === 'places') {
       setIsPlacesDetailOpen(true);
     } else {
@@ -436,27 +428,8 @@ export default function App() {
     URL.revokeObjectURL(url);
   };
 
-  const mapsAvailable = Boolean(GOOGLE_MAPS_API_KEY);
-
-  const appContent = (
+  return (
     <div className="min-h-screen flex flex-col bg-[#FBF9F5] text-[#1C1917]">
-      {mapsQuotaExceeded && (
-        <div className="bg-amber-50 border-b border-amber-200 text-amber-900 px-4 py-2.5 text-xs md:text-sm text-center sticky top-0 z-50 shadow-sm">
-          <span>
-            Google Maps Platform quota reached. If you are the app owner, visit{' '}
-            <a
-              href="https://developers.google.com/maps/ai/ai-studio?utm_campaign=gmp_mcp_codeassist_v1_aistudio#quota_exceeded_errors"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline font-semibold text-amber-950 hover:text-amber-800"
-            >
-              maps developer site
-            </a>{' '}
-            for instructions to update your account.
-          </span>
-        </div>
-      )}
-
       <Header
         activeView={activeView}
         onChangeView={handleChangeView}
@@ -508,24 +481,7 @@ export default function App() {
             colorLabels={colorLabels}
             personProfiles={personProfiles}
             onSelectEvent={handleSelectEvent}
-            onResetFilters={handleResetFilters}
-          />
-        ) : activeView === 'map' ? (
-          <MapView
-            events={filteredEvents}
-            allEvents={database.events}
-            selectedEvent={selectedEvent}
-            eventColors={eventColors}
-            colorLabels={colorLabels}
-            personProfiles={personProfiles}
-            mapsAvailable={mapsAvailable}
-            onSelectEvent={setSelectedEventId}
-            onOpenMobileDetail={(id) => {
-              setSelectedEventId(id);
-              setIsMobileDetailOpen(true);
-            }}
-            onAssignColor={handleAssignColor}
-            onEditPersonPhoto={setEditingPersonName}
+            onClearSelection={() => setSelectedEventId(null)}
             onResetFilters={handleResetFilters}
           />
         ) : (
@@ -533,12 +489,14 @@ export default function App() {
             <div className="lg:col-span-7 xl:col-span-8 min-w-0">
               <TimelineView
                 events={filteredEvents}
+                allEvents={database.events}
                 selectedEventId={selectedEvent?.id ?? null}
                 groupMode={groupMode}
                 eventColors={eventColors}
                 colorLabels={colorLabels}
                 personProfiles={personProfiles}
                 onSelectEvent={handleSelectEvent}
+                onClearSelection={() => setSelectedEventId(null)}
                 onAutoAssignByCategory={handleAutoAssignByCategory}
                 onAutoAssignByImportance={handleAutoAssignByImportance}
                 onResetFilters={handleResetFilters}
@@ -556,50 +514,39 @@ export default function App() {
                 eventColors={eventColors}
                 colorLabels={colorLabels}
                 personProfiles={personProfiles}
-                mapsAvailable={mapsAvailable}
-                showMiniMap={true}
                 onAssignColor={handleAssignColor}
                 onEditPersonPhoto={setEditingPersonName}
                 onSelectEvent={setSelectedEventId}
-                onOpenFullMap={() => handleChangeView('map')}
               />
             </aside>
           </div>
         )}
       </main>
 
-      {/* Mobile slide-over detail drawer for Timeline and Map views */}
-      {isMobileDetailOpen &&
-        selectedEvent &&
-        (activeView === 'timeline' || activeView === 'map') && (
-          <div
-            className="fixed inset-0 z-40 lg:hidden bg-[#1C1917]/40 flex items-end sm:items-center justify-center p-0 sm:p-4"
-            role="presentation"
-            onClick={(e) => {
-              if (e.target === e.currentTarget) setIsMobileDetailOpen(false);
-            }}
-          >
-            <div className="w-full sm:max-w-lg max-h-[85vh] overflow-y-auto archival-scroll rounded-t-xl sm:rounded-lg shadow-xl">
-              <EventDetailPanel
-                event={selectedEvent}
-                allEvents={database.events}
-                eventColors={eventColors}
-                colorLabels={colorLabels}
-                personProfiles={personProfiles}
-                mapsAvailable={mapsAvailable}
-                showMiniMap={activeView !== 'map'}
-                onAssignColor={handleAssignColor}
-                onEditPersonPhoto={setEditingPersonName}
-                onSelectEvent={setSelectedEventId}
-                onOpenFullMap={() => {
-                  setIsMobileDetailOpen(false);
-                  handleChangeView('map');
-                }}
-                onCloseMobile={() => setIsMobileDetailOpen(false)}
-              />
-            </div>
+      {/* Mobile slide-over detail drawer for Timeline view */}
+      {isMobileDetailOpen && selectedEvent && activeView === 'timeline' && (
+        <div
+          className="fixed inset-0 z-40 lg:hidden bg-[#1C1917]/40 flex items-end sm:items-center justify-center p-0 sm:p-4"
+          role="presentation"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setIsMobileDetailOpen(false);
+          }}
+        >
+          <div className="w-full sm:max-w-lg max-h-[85vh] overflow-y-auto archival-scroll rounded-t-xl sm:rounded-lg shadow-xl">
+            <EventDetailPanel
+              event={selectedEvent}
+              allEvents={database.events}
+              eventColors={eventColors}
+              colorLabels={colorLabels}
+              personProfiles={personProfiles}
+              onAssignColor={handleAssignColor}
+              onEditPersonPhoto={setEditingPersonName}
+              onSelectEvent={setSelectedEventId}
+              onCloseMobile={() => setIsMobileDetailOpen(false)}
+            />
           </div>
-        )}
+        </div>
+      )}
 
       {/* Slide-over detail drawer for Full-Width Places view */}
       {isPlacesDetailOpen && selectedEvent && activeView === 'places' && (
@@ -619,15 +566,9 @@ export default function App() {
               eventColors={eventColors}
               colorLabels={colorLabels}
               personProfiles={personProfiles}
-              mapsAvailable={mapsAvailable}
-              showMiniMap={true}
               onAssignColor={handleAssignColor}
               onEditPersonPhoto={setEditingPersonName}
               onSelectEvent={setSelectedEventId}
-              onOpenFullMap={() => {
-                setIsPlacesDetailOpen(false);
-                handleChangeView('map');
-              }}
               onClose={() => setIsPlacesDetailOpen(false)}
             />
           </div>
@@ -650,20 +591,5 @@ export default function App() {
         onClose={() => setEditingPersonName(null)}
       />
     </div>
-  );
-
-  if (!mapsAvailable) {
-    return appContent;
-  }
-
-  return (
-    <APIProvider
-      apiKey={GOOGLE_MAPS_API_KEY}
-      libraries={['places', 'marker', 'core']}
-      language="ja"
-      region="JP"
-    >
-      {appContent}
-    </APIProvider>
   );
 }

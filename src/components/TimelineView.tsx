@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import {
   BookOpen,
   Coins,
@@ -25,7 +26,12 @@ import {
   type TimelineGroupMode,
 } from '../types/timeline';
 import { resolveEventIcon, type EventIconKind } from '../utils/eventIcon';
-import { groupEventsByColor, groupEventsByEra } from '../utils/timelineParser';
+import { findRelatedEventIdsForHighlight } from '../utils/regionGrouping';
+import {
+  getEventFocusRelation,
+  groupEventsByColor,
+  groupEventsByEra,
+} from '../utils/timelineParser';
 import { PersonAvatar } from './PersonAvatar';
 
 const ICON_COMPONENTS: Record<EventIconKind, typeof Landmark> = {
@@ -48,12 +54,14 @@ const ICON_COMPONENTS: Record<EventIconKind, typeof Landmark> = {
 
 interface TimelineViewProps {
   events: HistoricalEvent[];
+  allEvents: HistoricalEvent[];
   selectedEventId: string | null;
   groupMode: TimelineGroupMode;
   eventColors: EventColorsMap;
   colorLabels: ColorLabelsMap;
   personProfiles: PersonProfilesMap;
   onSelectEvent: (eventId: string) => void;
+  onClearSelection?: () => void;
   onAutoAssignByCategory: () => void;
   onAutoAssignByImportance: () => void;
   onResetFilters: () => void;
@@ -61,16 +69,33 @@ interface TimelineViewProps {
 
 export function TimelineView({
   events,
+  allEvents,
   selectedEventId,
   groupMode,
   eventColors,
   colorLabels,
   personProfiles,
   onSelectEvent,
+  onClearSelection,
   onAutoAssignByCategory,
   onAutoAssignByImportance,
   onResetFilters,
 }: TimelineViewProps) {
+  const selectedEvent = useMemo(
+    () =>
+      selectedEventId
+        ? events.find((e) => e.id === selectedEventId) ??
+          allEvents.find((e) => e.id === selectedEventId) ??
+          null
+        : null,
+    [events, allEvents, selectedEventId]
+  );
+
+  const relatedEventIds = useMemo(
+    () => findRelatedEventIdsForHighlight(selectedEvent, allEvents),
+    [selectedEvent, allEvents]
+  );
+
   if (events.length === 0) {
     return (
       <div className="bg-white border border-[#E6E0D6] rounded-lg p-12 text-center">
@@ -107,9 +132,46 @@ export function TimelineView({
         }));
 
   const hasAnyColoredInView = events.some((ev) => Boolean(eventColors[ev.id]));
+  const visibleRelatedCount = events.filter((ev) =>
+    relatedEventIds.has(ev.id)
+  ).length;
 
   return (
-    <div className="space-y-9" data-testid="timeline-list">
+    <div className="space-y-7" data-testid="timeline-list">
+      {selectedEvent && (
+        <div
+          className="flex flex-wrap items-center justify-between gap-2 px-3.5 py-2 bg-[#F4F0E8]/75 border border-[#E6E0D6] rounded-md text-xs text-[#44403C]"
+          data-testid="timeline-focus-banner"
+        >
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+            <span>
+              選択中:{' '}
+              <strong className="font-serif text-[#1C1917]">
+                {selectedEvent.title}
+              </strong>
+            </span>
+            {visibleRelatedCount > 0 ? (
+              <span className="font-medium text-[#1D4ED8]">
+                関連する出来事 {visibleRelatedCount}件を強調中（もう一度タップで解除）
+              </span>
+            ) : (
+              <span className="text-[#78716C]">
+                選択中のみ強調表示（もう一度タップで解除）
+              </span>
+            )}
+          </div>
+          {onClearSelection && (
+            <button
+              type="button"
+              onClick={onClearSelection}
+              className="text-xs font-medium text-[#57534E] hover:text-[#1C1917] underline underline-offset-2 shrink-0"
+            >
+              選択を解除
+            </button>
+          )}
+        </div>
+      )}
+
       {groupMode === 'color' && !hasAnyColoredInView && (
         <div className="bg-white border border-[#D6CEBE] rounded-lg p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="text-xs sm:text-sm text-[#44403C]">
@@ -135,205 +197,325 @@ export function TimelineView({
         </div>
       )}
 
-      {sections.map((section) => (
-        <section key={section.key} aria-label={section.title}>
-          {/* Quiet Section Header */}
-          <div className="flex items-baseline justify-between border-b border-[#D6CEBE] pb-1.5 mb-4">
-            <h2 className="text-lg sm:text-xl font-serif font-bold text-[#1C1917] inline-flex items-center gap-2">
-              {section.swatchHex && (
-                <span
-                  className="w-3 h-3 rounded-[2px] shrink-0"
-                  style={{ backgroundColor: section.swatchHex }}
-                  aria-hidden="true"
-                />
-              )}
-              <span>{section.title}</span>
-            </h2>
-            <span className="text-xs font-mono tabular-nums text-[#78716C]">
-              {section.events.length}件
-            </span>
-          </div>
+      {sections.map((section) => {
+        const hasFocusedEventInSection =
+          !selectedEvent ||
+          section.events.some(
+            (ev) => ev.id === selectedEvent.id || relatedEventIds.has(ev.id)
+          );
 
-          {/* Chronological Rows */}
-          <div className="relative space-y-3.5">
-            {section.events.map((ev, index) => {
-              const isSelected = ev.id === selectedEventId;
-              const isLast = index === section.events.length - 1;
-              const assignedColorId = eventColors[ev.id];
-              const colorDef = assignedColorId
-                ? COLOR_PALETTE.find((c) => c.id === assignedColorId)
-                : undefined;
-
-              return (
-                <div
-                  key={`${section.key}-${ev.id}`}
-                  className="relative flex items-stretch gap-3 sm:gap-5"
-                >
-                  {/* Left Date Column */}
-                  <div className="w-20 sm:w-28 shrink-0 pt-3.5 text-right">
-                    <div className="text-xs sm:text-sm font-mono tabular-nums font-medium text-[#1C1917] leading-tight break-words">
-                      {ev.date}
-                    </div>
-                    {ev.date_precision === 'unknown' && (
-                      <div className="text-[11px] text-[#78716C] mt-0.5">
-                        年代不明
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Vertical Hairline Spine & Geometric Importance Marker */}
-                  <div
-                    className="relative flex flex-col items-center shrink-0 w-4 pt-4"
+        return (
+          <section key={section.key} aria-label={section.title}>
+            {/* Quiet Section Header */}
+            <div
+              className={`flex items-baseline justify-between border-b border-[#D6CEBE] pb-1.5 mb-4 transition-opacity duration-150 ${
+                hasFocusedEventInSection ? 'opacity-100' : 'opacity-45'
+              }`}
+            >
+              <h2 className="text-lg sm:text-xl font-serif font-bold text-[#1C1917] inline-flex items-center gap-2">
+                {section.swatchHex && (
+                  <span
+                    className="w-3 h-3 rounded-[2px] shrink-0"
+                    style={{ backgroundColor: section.swatchHex }}
                     aria-hidden="true"
+                  />
+                )}
+                <span>{section.title}</span>
+              </h2>
+              <span className="text-xs font-mono tabular-nums text-[#78716C]">
+                {section.events.length}件
+              </span>
+            </div>
+
+            {/* Chronological Rows */}
+            <div className="relative space-y-3.5">
+              {section.events.map((ev, index) => {
+                const focusRelation = getEventFocusRelation(
+                  ev,
+                  selectedEvent,
+                  relatedEventIds
+                );
+                const isSelected = focusRelation === 'selected';
+                const isRelated =
+                  focusRelation === 'related-before' ||
+                  focusRelation === 'related-after' ||
+                  focusRelation === 'related';
+                const isUnrelated = focusRelation === 'unrelated';
+                const isLast = index === section.events.length - 1;
+                const assignedColorId = eventColors[ev.id];
+                const colorDef = assignedColorId
+                  ? COLOR_PALETTE.find((c) => c.id === assignedColorId)
+                  : undefined;
+
+                const relatedLabel =
+                  focusRelation === 'related-before'
+                    ? '関連（前の経緯）'
+                    : focusRelation === 'related-after'
+                      ? '関連（次の展開）'
+                      : '関連';
+
+                return (
+                  <div
+                    key={`${section.key}-${ev.id}`}
+                    data-focus-state={focusRelation}
+                    className={`relative flex items-stretch gap-3 sm:gap-5 transition-all duration-200 ${
+                      isUnrelated
+                        ? 'opacity-40 hover:opacity-95 focus-within:opacity-95'
+                        : 'opacity-100'
+                    }`}
                   >
-                    {!isLast && (
-                      <div className="absolute top-6 bottom-[-1.35rem] w-px bg-[#D6CEBE]" />
-                    )}
+                    {/* Left Date Column */}
                     <div
-                      className={`relative z-10 rotate-45 transition-colors ${
-                        ev.importance === 3
-                          ? 'w-3 h-3 bg-[#9A3412] border border-[#9A3412]'
-                          : ev.importance === 2
-                            ? 'w-2.5 h-2.5 bg-[#FBF9F5] border-2 border-[#57534E]'
-                            : 'w-2 h-2 bg-[#D6CEBE] border border-[#78716C]'
+                      className={`w-20 sm:w-28 shrink-0 text-right transition-all duration-200 ${
+                        isUnrelated ? 'pt-2.5' : 'pt-3.5'
                       }`}
-                      style={
-                        colorDef
-                          ? {
-                              backgroundColor:
-                                ev.importance === 2
-                                  ? '#FBF9F5'
-                                  : colorDef.swatchHex,
-                              borderColor: colorDef.swatchHex,
-                            }
-                          : undefined
-                      }
-                    />
-                  </div>
+                    >
+                      <div
+                        className={`font-mono tabular-nums leading-tight break-words transition-all duration-200 ${
+                          isUnrelated
+                            ? 'text-[11px] sm:text-xs font-medium text-[#57534E]'
+                            : isSelected
+                              ? 'text-xs sm:text-sm font-bold text-[#1C1917]'
+                              : isRelated
+                                ? 'text-xs sm:text-sm font-semibold text-[#1D4ED8]'
+                                : 'text-xs sm:text-sm font-medium text-[#1C1917]'
+                        }`}
+                      >
+                        {ev.date}
+                      </div>
+                      {ev.date_precision === 'unknown' && (
+                        <div className="text-[11px] text-[#78716C] mt-0.5">
+                          年代不明
+                        </div>
+                      )}
+                    </div>
 
-                  {/* Focused Study Event Card (preserves color tint even when selected!) */}
-                  {(() => {
-                    const iconMeta = resolveEventIcon(ev);
-                    const ItemIcon = ICON_COMPONENTS[iconMeta.kind];
-
-                    return (
-                      <button
-                        type="button"
-                        onClick={() => onSelectEvent(ev.id)}
-                        aria-pressed={isSelected}
-                        className={`flex-1 min-w-0 text-left rounded-lg border px-4 py-3 sm:px-5 sm:py-3.5 transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1C1917] ${
+                    {/* Vertical Hairline Spine & Geometric Importance Marker */}
+                    <div
+                      className={`relative flex flex-col items-center shrink-0 w-4 transition-all duration-200 ${
+                        isUnrelated ? 'pt-3' : 'pt-4'
+                      }`}
+                      aria-hidden="true"
+                    >
+                      {!isLast && (
+                        <div
+                          className={`absolute bottom-[-1.35rem] w-px bg-[#D6CEBE] ${
+                            isUnrelated ? 'top-5' : 'top-6'
+                          }`}
+                        />
+                      )}
+                      <div
+                        className={`relative z-10 rotate-45 transition-all ${
+                          ev.importance === 3
+                            ? 'w-3 h-3 bg-[#9A3412] border border-[#9A3412]'
+                            : ev.importance === 2
+                              ? 'w-2.5 h-2.5 bg-[#FBF9F5] border-2 border-[#57534E]'
+                              : 'w-2 h-2 bg-[#D6CEBE] border border-[#78716C]'
+                        } ${
                           isSelected
-                            ? 'bg-white border-[#1C1917] ring-1 ring-[#1C1917] shadow-sm'
-                            : 'bg-white/90 border-[#E6E0D6] hover:bg-white hover:border-[#A8A29E]'
+                            ? 'scale-125 ring-4 ring-[#1C1917]/15'
+                            : isRelated
+                              ? 'scale-115 ring-4 ring-[#1D4ED8]/20'
+                              : isUnrelated
+                                ? 'scale-75'
+                                : ''
                         }`}
                         style={
-                          colorDef
+                          isRelated && !colorDef
                             ? {
-                                backgroundColor: colorDef.surfaceHex,
-                                borderColor: isSelected
-                                  ? '#1C1917'
-                                  : colorDef.borderHex,
+                                backgroundColor:
+                                  ev.importance === 2 ? '#FBF9F5' : '#1D4ED8',
+                                borderColor: '#1D4ED8',
                               }
-                            : undefined
+                            : colorDef
+                              ? {
+                                  backgroundColor:
+                                    ev.importance === 2
+                                      ? '#FBF9F5'
+                                      : colorDef.swatchHex,
+                                  borderColor: colorDef.swatchHex,
+                                }
+                              : undefined
                         }
-                      >
-                        <div className="flex items-start gap-3">
-                          <span
-                            title={iconMeta.label}
-                            aria-hidden="true"
-                            className={`w-8 h-8 rounded-md border flex items-center justify-center shrink-0 mt-0.5 ${
-                              colorDef
-                                ? 'bg-white/80'
-                                : ev.importance === 3
-                                  ? 'bg-[#F4F0E8] border-[#D6CEBE] text-[#9A3412]'
-                                  : 'bg-[#F4F0E8]/70 border-[#E6E0D6] text-[#57534E]'
-                            }`}
-                            style={
-                              colorDef
-                                ? {
-                                    color: colorDef.swatchHex,
-                                    borderColor: colorDef.borderHex,
-                                  }
-                                : undefined
-                            }
-                          >
-                            <ItemIcon className="w-4 h-4" />
-                          </span>
+                      />
+                    </div>
 
-                          <div className="flex-1 min-w-0">
-                            {/* Title Row (+ Color & Importance labels cleanly separated) */}
-                            <div className="flex flex-wrap items-baseline justify-between gap-2 mb-1">
-                              <h3 className="text-base sm:text-lg font-serif font-semibold text-[#1C1917] leading-snug">
-                                {ev.title}
-                              </h3>
+                    {/* Focused Study Event Card (preserves color tint even when selected/related) */}
+                    {(() => {
+                      const iconMeta = resolveEventIcon(ev);
+                      const ItemIcon = ICON_COMPONENTS[iconMeta.kind];
 
-                              <div className="flex items-center gap-2 text-[11px] shrink-0">
-                                {ev.importance === 3 && (
-                                  <span className="font-medium text-[#9A3412]">
-                                    重要
-                                  </span>
-                                )}
-                                {ev.importance === 3 && colorDef && (
-                                  <span className="text-[#A8A29E]" aria-hidden="true">
-                                    ·
-                                  </span>
-                                )}
-                                {colorDef && (
-                                  <span className="inline-flex items-center gap-1.5 font-medium text-[#1C1917]">
-                                    <span
-                                      className="w-2 h-2 rounded-[2px] shrink-0"
-                                      style={{ backgroundColor: colorDef.swatchHex }}
-                                      aria-hidden="true"
-                                    />
-                                    {colorLabels[colorDef.id] || colorDef.defaultLabel}
-                                  </span>
-                                )}
-                              </div>
-                            </div>
+                      return (
+                        <button
+                          type="button"
+                          onClick={() => onSelectEvent(ev.id)}
+                          aria-pressed={isSelected}
+                          className={`flex-1 min-w-0 text-left rounded-lg border origin-left transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1C1917] ${
+                            isUnrelated
+                              ? 'px-3 py-2 sm:px-3.5 sm:py-2.5 scale-[0.96] bg-white/85 border-[#E6E0D6] hover:bg-white hover:border-[#A8A29E]'
+                              : isSelected
+                                ? 'px-4 py-3 sm:px-5 sm:py-3.5 bg-white border-[#1C1917] ring-2 ring-[#1C1917]/80 shadow-sm'
+                                : isRelated
+                                  ? 'px-4 py-3 sm:px-5 sm:py-3.5 bg-[#F5F8FF] border-[#1D4ED8] ring-1 ring-[#1D4ED8]/45 shadow-xs hover:bg-[#EDF3FF]'
+                                  : 'px-4 py-3 sm:px-5 sm:py-3.5 bg-white/90 border-[#E6E0D6] hover:bg-white hover:border-[#A8A29E]'
+                          }`}
+                          style={
+                            colorDef
+                              ? {
+                                  backgroundColor: colorDef.surfaceHex,
+                                  borderColor: isSelected
+                                    ? '#1C1917'
+                                    : isRelated
+                                      ? '#1D4ED8'
+                                      : colorDef.borderHex,
+                                }
+                              : undefined
+                          }
+                        >
+                          <div className="flex items-start gap-3">
+                            <span
+                              title={iconMeta.label}
+                              aria-hidden="true"
+                              className={`rounded-md border flex items-center justify-center shrink-0 mt-0.5 transition-all duration-200 ${
+                                isUnrelated ? 'w-7 h-7' : 'w-8 h-8'
+                              } ${
+                                isRelated && !colorDef
+                                  ? 'bg-white border-[#1D4ED8]/40 text-[#1D4ED8]'
+                                  : colorDef
+                                    ? 'bg-white/80'
+                                    : ev.importance === 3
+                                      ? 'bg-[#F4F0E8] border-[#D6CEBE] text-[#9A3412]'
+                                      : 'bg-[#F4F0E8]/70 border-[#E6E0D6] text-[#57534E]'
+                              }`}
+                              style={
+                                colorDef
+                                  ? {
+                                      color: colorDef.swatchHex,
+                                      borderColor: colorDef.borderHex,
+                                    }
+                                  : undefined
+                              }
+                            >
+                              <ItemIcon
+                                className={isUnrelated ? 'w-3.5 h-3.5' : 'w-4 h-4'}
+                              />
+                            </span>
 
-                            {/* Concise 2-line Description */}
-                            {ev.description && (
-                              <p className="text-sm text-[#44403C] leading-relaxed line-clamp-2">
-                                {ev.description}
-                              </p>
-                            )}
+                            <div className="flex-1 min-w-0">
+                              {/* Title Row (+ Related, Importance & Color labels cleanly separated) */}
+                              <div className="flex flex-wrap items-baseline justify-between gap-2 mb-1">
+                                <h3
+                                  className={`font-serif font-semibold text-[#1C1917] leading-snug transition-all duration-200 ${
+                                    isUnrelated
+                                      ? 'text-sm sm:text-base'
+                                      : 'text-base sm:text-lg'
+                                  }`}
+                                >
+                                  {ev.title}
+                                </h3>
 
-                            {/* People Row (with Portrait Thumbnails when registered) */}
-                            {ev.people.length > 0 && (
-                              <div className="mt-2 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs text-[#57534E]">
-                                {ev.people.slice(0, 4).map((person) => (
-                                  <span
-                                    key={person}
-                                    className="inline-flex items-center gap-1"
-                                  >
-                                    {personProfiles[person]?.photoUrl && (
-                                      <PersonAvatar
-                                        name={person}
-                                        photoUrl={personProfiles[person]?.photoUrl}
-                                        size="xs"
-                                      />
+                                <div className="flex items-center gap-2 text-[11px] shrink-0">
+                                  {isRelated && (
+                                    <span className="font-semibold text-[#1D4ED8]">
+                                      {relatedLabel}
+                                    </span>
+                                  )}
+                                  {isRelated &&
+                                    (ev.importance === 3 || colorDef) && (
+                                      <span
+                                        className="text-[#A8A29E]"
+                                        aria-hidden="true"
+                                      >
+                                        ·
+                                      </span>
                                     )}
-                                    <span>{person}</span>
-                                  </span>
-                                ))}
-                                {ev.people.length > 4 && (
-                                  <span className="text-[#78716C]">
-                                    他{ev.people.length - 4}名
-                                  </span>
-                                )}
+                                  {ev.importance === 3 && (
+                                    <span className="font-medium text-[#9A3412]">
+                                      重要
+                                    </span>
+                                  )}
+                                  {ev.importance === 3 && colorDef && (
+                                    <span
+                                      className="text-[#A8A29E]"
+                                      aria-hidden="true"
+                                    >
+                                      ·
+                                    </span>
+                                  )}
+                                  {colorDef && (
+                                    <span className="inline-flex items-center gap-1.5 font-medium text-[#1C1917]">
+                                      <span
+                                        className="w-2 h-2 rounded-[2px] shrink-0"
+                                        style={{
+                                          backgroundColor: colorDef.swatchHex,
+                                        }}
+                                        aria-hidden="true"
+                                      />
+                                      {colorLabels[colorDef.id] ||
+                                        colorDef.defaultLabel}
+                                    </span>
+                                  )}
+                                </div>
                               </div>
-                            )}
+
+                              {/* Concise 2-line Description (compact 1-line when unrelated) */}
+                              {ev.description && (
+                                <p
+                                  className={`text-[#44403C] leading-relaxed ${
+                                    isUnrelated
+                                      ? 'text-xs line-clamp-1'
+                                      : 'text-sm line-clamp-2'
+                                  }`}
+                                >
+                                  {ev.description}
+                                </p>
+                              )}
+
+                              {/* People Row (with Portrait Thumbnails when registered) */}
+                              {ev.people.length > 0 && (
+                                <div
+                                  className={`flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[#57534E] ${
+                                    isUnrelated
+                                      ? 'mt-1.5 text-[11px]'
+                                      : 'mt-2 text-xs'
+                                  }`}
+                                >
+                                  {ev.people.slice(0, 4).map((person) => (
+                                    <span
+                                      key={person}
+                                      className="inline-flex items-center gap-1"
+                                    >
+                                      {personProfiles[person]?.photoUrl && (
+                                        <PersonAvatar
+                                          name={person}
+                                          photoUrl={
+                                            personProfiles[person]?.photoUrl
+                                          }
+                                          size="xs"
+                                        />
+                                      )}
+                                      <span>{person}</span>
+                                    </span>
+                                  ))}
+                                  {ev.people.length > 4 && (
+                                    <span className="text-[#78716C]">
+                                      他{ev.people.length - 4}名
+                                    </span>
+                                  )}
+                                </div>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      </button>
-                    );
-                  })()}
-                </div>
-              );
-            })}
-          </div>
-        </section>
-      ))}
+                        </button>
+                      );
+                    })()}
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        );
+      })}
     </div>
   );
 }

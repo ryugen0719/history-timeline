@@ -7,6 +7,7 @@ import {
   extractPeopleDirectory,
   filterEvents,
   findConnectedEvents,
+  getEventFocusRelation,
   groupEventsByColor,
   groupEventsByEra,
   groupEventsByPlace,
@@ -14,6 +15,7 @@ import {
   parseHistoricalDate,
   parseHistoricalJson,
   sortEventsChronologically,
+  toggleSelectedEventId,
 } from './timelineParser';
 import {
   DEFAULT_COLOR_LABELS,
@@ -331,4 +333,43 @@ test('groupEventsByPlace, color grouping, color filtering, and extractPeopleDire
   assert.equal(counts.none, 2);
   assert.equal(counts.byColor.lapis, 1);
   assert.equal(counts.byColor.vermilion, 0);
+});
+
+test('getEventFocusRelation distinguishes selected, related-before, related-after, unrelated, and none', () => {
+  const mk = (id: string, date: string, precision: HistoricalEvent['date_precision'] = 'year'): HistoricalEvent => ({
+    id,
+    date,
+    date_precision: precision,
+    title: id,
+    description: '',
+    people: [],
+    places: [],
+    category: ['politics'],
+    causes: [],
+    consequences: [],
+    related_events: [],
+    importance: 2,
+    source: '',
+    certainty: 'explicit',
+  });
+
+  const e1 = mk('E1', '1853');
+  const e2 = mk('E2', '1858');
+  const e3 = mk('E3', '1860');
+  const e4 = mk('E4', '1871');
+  const unknown = mk('E5', '不明', 'unknown');
+  const related = new Set(['E1', 'E3', 'E5']);
+
+  assert.equal(getEventFocusRelation(e1, null, related), 'none');
+  assert.equal(getEventFocusRelation(e2, e2, related), 'selected');
+  assert.equal(getEventFocusRelation(e1, e2, related), 'related-before');
+  assert.equal(getEventFocusRelation(e3, e2, related), 'related-after');
+  assert.equal(getEventFocusRelation(unknown, e2, related), 'related');
+  assert.equal(getEventFocusRelation(e4, e2, related), 'unrelated');
+});
+
+test('toggleSelectedEventId selects new id and clears when tapping the already-selected id again', () => {
+  assert.equal(toggleSelectedEventId(null, 'E001'), 'E001');
+  assert.equal(toggleSelectedEventId('E001', 'E001'), null);
+  assert.equal(toggleSelectedEventId('E001', 'E004'), 'E004');
 });

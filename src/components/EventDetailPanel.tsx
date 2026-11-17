@@ -9,7 +9,6 @@ import {
   type PersonProfilesMap,
 } from '../types/timeline';
 import { findConnectedEvents } from '../utils/timelineParser';
-import { EventLocationMiniMap } from './EventLocationMiniMap';
 import { PersonAvatar } from './PersonAvatar';
 
 interface EventDetailPanelProps {
@@ -18,12 +17,9 @@ interface EventDetailPanelProps {
   eventColors: EventColorsMap;
   colorLabels: ColorLabelsMap;
   personProfiles: PersonProfilesMap;
-  mapsAvailable?: boolean;
-  showMiniMap?: boolean;
   onAssignColor: (eventId: string, colorId: ColorId) => void;
   onEditPersonPhoto: (personName: string) => void;
   onSelectEvent: (eventId: string) => void;
-  onOpenFullMap?: () => void;
   onCloseMobile?: () => void;
   onClose?: () => void;
 }
@@ -34,12 +30,9 @@ export function EventDetailPanel({
   eventColors,
   colorLabels,
   personProfiles,
-  mapsAvailable = false,
-  showMiniMap = true,
   onAssignColor,
   onEditPersonPhoto,
   onSelectEvent,
-  onOpenFullMap,
   onCloseMobile,
   onClose,
 }: EventDetailPanelProps) {
@@ -183,15 +176,6 @@ export function EventDetailPanel({
         <p className="text-sm leading-relaxed text-[#1C1917]">
           {event.description || '説明の記載はありません。'}
         </p>
-
-        {/* 1.5 Side-Panel Mini Map */}
-        {showMiniMap && (
-          <EventLocationMiniMap
-            event={event}
-            mapsAvailable={mapsAvailable}
-            onOpenFullMap={onOpenFullMap}
-          />
-        )}
 
         {/* 2. Causes & Consequences */}
         {(event.causes.length > 0 || event.consequences.length > 0) && (

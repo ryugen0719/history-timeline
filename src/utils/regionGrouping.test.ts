@@ -98,13 +98,18 @@ test('buildRegionMatrixRows prevents duplicate cards, preserves chronological ba
   assert.equal(renderedIds.length, bakumatsu.length);
   assert.equal(new Set(renderedIds).size, bakumatsu.length);
 
-  // Check 1868 row orders E008 (Jan 3, span) BEFORE E009 (Apr 6, single)
+  // Check 1868 row orders E008 (Jan 3, span anchored in 近畿) BEFORE E009 (Apr 6, single)
   const row1868 = rows.find((r) => r.label === '1868年');
   assert.ok(row1868);
   assert.equal(row1868.bands.length, 2);
   assert.equal(row1868.bands[0].type, 'span');
   if (row1868.bands[0].type === 'span') {
-    assert.equal(row1868.bands[0].spanItem.event.id, 'E008');
+    const span = row1868.bands[0].spanItem;
+    assert.equal(span.event.id, 'E008');
+    assert.ok(span.anchorRegion.startsWith('近畿'));
+    assert.equal(visibleRegions[span.anchorCol], span.anchorRegion);
+    const tohokuIdx = visibleRegions.findIndex((r) => r.startsWith('東北'));
+    assert.deepEqual(span.placesByCol[tohokuIdx], ['会津', '箱館']);
   }
   assert.equal(row1868.bands[1].type, 'single');
 

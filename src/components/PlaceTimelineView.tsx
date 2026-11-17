@@ -34,6 +34,7 @@ interface PlaceTimelineViewProps {
   colorLabels: ColorLabelsMap;
   personProfiles: PersonProfilesMap;
   onSelectEvent: (eventId: string) => void;
+  onClearSelection?: () => void;
   onResetFilters: () => void;
 }
 
@@ -52,6 +53,7 @@ export function PlaceTimelineView({
   colorLabels,
   personProfiles,
   onSelectEvent,
+  onClearSelection,
   onResetFilters,
 }: PlaceTimelineViewProps) {
   const [displayMode, setDisplayMode] = useState<PlaceDisplayMode>('matrix');
@@ -435,6 +437,8 @@ export function PlaceTimelineView({
         ) => {
           const isSelected = ev.id === selectedEventId;
           const isRelated = relatedEventIds.has(ev.id);
+          const isUnrelated =
+            Boolean(selectedEvent) && !isSelected && !isRelated;
           const colorId = eventColors[ev.id];
           const colorDef = colorId
             ? COLOR_PALETTE.find((c) => c.id === colorId)
@@ -444,16 +448,29 @@ export function PlaceTimelineView({
           if (subDate) metaSegments.push(subDate);
           if (ev.importance === 3) metaSegments.push('最重要');
 
+          const focusState = isSelected
+            ? 'selected'
+            : isRelated
+              ? 'related'
+              : isUnrelated
+                ? 'unrelated'
+                : 'none';
+
           return (
             <button
               type="button"
+              data-focus-state={focusState}
               onClick={() => onSelectEvent(ev.id)}
               aria-pressed={isSelected}
-              className={`w-full text-left px-3 py-2 rounded-md border transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1C1917] ${
+              className={`w-full text-left rounded-md border origin-center transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1C1917] ${
+                isUnrelated
+                  ? 'px-2.5 py-1.5 scale-[0.94] opacity-40 hover:opacity-95 focus-visible:opacity-95'
+                  : 'px-3 py-2 opacity-100'
+              } ${
                 isSelected
-                  ? 'border-[#1C1917] ring-1 ring-[#1C1917] bg-[#FBF9F5]'
+                  ? 'border-[#1C1917] ring-2 ring-[#1C1917]/80 bg-[#FBF9F5] shadow-xs'
                   : isRelated
-                    ? 'border-[#1D4ED8] ring-1 ring-[#1D4ED8]/40 bg-[#EEF4FF]'
+                    ? 'border-[#1D4ED8] ring-1 ring-[#1D4ED8]/50 bg-[#EEF4FF] shadow-xs'
                     : isSpanCard
                       ? 'border-[#D6CEBE] hover:border-[#9A3412] bg-[#FAF7F2]'
                       : 'border-[#E6E0D6] hover:border-[#9A3412] bg-white'
@@ -472,7 +489,11 @@ export function PlaceTimelineView({
               }
             >
               {(metaSegments.length > 0 || isRelated || colorDef) && (
-                <div className="flex items-center justify-between gap-2 text-[11px] text-[#57534E] mb-0.5">
+                <div
+                  className={`flex items-center justify-between gap-2 text-[#57534E] mb-0.5 ${
+                    isUnrelated ? 'text-[10px]' : 'text-[11px]'
+                  }`}
+                >
                   <div className="flex items-center gap-1.5 min-w-0">
                     {metaSegments.map((seg, i) => (
                       <span
@@ -508,12 +529,20 @@ export function PlaceTimelineView({
                 </div>
               )}
 
-              <div className="font-serif font-semibold text-sm text-[#1C1917] leading-snug">
+              <div
+                className={`font-serif font-semibold text-[#1C1917] leading-snug ${
+                  isUnrelated ? 'text-xs' : 'text-sm'
+                }`}
+              >
                 {ev.title}
               </div>
 
               {(ev.places.length > 0 || hiddenRegions.length > 0) && (
-                <div className="mt-1 text-[11px] text-[#78716C] truncate">
+                <div
+                  className={`mt-1 text-[#78716C] truncate ${
+                    isUnrelated ? 'text-[10px]' : 'text-[11px]'
+                  }`}
+                >
                   {ev.places.join('・')}
                   {hiddenRegions.length > 0 && (
                     <span className="text-[#9A3412] ml-1.5">
@@ -529,13 +558,51 @@ export function PlaceTimelineView({
         return (
           <div className="space-y-2.5">
             <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-[#57534E] px-0.5">
-              <span>
-                年ごとの行に地域を並べています。複数地域にまたがる出来事は横幅いっぱいに1つだけ表示し、クリックすると右から詳細を開きます。
-              </span>
-              {selectedEvent && relatedEventIds.size > 0 && (
-                <span className="font-medium text-[#1D4ED8]">
-                  選択中「{selectedEvent.title}」の関連出来事 {relatedEventIds.size}件を強調中
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+                <span>
+                  年ごとの行に地域を並べています。複数地域に関わる出来事は中心地域の四角形（長方形）から関連地域へ線でつないで表示しています。
                 </span>
+                <span className="inline-flex items-center gap-3 text-[11px] text-[#78716C]">
+                  <span className="inline-flex items-center gap-1">
+                    <span
+                      className="w-3 h-2 rounded-[2px] border border-[#D6CEBE] bg-[#FAF7F2] inline-block"
+                      aria-hidden="true"
+                    />
+                    出来事
+                  </span>
+                  <span className="inline-flex items-center gap-1">
+                    <span
+                      className="inline-flex items-center"
+                      aria-hidden="true"
+                    >
+                      <span className="w-3 h-[2px] bg-[#9A3412]/70 inline-block" />
+                      <span className="w-2 h-2 rounded-full bg-[#9A3412] inline-block -ml-0.5" />
+                    </span>
+                    関連地域へのつながり
+                  </span>
+                </span>
+              </div>
+              {selectedEvent && (
+                <div className="flex items-center gap-3">
+                  {relatedEventIds.size > 0 ? (
+                    <span className="font-medium text-[#1D4ED8]">
+                      選択中「{selectedEvent.title}」の関連出来事 {relatedEventIds.size}件を強調中（もう一度タップで解除）
+                    </span>
+                  ) : (
+                    <span className="text-[#78716C]">
+                      選択中「{selectedEvent.title}」のみ強調中（もう一度タップで解除）
+                    </span>
+                  )}
+                  {onClearSelection && (
+                    <button
+                      type="button"
+                      onClick={onClearSelection}
+                      className="text-xs text-[#57534E] hover:text-[#1C1917] underline underline-offset-2 shrink-0"
+                    >
+                      選択を解除
+                    </button>
+                  )}
+                </div>
               )}
             </div>
 
@@ -587,7 +654,7 @@ export function PlaceTimelineView({
                           </span>
                         </div>
 
-                        {/* Region Columns + Spanning Tracks (Chronologically Ordered Bands) */}
+                        {/* Region Columns + Connected Multi-Region Bands (Chronologically Ordered) */}
                         <div className="flex-1 relative min-w-0">
                           {/* Continuous Vertical Column Hairlines */}
                           <div
@@ -638,88 +705,128 @@ export function PlaceTimelineView({
                               }
 
                               const spanItem = band.spanItem;
-                              const spanCols =
-                                spanItem.maxCol - spanItem.minCol + 1;
                               const activeColSet = new Set(
                                 spanItem.regionIndices
                               );
-                              const halfColPct = 50 / spanCols;
+                              const isSpanSelected =
+                                spanItem.event.id === selectedEventId;
+                              const isSpanRelated = relatedEventIds.has(
+                                spanItem.event.id
+                              );
+                              const isSpanUnrelated =
+                                Boolean(selectedEvent) &&
+                                !isSpanSelected &&
+                                !isSpanRelated;
+                              const lineLeftPct =
+                                ((spanItem.minCol + 0.5) / colCount) * 100;
+                              const lineWidthPct =
+                                ((spanItem.maxCol - spanItem.minCol) /
+                                  colCount) *
+                                100;
 
                               return (
                                 <div
                                   key={`span-${row.key}-${spanItem.event.id}`}
-                                  className="grid"
+                                  className="relative grid items-center"
                                   style={{ gridTemplateColumns: regionColsTemplate }}
                                 >
+                                  {/* Horizontal Connector Line between Anchor Rectangle and Related Region Nodes */}
                                   <div
-                                    className="p-2 min-w-0"
+                                    aria-hidden="true"
+                                    className={`pointer-events-none absolute top-1/2 -translate-y-1/2 z-[1] transition-all ${
+                                      isSpanUnrelated
+                                        ? 'opacity-35 h-[2px] bg-[#9A3412]/55'
+                                        : isSpanSelected
+                                          ? 'h-[2.5px] bg-[#1C1917]'
+                                          : isSpanRelated
+                                            ? 'h-[2.5px] bg-[#1D4ED8]'
+                                            : 'h-[2px] bg-[#9A3412]/55'
+                                    }`}
                                     style={{
-                                      gridColumn: `${spanItem.minCol + 1} / ${spanItem.maxCol + 2}`,
+                                      left: `${lineLeftPct}%`,
+                                      width: `${lineWidthPct}%`,
                                     }}
-                                  >
-                                    {/* Column-Aligned Region Anchor Track */}
-                                    <div
-                                      className="relative grid items-center mb-1.5"
-                                      style={{
-                                        gridTemplateColumns: `repeat(${spanCols}, minmax(0, 1fr))`,
-                                      }}
-                                    >
-                                      <div
-                                        aria-hidden="true"
-                                        className="absolute top-1/2 -translate-y-1/2 h-[1.5px] bg-[#9A3412]/45"
-                                        style={{
-                                          left: `${halfColPct}%`,
-                                          right: `${halfColPct}%`,
-                                        }}
-                                      />
-                                      {Array.from(
-                                        { length: spanCols },
-                                        (_, offset) => {
-                                          const colIdx =
-                                            spanItem.minCol + offset;
-                                          const isInvolved =
-                                            activeColSet.has(colIdx);
-                                          const regionLabel = shortenRegionTitle(
-                                            visibleRegionGroups[colIdx].region
-                                          );
-                                          return (
-                                            <div
-                                              key={`${spanItem.event.id}-dot-${colIdx}`}
-                                              className="relative z-[1] flex items-center justify-center"
-                                            >
-                                              {isInvolved ? (
-                                                <span className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-white text-[11px] font-medium text-[#9A3412] rounded">
-                                                  <span
-                                                    className="w-2 h-2 rounded-full bg-[#9A3412] shrink-0"
-                                                    aria-hidden="true"
-                                                  />
-                                                  <span className="truncate max-w-[110px]">
-                                                    {regionLabel}
-                                                  </span>
-                                                </span>
-                                              ) : (
-                                                <span
-                                                  className="sr-only"
-                                                  aria-hidden="true"
-                                                />
-                                              )}
-                                            </div>
-                                          );
-                                        }
-                                      )}
-                                    </div>
+                                  />
 
-                                    {/* Single Unified Card */}
-                                    {renderMinimalMatrixCard(
-                                      spanItem.event,
-                                      spanItem.hiddenRegions,
-                                      formatSubDateInYearRow(
-                                        spanItem.event,
-                                        row.label
-                                      ),
-                                      true
-                                    )}
-                                  </div>
+                                  {visibleRegionGroups.map((group, colIdx) => {
+                                    if (colIdx === spanItem.anchorCol) {
+                                      return (
+                                        <div
+                                          key={`span-anchor-${spanItem.event.id}-${colIdx}`}
+                                          className="relative z-[2] p-2 min-w-0"
+                                        >
+                                          {renderMinimalMatrixCard(
+                                            spanItem.event,
+                                            spanItem.hiddenRegions,
+                                            formatSubDateInYearRow(
+                                              spanItem.event,
+                                              row.label
+                                            ),
+                                            true
+                                          )}
+                                        </div>
+                                      );
+                                    }
+
+                                    if (activeColSet.has(colIdx)) {
+                                      const colPlaces =
+                                        spanItem.placesByCol[colIdx] ?? [];
+                                      const nodeLabel =
+                                        colPlaces.length > 0
+                                          ? colPlaces.join('・')
+                                          : shortenRegionTitle(group.region);
+
+                                      return (
+                                        <div
+                                          key={`span-node-${spanItem.event.id}-${colIdx}`}
+                                          className="relative z-[2] py-2 px-1 flex items-center justify-center min-w-0"
+                                        >
+                                          <button
+                                            type="button"
+                                            onClick={() =>
+                                              onSelectEvent(spanItem.event.id)
+                                            }
+                                            aria-label={`${spanItem.event.title}（関連地域: ${nodeLabel}）`}
+                                            title={`${spanItem.event.title} — ${nodeLabel}の詳細を開く`}
+                                            className={`group flex flex-col items-center justify-center gap-0.5 py-1 px-1 rounded transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1C1917] ${
+                                              isSpanUnrelated
+                                                ? 'scale-90 opacity-40 hover:opacity-95 focus-visible:opacity-95'
+                                                : 'opacity-100'
+                                            }`}
+                                          >
+                                            {/* Equal-height top spacer keeps the dot centered on the horizontal connector line */}
+                                            <span
+                                              className="h-4"
+                                              aria-hidden="true"
+                                            />
+                                            <span
+                                              className={`w-3 h-3 rounded-full border-2 border-white shadow-xs transition-transform group-hover:scale-125 ${
+                                                isSpanSelected
+                                                  ? 'bg-[#1C1917] ring-2 ring-[#1C1917]/25'
+                                                  : isSpanRelated
+                                                    ? 'bg-[#1D4ED8]'
+                                                    : 'bg-[#9A3412]'
+                                              }`}
+                                              aria-hidden="true"
+                                            />
+                                            <span className="h-4 flex items-center max-w-[140px]">
+                                              <span className="px-1.5 py-0.5 rounded bg-white/95 border border-[#E6E0D6] text-[11px] font-medium text-[#44403C] group-hover:text-[#9A3412] group-hover:border-[#9A3412]/50 truncate leading-none">
+                                                {nodeLabel}
+                                              </span>
+                                            </span>
+                                          </button>
+                                        </div>
+                                      );
+                                    }
+
+                                    return (
+                                      <div
+                                        key={`span-pass-${spanItem.event.id}-${colIdx}`}
+                                        className="min-w-0"
+                                        aria-hidden="true"
+                                      />
+                                    );
+                                  })}
                                 </div>
                               );
                             })}
@@ -1136,21 +1243,39 @@ export function PlaceTimelineView({
                 <div className="p-3.5 space-y-2.5 flex-1">
                   {group.events.map((ev) => {
                     const isSelected = ev.id === selectedEventId;
+                    const isRelated = relatedEventIds.has(ev.id);
+                    const isUnrelated =
+                      Boolean(selectedEvent) && !isSelected && !isRelated;
                     const colorId = eventColors[ev.id];
                     const colorDef = colorId
                       ? COLOR_PALETTE.find((c) => c.id === colorId)
                       : undefined;
 
+                    const laneFocusState = isSelected
+                      ? 'selected'
+                      : isRelated
+                        ? 'related'
+                        : isUnrelated
+                          ? 'unrelated'
+                          : 'none';
+
                     return (
                       <button
                         key={`${group.region}-${ev.id}`}
                         type="button"
+                        data-focus-state={laneFocusState}
                         onClick={() => onSelectEvent(ev.id)}
                         aria-pressed={isSelected}
-                        className={`w-full text-left p-3.5 rounded-md border transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1C1917] ${
+                        className={`w-full text-left rounded-md border origin-top transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1C1917] ${
+                          isUnrelated
+                            ? 'p-2.5 scale-[0.95] opacity-40 hover:opacity-95 focus-visible:opacity-95'
+                            : 'p-3.5 opacity-100'
+                        } ${
                           isSelected
-                            ? 'bg-[#FBF9F5] border-[#1C1917] ring-1 ring-[#1C1917]'
-                            : 'bg-white border-[#E6E0D6] hover:border-[#A8A29E]'
+                            ? 'bg-[#FBF9F5] border-[#1C1917] ring-2 ring-[#1C1917]/80'
+                            : isRelated
+                              ? 'bg-[#EEF4FF] border-[#1D4ED8] ring-1 ring-[#1D4ED8]/50'
+                              : 'bg-white border-[#E6E0D6] hover:border-[#A8A29E]'
                         }`}
                         style={
                           colorDef
@@ -1158,7 +1283,9 @@ export function PlaceTimelineView({
                                 backgroundColor: colorDef.surfaceHex,
                                 borderColor: isSelected
                                   ? '#1C1917'
-                                  : colorDef.borderHex,
+                                  : isRelated
+                                    ? '#1D4ED8'
+                                    : colorDef.borderHex,
                               }
                             : undefined
                         }
@@ -1169,6 +1296,11 @@ export function PlaceTimelineView({
                             {ev.places.length > 0 && (
                               <span className="font-sans text-[#78716C] ml-2">
                                 {ev.places.join('・')}
+                              </span>
+                            )}
+                            {isRelated && (
+                              <span className="font-sans font-semibold text-[#1D4ED8] ml-2">
+                                · 関連
                               </span>
                             )}
                           </span>
@@ -1185,12 +1317,22 @@ export function PlaceTimelineView({
                           )}
                         </div>
 
-                        <h3 className="text-sm sm:text-base font-serif font-semibold text-[#1C1917] leading-snug mb-1">
+                        <h3
+                          className={`font-serif font-semibold text-[#1C1917] leading-snug mb-1 ${
+                            isUnrelated ? 'text-xs sm:text-sm' : 'text-sm sm:text-base'
+                          }`}
+                        >
                           {ev.title}
                         </h3>
 
                         {ev.description && (
-                          <p className="text-xs text-[#57534E] leading-relaxed line-clamp-2 mb-2">
+                          <p
+                            className={`text-xs text-[#57534E] leading-relaxed ${
+                              isUnrelated
+                                ? 'line-clamp-1 mb-1'
+                                : 'line-clamp-2 mb-2'
+                            }`}
+                          >
                             {ev.description}
                           </p>
                         )}

@@ -696,3 +696,40 @@ export function findConnectedEvents(
 
   return { explicitRelated, reverseRelated };
 }
+
+export type EventFocusRelation =
+  | 'none'
+  | 'selected'
+  | 'related-before'
+  | 'related-after'
+  | 'related'
+  | 'unrelated';
+
+export function getEventFocusRelation(
+  ev: HistoricalEvent,
+  selectedEvent: HistoricalEvent | null,
+  relatedEventIds: ReadonlySet<string>
+): EventFocusRelation {
+  if (!selectedEvent) return 'none';
+  if (ev.id === selectedEvent.id) return 'selected';
+  if (!relatedEventIds.has(ev.id)) return 'unrelated';
+
+  const evParsed = parseHistoricalDate(ev.date, ev.date_precision);
+  const selParsed = parseHistoricalDate(
+    selectedEvent.date,
+    selectedEvent.date_precision
+  );
+
+  if (!evParsed.isUnknown && !selParsed.isUnknown) {
+    if (evParsed.sortValue < selParsed.sortValue) return 'related-before';
+    if (evParsed.sortValue > selParsed.sortValue) return 'related-after';
+  }
+  return 'related';
+}
+
+export function toggleSelectedEventId(
+  currentSelectedId: string | null,
+  targetEventId: string
+): string | null {
+  return currentSelectedId === targetEventId ? null : targetEventId;
+}

@@ -9,7 +9,6 @@ interface HeaderProps {
 const NAV_ITEMS: Array<{ id: ViewMode; label: string }> = [
   { id: 'timeline', label: '年表' },
   { id: 'places', label: '地域別' },
-  { id: 'map', label: 'マップ' },
   { id: 'people', label: '人物' },
 ];
 

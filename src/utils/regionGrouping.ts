@@ -512,10 +512,13 @@ export interface MatrixSingleItem {
 
 export interface MatrixSpanItem {
   event: HistoricalEvent;
+  anchorCol: number;
+  anchorRegion: string;
   minCol: number;
   maxCol: number;
   regionIndices: number[];
   activeRegions: string[];
+  placesByCol: Record<number, string[]>;
   hiddenRegions: string[];
 }
 
@@ -544,6 +547,20 @@ export function buildRegionMatrixRows(
 ): MatrixYearRow[] {
   const regionIndexMap = new Map<string, number>();
   visibleRegions.forEach((r, idx) => regionIndexMap.set(r, idx));
+
+  const resolvePlaceToVisibleRegion = (rawPlace: string): string | null => {
+    const clean = rawPlace === '不明' ? '場所不明' : rawPlace.trim();
+    const resolved = granularity === 'macro' ? resolveMacroRegion(clean) : clean;
+    if (regionIndexMap.has(resolved)) return resolved;
+    if (
+      allRegionSet &&
+      !allRegionSet.has(resolved) &&
+      regionIndexMap.has('その他の地域')
+    ) {
+      return 'その他の地域';
+    }
+    return null;
+  };
 
   const rows: MatrixYearRow[] = [];
   const rowByKey = new Map<string, MatrixYearRow>();
@@ -593,14 +610,39 @@ export function buildRegionMatrixRows(
       const maxCol = indices[indices.length - 1];
       const orderedRegions = indices.map((idx) => visibleRegions[idx]);
 
+      const placesByCol: Record<number, string[]> = {};
+      let primaryCol: number | null = null;
+      for (const rawPlace of ev.places) {
+        const clean = rawPlace.trim();
+        if (!clean) continue;
+        const targetRegion = resolvePlaceToVisibleRegion(clean);
+        if (!targetRegion) continue;
+        const colIdx = regionIndexMap.get(targetRegion);
+        if (colIdx === undefined) continue;
+        if (primaryCol === null) {
+          primaryCol = colIdx;
+        }
+        const list = placesByCol[colIdx] ?? [];
+        if (!list.includes(clean)) {
+          list.push(clean);
+        }
+        placesByCol[colIdx] = list;
+      }
+
+      const anchorCol = primaryCol ?? indices[0];
+      const anchorRegion = visibleRegions[anchorCol];
+
       row.bands.push({
         type: 'span',
         spanItem: {
           event: ev,
+          anchorCol,
+          anchorRegion,
           minCol,
           maxCol,
           regionIndices: indices,
           activeRegions: orderedRegions,
+          placesByCol,
           hiddenRegions,
         },
       });
