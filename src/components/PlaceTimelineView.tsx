@@ -5,6 +5,7 @@ import {
   GitFork,
   Layers,
   MapPin,
+  Star,
   TableProperties,
 } from 'lucide-react';
 import {
@@ -444,10 +445,6 @@ export function PlaceTimelineView({
             ? COLOR_PALETTE.find((c) => c.id === colorId)
             : undefined;
 
-          const metaSegments: string[] = [];
-          if (subDate) metaSegments.push(subDate);
-          if (ev.importance === 3) metaSegments.push('最重要');
-
           const focusState = isSelected
             ? 'selected'
             : isRelated
@@ -462,10 +459,10 @@ export function PlaceTimelineView({
               data-focus-state={focusState}
               onClick={() => onSelectEvent(ev.id)}
               aria-pressed={isSelected}
-              className={`w-full text-left rounded-md border origin-center transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1C1917] ${
+              className={`w-full text-left px-3 py-2 rounded-md border transition-opacity duration-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1C1917] ${
                 isUnrelated
-                  ? 'px-2.5 py-1.5 scale-[0.94] opacity-40 hover:opacity-95 focus-visible:opacity-95'
-                  : 'px-3 py-2 opacity-100'
+                  ? 'opacity-40 hover:opacity-95 focus-visible:opacity-95'
+                  : 'opacity-100'
               } ${
                 isSelected
                   ? 'border-[#1C1917] ring-2 ring-[#1C1917]/80 bg-[#FBF9F5] shadow-xs'
@@ -488,29 +485,27 @@ export function PlaceTimelineView({
                   : undefined
               }
             >
-              {(metaSegments.length > 0 || isRelated || colorDef) && (
-                <div
-                  className={`flex items-center justify-between gap-2 text-[#57534E] mb-0.5 ${
-                    isUnrelated ? 'text-[10px]' : 'text-[11px]'
-                  }`}
-                >
+              {(Boolean(subDate) || ev.importance === 3 || isRelated || colorDef) && (
+                <div className="flex items-center justify-between gap-2 text-[11px] text-[#57534E] mb-0.5">
                   <div className="flex items-center gap-1.5 min-w-0">
-                    {metaSegments.map((seg, i) => (
+                    {subDate && (
+                      <span className="font-mono tabular-nums">{subDate}</span>
+                    )}
+                    {ev.importance === 3 && (
                       <span
-                        key={seg}
-                        className={`inline-flex items-center gap-1.5 ${
-                          seg === '最重要'
-                            ? 'font-semibold text-[#9A3412]'
-                            : 'font-mono tabular-nums'
-                        }`}
+                        title="最重要"
+                        aria-label="最重要"
+                        className="inline-flex items-center text-[#9A3412]"
                       >
-                        {i > 0 && <span aria-hidden="true">·</span>}
-                        <span>{seg}</span>
+                        <Star
+                          className="w-3 h-3 fill-[#9A3412]"
+                          aria-hidden="true"
+                        />
                       </span>
-                    ))}
+                    )}
                     {isRelated && !isSelected && (
                       <span className="font-semibold text-[#1D4ED8]">
-                        {metaSegments.length > 0 ? '· ' : ''}関連
+                        {subDate || ev.importance === 3 ? '· ' : ''}関連
                       </span>
                     )}
                   </div>
@@ -529,20 +524,12 @@ export function PlaceTimelineView({
                 </div>
               )}
 
-              <div
-                className={`font-serif font-semibold text-[#1C1917] leading-snug ${
-                  isUnrelated ? 'text-xs' : 'text-sm'
-                }`}
-              >
+              <div className="font-serif font-semibold text-sm text-[#1C1917] leading-snug">
                 {ev.title}
               </div>
 
               {(ev.places.length > 0 || hiddenRegions.length > 0) && (
-                <div
-                  className={`mt-1 text-[#78716C] truncate ${
-                    isUnrelated ? 'text-[10px]' : 'text-[11px]'
-                  }`}
-                >
+                <div className="mt-1 text-[11px] text-[#78716C] truncate">
                   {ev.places.join('・')}
                   {hiddenRegions.length > 0 && (
                     <span className="text-[#9A3412] ml-1.5">
@@ -557,7 +544,7 @@ export function PlaceTimelineView({
 
         return (
           <div className="space-y-2.5">
-            <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-[#57534E] px-0.5">
+            <div className="space-y-1.5 text-xs text-[#57534E] px-0.5">
               <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
                 <span>
                   年ごとの行に地域を並べています。複数地域に関わる出来事は中心地域の四角形（長方形）から関連地域へ線でつないで表示しています。
@@ -582,28 +569,34 @@ export function PlaceTimelineView({
                   </span>
                 </span>
               </div>
-              {selectedEvent && (
-                <div className="flex items-center gap-3">
-                  {relatedEventIds.size > 0 ? (
-                    <span className="font-medium text-[#1D4ED8]">
-                      選択中「{selectedEvent.title}」の関連出来事 {relatedEventIds.size}件を強調中（もう一度タップで解除）
-                    </span>
-                  ) : (
-                    <span className="text-[#78716C]">
-                      選択中「{selectedEvent.title}」のみ強調中（もう一度タップで解除）
-                    </span>
-                  )}
-                  {onClearSelection && (
-                    <button
-                      type="button"
-                      onClick={onClearSelection}
-                      className="text-xs text-[#57534E] hover:text-[#1C1917] underline underline-offset-2 shrink-0"
-                    >
-                      選択を解除
-                    </button>
-                  )}
-                </div>
-              )}
+              <div className="min-h-[20px] flex flex-wrap items-center justify-between gap-2">
+                {selectedEvent ? (
+                  <>
+                    {relatedEventIds.size > 0 ? (
+                      <span className="font-medium text-[#1D4ED8]">
+                        選択中「{selectedEvent.title}」の関連出来事 {relatedEventIds.size}件を強調中（もう一度タップで解除）
+                      </span>
+                    ) : (
+                      <span className="text-[#78716C]">
+                        選択中「{selectedEvent.title}」のみ強調中（もう一度タップで解除）
+                      </span>
+                    )}
+                    {onClearSelection && (
+                      <button
+                        type="button"
+                        onClick={onClearSelection}
+                        className="text-xs text-[#57534E] hover:text-[#1C1917] underline underline-offset-2 shrink-0"
+                      >
+                        選択を解除
+                      </button>
+                    )}
+                  </>
+                ) : (
+                  <span className="text-[#78716C]">
+                    出来事をタップすると関連する出来事を強調表示し、詳細を確認できます
+                  </span>
+                )}
+              </div>
             </div>
 
             <div className="bg-white border border-[#E6E0D6] rounded-lg overflow-hidden">
@@ -733,7 +726,7 @@ export function PlaceTimelineView({
                                   {/* Horizontal Connector Line between Anchor Rectangle and Related Region Nodes */}
                                   <div
                                     aria-hidden="true"
-                                    className={`pointer-events-none absolute top-1/2 -translate-y-1/2 z-[1] transition-all ${
+                                    className={`pointer-events-none absolute top-1/2 -translate-y-1/2 z-[1] transition-opacity duration-100 ${
                                       isSpanUnrelated
                                         ? 'opacity-35 h-[2px] bg-[#9A3412]/55'
                                         : isSpanSelected
@@ -788,9 +781,9 @@ export function PlaceTimelineView({
                                             }
                                             aria-label={`${spanItem.event.title}（関連地域: ${nodeLabel}）`}
                                             title={`${spanItem.event.title} — ${nodeLabel}の詳細を開く`}
-                                            className={`group flex flex-col items-center justify-center gap-0.5 py-1 px-1 rounded transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1C1917] ${
+                                            className={`group flex flex-col items-center justify-center gap-0.5 py-1 px-1 rounded transition-opacity duration-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1C1917] ${
                                               isSpanUnrelated
-                                                ? 'scale-90 opacity-40 hover:opacity-95 focus-visible:opacity-95'
+                                                ? 'opacity-40 hover:opacity-95 focus-visible:opacity-95'
                                                 : 'opacity-100'
                                             }`}
                                           >
@@ -1266,10 +1259,10 @@ export function PlaceTimelineView({
                         data-focus-state={laneFocusState}
                         onClick={() => onSelectEvent(ev.id)}
                         aria-pressed={isSelected}
-                        className={`w-full text-left rounded-md border origin-top transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1C1917] ${
+                        className={`w-full text-left p-3.5 rounded-md border transition-opacity duration-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1C1917] ${
                           isUnrelated
-                            ? 'p-2.5 scale-[0.95] opacity-40 hover:opacity-95 focus-visible:opacity-95'
-                            : 'p-3.5 opacity-100'
+                            ? 'opacity-40 hover:opacity-95 focus-visible:opacity-95'
+                            : 'opacity-100'
                         } ${
                           isSelected
                             ? 'bg-[#FBF9F5] border-[#1C1917] ring-2 ring-[#1C1917]/80'
@@ -1291,15 +1284,27 @@ export function PlaceTimelineView({
                         }
                       >
                         <div className="flex flex-wrap items-center justify-between gap-2 text-xs mb-1">
-                          <span className="font-mono tabular-nums font-medium text-[#57534E]">
-                            {ev.date}
+                          <span className="inline-flex flex-wrap items-center gap-x-2 font-mono tabular-nums font-medium text-[#57534E]">
+                            <span>{ev.date}</span>
+                            {ev.importance === 3 && (
+                              <span
+                                title="最重要"
+                                aria-label="最重要"
+                                className="inline-flex items-center text-[#9A3412]"
+                              >
+                                <Star
+                                  className="w-3 h-3 fill-[#9A3412]"
+                                  aria-hidden="true"
+                                />
+                              </span>
+                            )}
                             {ev.places.length > 0 && (
-                              <span className="font-sans text-[#78716C] ml-2">
+                              <span className="font-sans text-[#78716C]">
                                 {ev.places.join('・')}
                               </span>
                             )}
                             {isRelated && (
-                              <span className="font-sans font-semibold text-[#1D4ED8] ml-2">
+                              <span className="font-sans font-semibold text-[#1D4ED8]">
                                 · 関連
                               </span>
                             )}
@@ -1317,22 +1322,12 @@ export function PlaceTimelineView({
                           )}
                         </div>
 
-                        <h3
-                          className={`font-serif font-semibold text-[#1C1917] leading-snug mb-1 ${
-                            isUnrelated ? 'text-xs sm:text-sm' : 'text-sm sm:text-base'
-                          }`}
-                        >
+                        <h3 className="text-sm sm:text-base font-serif font-semibold text-[#1C1917] leading-snug mb-1">
                           {ev.title}
                         </h3>
 
                         {ev.description && (
-                          <p
-                            className={`text-xs text-[#57534E] leading-relaxed ${
-                              isUnrelated
-                                ? 'line-clamp-1 mb-1'
-                                : 'line-clamp-2 mb-2'
-                            }`}
-                          >
+                          <p className="text-xs text-[#57534E] leading-relaxed line-clamp-2 mb-2">
                             {ev.description}
                           </p>
                         )}

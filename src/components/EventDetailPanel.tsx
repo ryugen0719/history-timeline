@@ -1,10 +1,12 @@
-import { ArrowRight, Camera, X } from 'lucide-react';
+import { ArrowRight, Camera, ImagePlus, Pencil, Star, Trash2, X, ZoomIn } from 'lucide-react';
+import { useState } from 'react';
 import {
   CATEGORY_LABELS,
   COLOR_PALETTE,
   type ColorId,
   type ColorLabelsMap,
   type EventColorsMap,
+  type EventImageItem,
   type HistoricalEvent,
   type PersonProfilesMap,
 } from '../types/timeline';
@@ -17,8 +19,12 @@ interface EventDetailPanelProps {
   eventColors: EventColorsMap;
   colorLabels: ColorLabelsMap;
   personProfiles: PersonProfilesMap;
-  onAssignColor: (eventId: string, colorId: ColorId) => void;
+  eventImages?: EventImageItem[];
   onEditPersonPhoto: (personName: string) => void;
+  onOpenAddImage?: (eventId: string) => void;
+  onEditImage?: (eventId: string, image: EventImageItem) => void;
+  onRemoveImage?: (eventId: string, imageId: string) => void;
+  onPreviewImage?: (eventTitle: string, image: EventImageItem) => void;
   onSelectEvent: (eventId: string) => void;
   onCloseMobile?: () => void;
   onClose?: () => void;
@@ -30,12 +36,20 @@ export function EventDetailPanel({
   eventColors,
   colorLabels,
   personProfiles,
-  onAssignColor,
+  eventImages = [],
   onEditPersonPhoto,
+  onOpenAddImage,
+  onEditImage,
+  onRemoveImage,
+  onPreviewImage,
   onSelectEvent,
   onCloseMobile,
   onClose,
 }: EventDetailPanelProps) {
+  const [failedImageIds, setFailedImageIds] = useState<Record<string, boolean>>(
+    {}
+  );
+
   if (!event) {
     return (
       <div className="bg-white border border-[#E6E0D6] rounded-lg p-8 text-center text-[#57534E]">
@@ -95,7 +109,32 @@ export function EventDetailPanel({
               {event.importance === 3 && (
                 <>
                   <span aria-hidden="true">·</span>
-                  <span className="font-medium text-[#9A3412]">最重要</span>
+                  <span
+                    title="最重要（時代の転換点）"
+                    aria-label="最重要"
+                    className="inline-flex items-center text-[#9A3412]"
+                  >
+                    <Star
+                      className="w-3.5 h-3.5 fill-[#9A3412]"
+                      aria-hidden="true"
+                    />
+                  </span>
+                </>
+              )}
+              {activeColorDef && (
+                <>
+                  <span aria-hidden="true">·</span>
+                  <span className="inline-flex items-center gap-1.5 font-medium text-[#1C1917]">
+                    <span
+                      className="w-2 h-2 rounded-[2px] shrink-0"
+                      style={{ backgroundColor: activeColorDef.swatchHex }}
+                      aria-hidden="true"
+                    />
+                    <span>
+                      {colorLabels[activeColorDef.id] ||
+                        activeColorDef.defaultLabel}
+                    </span>
+                  </span>
                 </>
               )}
             </div>
@@ -117,57 +156,6 @@ export function EventDetailPanel({
             </button>
           )}
         </div>
-
-        {/* 1-Click Inline Color Selector */}
-        <div className="mt-3 pt-2.5 border-t border-[#E6E0D6]/80">
-          <div className="flex items-center justify-between gap-2 mb-1.5">
-            <span className="text-[11px] font-medium text-[#57534E]">
-              色分け（1クリックで設定・解除）
-            </span>
-            {currentColor !== 'none' && (
-              <button
-                type="button"
-                onClick={() => onAssignColor(event.id, 'none')}
-                className="text-[11px] text-[#78716C] hover:text-[#1C1917] underline underline-offset-2"
-              >
-                色を解除
-              </button>
-            )}
-          </div>
-          <div
-            role="group"
-            aria-label="出来事の色分け設定"
-            className="flex flex-wrap items-center gap-1.5"
-          >
-            {COLOR_PALETTE.map((def) => {
-              const active = currentColor === def.id;
-              const label = colorLabels[def.id] || def.defaultLabel;
-              return (
-                <button
-                  key={def.id}
-                  type="button"
-                  onClick={() =>
-                    onAssignColor(event.id, active ? 'none' : def.id)
-                  }
-                  aria-pressed={active}
-                  title={`${def.colorName}：${label}`}
-                  className={`inline-flex items-center gap-1.5 px-2 py-1 text-xs rounded border transition-colors ${
-                    active
-                      ? 'bg-white text-[#1C1917] border-[#1C1917] font-semibold ring-1 ring-[#1C1917]'
-                      : 'bg-white/90 text-[#44403C] border-[#D6CEBE] hover:border-[#1C1917]'
-                  }`}
-                >
-                  <span
-                    className="w-2.5 h-2.5 rounded-[2px] shrink-0"
-                    style={{ backgroundColor: def.swatchHex }}
-                    aria-hidden="true"
-                  />
-                  <span>{label}</span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
       </div>
 
       {/* Study Reading Body */}
@@ -176,6 +164,109 @@ export function EventDetailPanel({
         <p className="text-sm leading-relaxed text-[#1C1917]">
           {event.description || '説明の記載はありません。'}
         </p>
+
+        {/* 1.5 Event Images / Historical Materials */}
+        {(onOpenAddImage || eventImages.length > 0) && (
+          <div
+            className="pt-4 border-t border-[#E6E0D6]"
+            data-testid="event-detail-images-section"
+          >
+            <div className="flex items-center justify-between gap-2 mb-2.5">
+              <h3 className="text-xs font-semibold text-[#78716C]">
+                資料・画像{eventImages.length > 0 ? `（${eventImages.length}件）` : ''}
+              </h3>
+              {onOpenAddImage && (
+                <button
+                  type="button"
+                  onClick={() => onOpenAddImage(event.id)}
+                  className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-[#1C1917] bg-[#F4F0E8] hover:bg-[#E6E0D6] rounded transition-colors"
+                >
+                  <ImagePlus className="w-3.5 h-3.5 text-[#9A3412]" aria-hidden="true" />
+                  画像を追加
+                </button>
+              )}
+            </div>
+
+            {eventImages.length === 0 ? (
+              <p className="text-xs text-[#78716C]">
+                関連する写真・絵図・地図・メモ画像を追加できます。
+              </p>
+            ) : (
+              <div className="space-y-3">
+                {eventImages.map((img) => {
+                  const hasFailed = Boolean(failedImageIds[img.id]);
+                  return (
+                    <figure
+                      key={img.id}
+                      className="border border-[#E6E0D6] rounded-md overflow-hidden bg-[#FBF9F5]"
+                    >
+                      {!hasFailed ? (
+                        <button
+                          type="button"
+                          onClick={() => onPreviewImage?.(event.title, img)}
+                          className="group relative block w-full bg-[#F4F0E8]/40 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#1C1917]"
+                          aria-label={`${img.caption || event.title} の画像を拡大表示`}
+                        >
+                          <img
+                            src={img.url}
+                            alt={img.caption || `${event.title} の資料画像`}
+                            onError={() =>
+                              setFailedImageIds((prev) => ({
+                                ...prev,
+                                [img.id]: true,
+                              }))
+                            }
+                            className="w-full max-h-52 object-cover"
+                          />
+                          {onPreviewImage && (
+                            <span className="absolute right-2 bottom-2 inline-flex items-center gap-1 px-2 py-1 rounded bg-[#1C1917]/75 text-[#FBF9F5] text-[11px] opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity">
+                              <ZoomIn className="w-3 h-3" aria-hidden="true" />
+                              拡大
+                            </span>
+                          )}
+                        </button>
+                      ) : (
+                        <div className="py-6 px-3 text-center text-xs text-[#78716C] bg-[#F4F0E8]/40">
+                          画像を読み込めませんでした
+                        </div>
+                      )}
+
+                      <div className="px-3 py-2 bg-white border-t border-[#E6E0D6] flex items-center justify-between gap-2">
+                        <figcaption className="text-xs text-[#44403C] min-w-0 truncate">
+                          {img.caption || '資料画像'}
+                        </figcaption>
+                        <div className="flex items-center gap-1 shrink-0">
+                          {onEditImage && (
+                            <button
+                              type="button"
+                              onClick={() => onEditImage(event.id, img)}
+                              aria-label="画像を編集"
+                              title="画像を編集"
+                              className="p-1 text-[#78716C] hover:text-[#1C1917] hover:bg-[#F4F0E8] rounded transition-colors"
+                            >
+                              <Pencil className="w-3.5 h-3.5" aria-hidden="true" />
+                            </button>
+                          )}
+                          {onRemoveImage && (
+                            <button
+                              type="button"
+                              onClick={() => onRemoveImage(event.id, img.id)}
+                              aria-label="画像を削除"
+                              title="画像を削除"
+                              className="p-1 text-[#78716C] hover:text-[#991B1B] hover:bg-[#FEF2F2] rounded transition-colors"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" aria-hidden="true" />
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </figure>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* 2. Causes & Consequences */}
         {(event.causes.length > 0 || event.consequences.length > 0) && (

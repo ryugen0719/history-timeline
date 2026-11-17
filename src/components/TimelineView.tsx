@@ -12,7 +12,7 @@ import {
   ScrollText,
   ShieldAlert,
   Ship,
-  Sparkles,
+  Star,
   Swords,
   TrainFront,
   Users,
@@ -62,8 +62,7 @@ interface TimelineViewProps {
   personProfiles: PersonProfilesMap;
   onSelectEvent: (eventId: string) => void;
   onClearSelection?: () => void;
-  onAutoAssignByCategory: () => void;
-  onAutoAssignByImportance: () => void;
+  onOpenColorEdit: () => void;
   onResetFilters: () => void;
 }
 
@@ -77,8 +76,7 @@ export function TimelineView({
   personProfiles,
   onSelectEvent,
   onClearSelection,
-  onAutoAssignByCategory,
-  onAutoAssignByImportance,
+  onOpenColorEdit,
   onResetFilters,
 }: TimelineViewProps) {
   const selectedEvent = useMemo(
@@ -138,62 +136,60 @@ export function TimelineView({
 
   return (
     <div className="space-y-7" data-testid="timeline-list">
-      {selectedEvent && (
-        <div
-          className="flex flex-wrap items-center justify-between gap-2 px-3.5 py-2 bg-[#F4F0E8]/75 border border-[#E6E0D6] rounded-md text-xs text-[#44403C]"
-          data-testid="timeline-focus-banner"
-        >
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-            <span>
-              選択中:{' '}
-              <strong className="font-serif text-[#1C1917]">
-                {selectedEvent.title}
-              </strong>
-            </span>
-            {visibleRelatedCount > 0 ? (
-              <span className="font-medium text-[#1D4ED8]">
-                関連する出来事 {visibleRelatedCount}件を強調中（もう一度タップで解除）
+      <div
+        className="flex flex-wrap items-center justify-between gap-2 min-h-[38px] px-3.5 py-2 bg-[#F4F0E8]/75 border border-[#E6E0D6] rounded-md text-xs text-[#44403C]"
+        data-testid="timeline-focus-banner"
+        data-active={Boolean(selectedEvent)}
+      >
+        {selectedEvent ? (
+          <>
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 min-w-0">
+              <span>
+                選択中:{' '}
+                <strong className="font-serif text-[#1C1917]">
+                  {selectedEvent.title}
+                </strong>
               </span>
-            ) : (
-              <span className="text-[#78716C]">
-                選択中のみ強調表示（もう一度タップで解除）
-              </span>
+              {visibleRelatedCount > 0 ? (
+                <span className="font-medium text-[#1D4ED8]">
+                  関連する出来事 {visibleRelatedCount}件を強調中（もう一度タップで解除）
+                </span>
+              ) : (
+                <span className="text-[#78716C]">
+                  選択中のみ強調表示（もう一度タップで解除）
+                </span>
+              )}
+            </div>
+            {onClearSelection && (
+              <button
+                type="button"
+                onClick={onClearSelection}
+                className="text-xs font-medium text-[#57534E] hover:text-[#1C1917] underline underline-offset-2 shrink-0"
+              >
+                選択を解除
+              </button>
             )}
-          </div>
-          {onClearSelection && (
-            <button
-              type="button"
-              onClick={onClearSelection}
-              className="text-xs font-medium text-[#57534E] hover:text-[#1C1917] underline underline-offset-2 shrink-0"
-            >
-              選択を解除
-            </button>
-          )}
-        </div>
-      )}
+          </>
+        ) : (
+          <span className="text-[#78716C]">
+            出来事をタップすると関連する出来事を強調表示し、それ以外を薄く表示します
+          </span>
+        )}
+      </div>
 
       {groupMode === 'color' && !hasAnyColoredInView && (
         <div className="bg-white border border-[#D6CEBE] rounded-lg p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="text-xs sm:text-sm text-[#44403C]">
             まだ色分けが設定されていないため、すべて「未分類」に表示されています。
           </div>
-          <div className="flex flex-wrap items-center gap-2 shrink-0">
-            <button
-              type="button"
-              onClick={onAutoAssignByCategory}
-              className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium bg-[#1C1917] text-[#FBF9F5] hover:bg-[#9A3412] rounded-md transition-colors whitespace-nowrap"
-            >
-              <Sparkles className="w-3.5 h-3.5" aria-hidden="true" />
-              分野で自動色分け
-            </button>
-            <button
-              type="button"
-              onClick={onAutoAssignByImportance}
-              className="px-3 py-1.5 text-xs font-medium bg-[#F4F0E8] text-[#1C1917] hover:bg-[#E6E0D6] rounded-md transition-colors whitespace-nowrap"
-            >
-              重要度で自動色分け
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={onOpenColorEdit}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-[#1C1917] text-[#FBF9F5] hover:bg-[#9A3412] rounded-md transition-colors whitespace-nowrap shrink-0"
+          >
+            <Palette className="w-3.5 h-3.5" aria-hidden="true" />
+            色分け編集を開く
+          </button>
         </div>
       )}
 
@@ -208,7 +204,7 @@ export function TimelineView({
           <section key={section.key} aria-label={section.title}>
             {/* Quiet Section Header */}
             <div
-              className={`flex items-baseline justify-between border-b border-[#D6CEBE] pb-1.5 mb-4 transition-opacity duration-150 ${
+              className={`flex items-baseline justify-between border-b border-[#D6CEBE] pb-1.5 mb-4 transition-opacity duration-100 ${
                 hasFocusedEventInSection ? 'opacity-100' : 'opacity-45'
               }`}
             >
@@ -258,27 +254,21 @@ export function TimelineView({
                   <div
                     key={`${section.key}-${ev.id}`}
                     data-focus-state={focusRelation}
-                    className={`relative flex items-stretch gap-3 sm:gap-5 transition-all duration-200 ${
+                    className={`relative flex items-stretch gap-3 sm:gap-5 transition-opacity duration-100 ${
                       isUnrelated
                         ? 'opacity-40 hover:opacity-95 focus-within:opacity-95'
                         : 'opacity-100'
                     }`}
                   >
                     {/* Left Date Column */}
-                    <div
-                      className={`w-20 sm:w-28 shrink-0 text-right transition-all duration-200 ${
-                        isUnrelated ? 'pt-2.5' : 'pt-3.5'
-                      }`}
-                    >
+                    <div className="w-20 sm:w-28 shrink-0 pt-3.5 text-right">
                       <div
-                        className={`font-mono tabular-nums leading-tight break-words transition-all duration-200 ${
-                          isUnrelated
-                            ? 'text-[11px] sm:text-xs font-medium text-[#57534E]'
-                            : isSelected
-                              ? 'text-xs sm:text-sm font-bold text-[#1C1917]'
-                              : isRelated
-                                ? 'text-xs sm:text-sm font-semibold text-[#1D4ED8]'
-                                : 'text-xs sm:text-sm font-medium text-[#1C1917]'
+                        className={`text-xs sm:text-sm font-mono tabular-nums leading-tight break-words ${
+                          isSelected
+                            ? 'font-bold text-[#1C1917]'
+                            : isRelated
+                              ? 'font-semibold text-[#1D4ED8]'
+                              : 'font-medium text-[#1C1917]'
                         }`}
                       >
                         {ev.date}
@@ -292,20 +282,14 @@ export function TimelineView({
 
                     {/* Vertical Hairline Spine & Geometric Importance Marker */}
                     <div
-                      className={`relative flex flex-col items-center shrink-0 w-4 transition-all duration-200 ${
-                        isUnrelated ? 'pt-3' : 'pt-4'
-                      }`}
+                      className="relative flex flex-col items-center shrink-0 w-4 pt-4"
                       aria-hidden="true"
                     >
                       {!isLast && (
-                        <div
-                          className={`absolute bottom-[-1.35rem] w-px bg-[#D6CEBE] ${
-                            isUnrelated ? 'top-5' : 'top-6'
-                          }`}
-                        />
+                        <div className="absolute top-6 bottom-[-1.35rem] w-px bg-[#D6CEBE]" />
                       )}
                       <div
-                        className={`relative z-10 rotate-45 transition-all ${
+                        className={`relative z-10 rotate-45 ${
                           ev.importance === 3
                             ? 'w-3 h-3 bg-[#9A3412] border border-[#9A3412]'
                             : ev.importance === 2
@@ -316,9 +300,7 @@ export function TimelineView({
                             ? 'scale-125 ring-4 ring-[#1C1917]/15'
                             : isRelated
                               ? 'scale-115 ring-4 ring-[#1D4ED8]/20'
-                              : isUnrelated
-                                ? 'scale-75'
-                                : ''
+                              : ''
                         }`}
                         style={
                           isRelated && !colorDef
@@ -350,14 +332,12 @@ export function TimelineView({
                           type="button"
                           onClick={() => onSelectEvent(ev.id)}
                           aria-pressed={isSelected}
-                          className={`flex-1 min-w-0 text-left rounded-lg border origin-left transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1C1917] ${
-                            isUnrelated
-                              ? 'px-3 py-2 sm:px-3.5 sm:py-2.5 scale-[0.96] bg-white/85 border-[#E6E0D6] hover:bg-white hover:border-[#A8A29E]'
-                              : isSelected
-                                ? 'px-4 py-3 sm:px-5 sm:py-3.5 bg-white border-[#1C1917] ring-2 ring-[#1C1917]/80 shadow-sm'
-                                : isRelated
-                                  ? 'px-4 py-3 sm:px-5 sm:py-3.5 bg-[#F5F8FF] border-[#1D4ED8] ring-1 ring-[#1D4ED8]/45 shadow-xs hover:bg-[#EDF3FF]'
-                                  : 'px-4 py-3 sm:px-5 sm:py-3.5 bg-white/90 border-[#E6E0D6] hover:bg-white hover:border-[#A8A29E]'
+                          className={`flex-1 min-w-0 text-left rounded-lg border px-4 py-3 sm:px-5 sm:py-3.5 transition-colors duration-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1C1917] ${
+                            isSelected
+                              ? 'bg-white border-[#1C1917] ring-2 ring-[#1C1917]/80 shadow-sm'
+                              : isRelated
+                                ? 'bg-[#F5F8FF] border-[#1D4ED8] ring-1 ring-[#1D4ED8]/45 shadow-xs hover:bg-[#EDF3FF]'
+                                : 'bg-white/90 border-[#E6E0D6] hover:bg-white hover:border-[#A8A29E]'
                           }`}
                           style={
                             colorDef
@@ -376,9 +356,7 @@ export function TimelineView({
                             <span
                               title={iconMeta.label}
                               aria-hidden="true"
-                              className={`rounded-md border flex items-center justify-center shrink-0 mt-0.5 transition-all duration-200 ${
-                                isUnrelated ? 'w-7 h-7' : 'w-8 h-8'
-                              } ${
+                              className={`w-8 h-8 rounded-md border flex items-center justify-center shrink-0 mt-0.5 ${
                                 isRelated && !colorDef
                                   ? 'bg-white border-[#1D4ED8]/40 text-[#1D4ED8]'
                                   : colorDef
@@ -396,21 +374,13 @@ export function TimelineView({
                                   : undefined
                               }
                             >
-                              <ItemIcon
-                                className={isUnrelated ? 'w-3.5 h-3.5' : 'w-4 h-4'}
-                              />
+                              <ItemIcon className="w-4 h-4" />
                             </span>
 
                             <div className="flex-1 min-w-0">
                               {/* Title Row (+ Related, Importance & Color labels cleanly separated) */}
                               <div className="flex flex-wrap items-baseline justify-between gap-2 mb-1">
-                                <h3
-                                  className={`font-serif font-semibold text-[#1C1917] leading-snug transition-all duration-200 ${
-                                    isUnrelated
-                                      ? 'text-sm sm:text-base'
-                                      : 'text-base sm:text-lg'
-                                  }`}
-                                >
+                                <h3 className="text-base sm:text-lg font-serif font-semibold text-[#1C1917] leading-snug">
                                   {ev.title}
                                 </h3>
 
@@ -430,8 +400,15 @@ export function TimelineView({
                                       </span>
                                     )}
                                   {ev.importance === 3 && (
-                                    <span className="font-medium text-[#9A3412]">
-                                      重要
+                                    <span
+                                      title="最重要"
+                                      aria-label="最重要"
+                                      className="inline-flex items-center text-[#9A3412]"
+                                    >
+                                      <Star
+                                        className="w-3.5 h-3.5 fill-[#9A3412]"
+                                        aria-hidden="true"
+                                      />
                                     </span>
                                   )}
                                   {ev.importance === 3 && colorDef && (
@@ -458,28 +435,16 @@ export function TimelineView({
                                 </div>
                               </div>
 
-                              {/* Concise 2-line Description (compact 1-line when unrelated) */}
+                              {/* Concise 2-line Description */}
                               {ev.description && (
-                                <p
-                                  className={`text-[#44403C] leading-relaxed ${
-                                    isUnrelated
-                                      ? 'text-xs line-clamp-1'
-                                      : 'text-sm line-clamp-2'
-                                  }`}
-                                >
+                                <p className="text-sm text-[#44403C] leading-relaxed line-clamp-2">
                                   {ev.description}
                                 </p>
                               )}
 
                               {/* People Row (with Portrait Thumbnails when registered) */}
                               {ev.people.length > 0 && (
-                                <div
-                                  className={`flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[#57534E] ${
-                                    isUnrelated
-                                      ? 'mt-1.5 text-[11px]'
-                                      : 'mt-2 text-xs'
-                                  }`}
-                                >
+                                <div className="mt-2 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs text-[#57534E]">
                                   {ev.people.slice(0, 4).map((person) => (
                                     <span
                                       key={person}

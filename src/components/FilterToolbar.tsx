@@ -1,17 +1,14 @@
-import { useState } from 'react';
 import {
   ArrowDownUp,
   Palette,
   RotateCcw,
   Search,
-  Sparkles,
   Star,
   X,
 } from 'lucide-react';
 import {
   CATEGORY_LABELS,
   COLOR_PALETTE,
-  type AssignedColorId,
   type ColorLabelsMap,
   type EventCategory,
   type TimelineFilters,
@@ -31,15 +28,9 @@ interface FilterToolbarProps {
   filters: TimelineFilters;
   colorCounts: ColorCountsSummary;
   colorLabels: ColorLabelsMap;
-  onUpdateColorLabel: (colorId: AssignedColorId, label: string) => void;
-  onApplyLabelPreset: (preset: 'category' | 'study' | 'importance') => void;
-  onAutoAssignByCategory: () => void;
-  onAutoAssignByImportance: () => void;
-  onClearAllColors: () => void;
+  onOpenColorEdit: () => void;
   onChangeFilters: (next: TimelineFilters) => void;
   onResetFilters: () => void;
-  onExportJson: () => void;
-  onOpenImport: () => void;
 }
 
 export function FilterToolbar({
@@ -53,16 +44,10 @@ export function FilterToolbar({
   filters,
   colorCounts,
   colorLabels,
-  onUpdateColorLabel,
-  onApplyLabelPreset,
-  onAutoAssignByCategory,
-  onAutoAssignByImportance,
-  onClearAllColors,
+  onOpenColorEdit,
   onChangeFilters,
   onResetFilters,
 }: FilterToolbarProps) {
-  const [isColorSettingsOpen, setIsColorSettingsOpen] = useState(false);
-
   const hasActiveFilter =
     filters.search.trim() !== '' ||
     filters.category !== 'all' ||
@@ -160,16 +145,11 @@ export function FilterToolbar({
 
             <button
               type="button"
-              onClick={() => setIsColorSettingsOpen((v) => !v)}
-              aria-expanded={isColorSettingsOpen}
-              className={`inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium rounded-md border whitespace-nowrap transition-colors ${
-                isColorSettingsOpen
-                  ? 'bg-[#1C1917] text-[#FBF9F5] border-[#1C1917]'
-                  : 'bg-white text-[#57534E] border-[#D6CEBE] hover:text-[#1C1917]'
-              }`}
+              onClick={onOpenColorEdit}
+              className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium rounded-md border bg-white text-[#57534E] border-[#D6CEBE] hover:text-[#1C1917] hover:border-[#1C1917] whitespace-nowrap transition-colors"
             >
               <Palette className="w-3 h-3" aria-hidden="true" />
-              色の設定
+              色分け編集
             </button>
           </div>
         </div>
@@ -241,8 +221,8 @@ export function FilterToolbar({
           )}
         </div>
 
-        {/* Row 3: Honest, Context-Aware Color Filter / Quick Setup Strip */}
-        {hasAssignedColors ? (
+        {/* Row 3: Read-only Color Filter Strip (shown only when colors are already assigned) */}
+        {hasAssignedColors && (
           <div
             role="group"
             aria-label="色による絞り込み"
@@ -330,125 +310,6 @@ export function FilterToolbar({
                 </span>
               </button>
             )}
-          </div>
-        ) : (
-          <div className="flex flex-wrap items-center gap-2 text-xs text-[#57534E]">
-            <span className="inline-flex items-center gap-1 text-[#78716C] shrink-0">
-              <Palette className="w-3.5 h-3.5" aria-hidden="true" />
-              色分け: 未設定
-            </span>
-            <button
-              type="button"
-              onClick={onAutoAssignByCategory}
-              className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-[#1C1917] bg-white border border-[#D6CEBE] hover:border-[#1C1917] rounded transition-colors whitespace-nowrap"
-            >
-              <Sparkles className="w-3 h-3 text-[#9A3412]" aria-hidden="true" />
-              分野で一括色分け
-            </button>
-            <button
-              type="button"
-              onClick={onAutoAssignByImportance}
-              className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-[#1C1917] bg-white border border-[#D6CEBE] hover:border-[#1C1917] rounded transition-colors whitespace-nowrap"
-            >
-              重要度で一括色分け
-            </button>
-            <span className="text-[11px] text-[#78716C]">
-              （各出来事の詳細欄から1クリックで個別に色付けもできます）
-            </span>
-          </div>
-        )}
-
-        {/* Collapsible Color Settings & Label Editor Drawer */}
-        {isColorSettingsOpen && (
-          <div className="pt-3 mt-1 border-t border-[#E6E0D6] space-y-3">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="text-xs font-medium text-[#57534E]">
-                  自動色分け:
-                </span>
-                <button
-                  type="button"
-                  onClick={onAutoAssignByCategory}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-[#1C1917] bg-white border border-[#D6CEBE] hover:border-[#1C1917] rounded-md transition-colors whitespace-nowrap"
-                >
-                  <Sparkles className="w-3.5 h-3.5 text-[#9A3412]" aria-hidden="true" />
-                  分野で自動色分け
-                </button>
-                <button
-                  type="button"
-                  onClick={onAutoAssignByImportance}
-                  className="px-3 py-1.5 text-xs font-medium text-[#1C1917] bg-white border border-[#D6CEBE] hover:border-[#1C1917] rounded-md transition-colors whitespace-nowrap"
-                >
-                  重要度で自動色分け
-                </button>
-                {hasAssignedColors && (
-                  <button
-                    type="button"
-                    onClick={onClearAllColors}
-                    className="px-3 py-1.5 text-xs font-medium text-[#78716C] hover:text-[#991B1B] bg-white border border-[#E6E0D6] rounded-md transition-colors whitespace-nowrap"
-                  >
-                    すべての色を解除
-                  </button>
-                )}
-              </div>
-
-              <div className="flex flex-wrap items-center gap-1.5">
-                <span className="text-[11px] text-[#78716C]">ラベル用途:</span>
-                <button
-                  type="button"
-                  onClick={() => onApplyLabelPreset('category')}
-                  className="px-2.5 py-1 text-[11px] font-medium text-[#57534E] hover:text-[#1C1917] bg-white border border-[#E6E0D6] rounded transition-colors whitespace-nowrap"
-                >
-                  分野用
-                </button>
-                <button
-                  type="button"
-                  onClick={() => onApplyLabelPreset('study')}
-                  className="px-2.5 py-1 text-[11px] font-medium text-[#57534E] hover:text-[#1C1917] bg-white border border-[#E6E0D6] rounded transition-colors whitespace-nowrap"
-                >
-                  暗記・復習用
-                </button>
-                <button
-                  type="button"
-                  onClick={() => onApplyLabelPreset('importance')}
-                  className="px-2.5 py-1 text-[11px] font-medium text-[#57534E] hover:text-[#1C1917] bg-white border border-[#E6E0D6] rounded transition-colors whitespace-nowrap"
-                >
-                  重要度用
-                </button>
-              </div>
-            </div>
-
-            <div>
-              <p className="text-[11px] font-medium text-[#78716C] mb-1.5">
-                6色の名前・意味を自由に編集（各出来事の詳細パネルや絞り込みに反映されます）
-              </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-                {COLOR_PALETTE.map((def) => (
-                  <label
-                    key={def.id}
-                    className="flex items-center gap-2 bg-white border border-[#E6E0D6] rounded px-2.5 py-1.5 text-xs"
-                  >
-                    <span
-                      className="w-3 h-3 rounded-[2px] shrink-0"
-                      style={{ backgroundColor: def.swatchHex }}
-                      aria-hidden="true"
-                    />
-                    <span className="text-[11px] text-[#78716C] shrink-0 w-7">
-                      {def.colorName}
-                    </span>
-                    <input
-                      type="text"
-                      value={colorLabels[def.id] || ''}
-                      onChange={(e) =>
-                        onUpdateColorLabel(def.id, e.target.value)
-                      }
-                      placeholder={def.defaultLabel}
-                      className="w-full bg-transparent text-[#1C1917] focus:outline-none"
-                    />
-                  </label>
-                ))}
-              </div>
-            </div>
           </div>
         )}
       </div>

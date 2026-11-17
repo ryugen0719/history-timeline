@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { ColorEditModal } from './components/ColorEditModal';
 import { EventDetailPanel } from './components/EventDetailPanel';
+import { EventImageLightbox, EventImageModal } from './components/EventImageModal';
 import { FilterToolbar } from './components/FilterToolbar';
 import { Header } from './components/Header';
 import { ImportModal } from './components/ImportModal';
@@ -19,6 +21,8 @@ import {
   type ColorLabelsMap,
   type EventCategory,
   type EventColorsMap,
+  type EventImageItem,
+  type EventImagesMap,
   type HistoricalDatabase,
   type PersonProfile,
   type PersonProfilesMap,
@@ -26,6 +30,11 @@ import {
   type TimelineGroupMode,
   type ViewMode,
 } from './types/timeline';
+import {
+  addEventImage,
+  removeEventImage,
+  updateEventImage,
+} from './utils/eventImages';
 import {
   autoAssignColorsByCategory,
   autoAssignColorsByImportance,
@@ -48,6 +57,7 @@ const STORAGE_KEY_PEOPLE = 'history_timeline_archive_people_v1';
 const STORAGE_KEY_COLORS = 'history_timeline_archive_colors_v1';
 const STORAGE_KEY_COLOR_LABELS = 'history_timeline_archive_color_labels_v1';
 const STORAGE_KEY_WIKI_CHECKED = 'history_timeline_archive_wiki_checked_v1';
+const STORAGE_KEY_EVENT_IMAGES = 'history_timeline_archive_event_images_v1';
 
 const DEFAULT_FILTERS: TimelineFilters = {
   search: '',
@@ -115,6 +125,9 @@ export default function App() {
   const [eventColors, setEventColors] = useState<EventColorsMap>(() =>
     loadJsonFromStorage<EventColorsMap>(STORAGE_KEY_COLORS, {})
   );
+  const [eventImages, setEventImages] = useState<EventImagesMap>(() =>
+    loadJsonFromStorage<EventImagesMap>(STORAGE_KEY_EVENT_IMAGES, {})
+  );
   const [colorLabels, setColorLabels] = useState<ColorLabelsMap>(() => {
     const saved = loadJsonFromStorage<Partial<ColorLabelsMap>>(
       STORAGE_KEY_COLOR_LABELS,
@@ -137,9 +150,18 @@ export default function App() {
   const [isMobileDetailOpen, setIsMobileDetailOpen] = useState(false);
   const [isPlacesDetailOpen, setIsPlacesDetailOpen] = useState(false);
   const [isImportOpen, setIsImportOpen] = useState(false);
+  const [isColorEditOpen, setIsColorEditOpen] = useState(false);
   const [editingPersonName, setEditingPersonName] = useState<string | null>(
     null
   );
+  const [imageModalTarget, setImageModalTarget] = useState<{
+    eventId: string;
+    image: EventImageItem | null;
+  } | null>(null);
+  const [lightboxPreview, setLightboxPreview] = useState<{
+    eventTitle: string;
+    image: EventImageItem;
+  } | null>(null);
   const [isFetchingWiki, setIsFetchingWiki] = useState(false);
 
   useEffect(() => {
@@ -184,6 +206,17 @@ export default function App() {
       // Ignore storage quota errors
     }
   }, [eventColors]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(
+        STORAGE_KEY_EVENT_IMAGES,
+        JSON.stringify(eventImages)
+      );
+    } catch {
+      // Ignore storage quota errors
+    }
+  }, [eventImages]);
 
   useEffect(() => {
     try {
@@ -394,6 +427,24 @@ export default function App() {
     });
   };
 
+  const handleSaveEventImage = (payload: { url: string; caption?: string }) => {
+    if (!imageModalTarget) return;
+    if (imageModalTarget.image) {
+      const targetImageId = imageModalTarget.image.id;
+      setEventImages((prev) =>
+        updateEventImage(prev, imageModalTarget.eventId, targetImageId, payload)
+      );
+    } else {
+      setEventImages((prev) =>
+        addEventImage(prev, imageModalTarget.eventId, payload)
+      );
+    }
+  };
+
+  const handleRemoveEventImage = (eventId: string, imageId: string) => {
+    setEventImages((prev) => removeEventImage(prev, eventId, imageId));
+  };
+
   const handleApplyDatabase = (
     incoming: HistoricalDatabase,
     mode: 'replace' | 'merge',
@@ -448,15 +499,9 @@ export default function App() {
           filters={filters}
           colorCounts={colorCounts}
           colorLabels={colorLabels}
-          onUpdateColorLabel={handleUpdateColorLabel}
-          onApplyLabelPreset={handleApplyLabelPreset}
-          onAutoAssignByCategory={handleAutoAssignByCategory}
-          onAutoAssignByImportance={handleAutoAssignByImportance}
-          onClearAllColors={handleClearAllColors}
+          onOpenColorEdit={() => setIsColorEditOpen(true)}
           onChangeFilters={setFilters}
           onResetFilters={handleResetFilters}
-          onExportJson={handleExportJson}
-          onOpenImport={() => setIsImportOpen(true)}
         />
       )}
 
@@ -497,8 +542,7 @@ export default function App() {
                 personProfiles={personProfiles}
                 onSelectEvent={handleSelectEvent}
                 onClearSelection={() => setSelectedEventId(null)}
-                onAutoAssignByCategory={handleAutoAssignByCategory}
-                onAutoAssignByImportance={handleAutoAssignByImportance}
+                onOpenColorEdit={() => setIsColorEditOpen(true)}
                 onResetFilters={handleResetFilters}
               />
             </div>
@@ -514,8 +558,20 @@ export default function App() {
                 eventColors={eventColors}
                 colorLabels={colorLabels}
                 personProfiles={personProfiles}
-                onAssignColor={handleAssignColor}
+                eventImages={
+                  selectedEvent ? eventImages[selectedEvent.id] ?? [] : []
+                }
                 onEditPersonPhoto={setEditingPersonName}
+                onOpenAddImage={(eventId) =>
+                  setImageModalTarget({ eventId, image: null })
+                }
+                onEditImage={(eventId, image) =>
+                  setImageModalTarget({ eventId, image })
+                }
+                onRemoveImage={handleRemoveEventImage}
+                onPreviewImage={(eventTitle, image) =>
+                  setLightboxPreview({ eventTitle, image })
+                }
                 onSelectEvent={setSelectedEventId}
               />
             </aside>
@@ -539,8 +595,18 @@ export default function App() {
               eventColors={eventColors}
               colorLabels={colorLabels}
               personProfiles={personProfiles}
-              onAssignColor={handleAssignColor}
+              eventImages={eventImages[selectedEvent.id] ?? []}
               onEditPersonPhoto={setEditingPersonName}
+              onOpenAddImage={(eventId) =>
+                setImageModalTarget({ eventId, image: null })
+              }
+              onEditImage={(eventId, image) =>
+                setImageModalTarget({ eventId, image })
+              }
+              onRemoveImage={handleRemoveEventImage}
+              onPreviewImage={(eventTitle, image) =>
+                setLightboxPreview({ eventTitle, image })
+              }
               onSelectEvent={setSelectedEventId}
               onCloseMobile={() => setIsMobileDetailOpen(false)}
             />
@@ -566,8 +632,18 @@ export default function App() {
               eventColors={eventColors}
               colorLabels={colorLabels}
               personProfiles={personProfiles}
-              onAssignColor={handleAssignColor}
+              eventImages={eventImages[selectedEvent.id] ?? []}
               onEditPersonPhoto={setEditingPersonName}
+              onOpenAddImage={(eventId) =>
+                setImageModalTarget({ eventId, image: null })
+              }
+              onEditImage={(eventId, image) =>
+                setImageModalTarget({ eventId, image })
+              }
+              onRemoveImage={handleRemoveEventImage}
+              onPreviewImage={(eventTitle, image) =>
+                setLightboxPreview({ eventTitle, image })
+              }
               onSelectEvent={setSelectedEventId}
               onClose={() => setIsPlacesDetailOpen(false)}
             />
@@ -589,6 +665,49 @@ export default function App() {
         }
         onSave={handleSavePersonProfile}
         onClose={() => setEditingPersonName(null)}
+      />
+
+      <EventImageModal
+        isOpen={Boolean(imageModalTarget)}
+        eventTitle={
+          imageModalTarget
+            ? database.events.find((e) => e.id === imageModalTarget.eventId)
+                ?.title ?? ''
+            : ''
+        }
+        editingImage={imageModalTarget?.image ?? null}
+        onSave={handleSaveEventImage}
+        onDelete={
+          imageModalTarget?.image
+            ? () =>
+                handleRemoveEventImage(
+                  imageModalTarget.eventId,
+                  imageModalTarget.image!.id
+                )
+            : undefined
+        }
+        onClose={() => setImageModalTarget(null)}
+      />
+
+      <EventImageLightbox
+        image={lightboxPreview?.image ?? null}
+        eventTitle={lightboxPreview?.eventTitle ?? ''}
+        onClose={() => setLightboxPreview(null)}
+      />
+
+      <ColorEditModal
+        isOpen={isColorEditOpen}
+        events={database.events}
+        selectedEvent={selectedEvent}
+        eventColors={eventColors}
+        colorLabels={colorLabels}
+        onAssignColor={handleAssignColor}
+        onUpdateColorLabel={handleUpdateColorLabel}
+        onApplyLabelPreset={handleApplyLabelPreset}
+        onAutoAssignByCategory={handleAutoAssignByCategory}
+        onAutoAssignByImportance={handleAutoAssignByImportance}
+        onClearAllColors={handleClearAllColors}
+        onClose={() => setIsColorEditOpen(false)}
       />
     </div>
   );

@@ -161,6 +161,14 @@ export interface PersonProfile {
 export type PersonProfilesMap = Record<string, PersonProfile>;
 export type EventColorsMap = Record<string, AssignedColorId>;
 
+export interface EventImageItem {
+  id: string;
+  url: string;
+  caption?: string;
+}
+
+export type EventImagesMap = Record<string, EventImageItem[]>;
+
 export interface TimelineFilters {
   search: string;
   category: EventCategory | 'all';

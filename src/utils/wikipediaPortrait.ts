@@ -140,7 +140,8 @@ export function mergeWikipediaPortraits(
 
 async function queryWikipediaTitles(
   lang: 'ja' | 'en',
-  titles: string[]
+  titles: string[],
+  thumbSize = 320
 ): Promise<Map<string, WikiLookupEntry>> {
   const uniqueTitles = Array.from(
     new Set(titles.map(normalizeWikipediaLookupName).filter(Boolean))
@@ -157,7 +158,7 @@ async function queryWikipediaTitles(
       redirects: '1',
       prop: lang === 'ja' ? 'pageimages|description|langlinks' : 'pageimages',
       piprop: 'thumbnail',
-      pithumbsize: '320',
+      pithumbsize: String(thumbSize),
       titles: chunk.join('|'),
     });
     if (lang === 'ja') {
@@ -179,7 +180,8 @@ async function queryWikipediaTitles(
 }
 
 async function searchWikipediaPortrait(
-  name: string
+  name: string,
+  thumbSize = 320
 ): Promise<WikiPortraitResult | null> {
   const normalized = normalizeWikipediaLookupName(name);
   if (!normalized) return null;
@@ -193,7 +195,7 @@ async function searchWikipediaPortrait(
     gsrlimit: '1',
     prop: 'pageimages|description',
     piprop: 'thumbnail',
-    pithumbsize: '320',
+    pithumbsize: String(thumbSize),
   });
 
   const res = await fetch(
@@ -323,4 +325,36 @@ export async function fetchSingleWikipediaPortrait(
 ): Promise<WikiPortraitResult | null> {
   const { portraits } = await fetchWikipediaPortraitsBatch([name]);
   return portraits[name.trim()] ?? null;
+}
+
+export async function fetchWikipediaEventImage(
+  title: string
+): Promise<WikiPortraitResult | null> {
+  const trimmed = title.trim();
+  if (!trimmed) return null;
+  try {
+    const jaResults = await queryWikipediaTitles('ja', [trimmed], 640);
+    const jaEntry = jaResults.get(trimmed);
+    if (jaEntry?.photoUrl) {
+      return {
+        photoUrl: jaEntry.photoUrl,
+        note: jaEntry.description,
+      };
+    }
+    if (jaEntry?.enTitle) {
+      const enResults = await queryWikipediaTitles('en', [jaEntry.enTitle], 640);
+      const enEntry = enResults.get(
+        normalizeWikipediaLookupName(jaEntry.enTitle)
+      );
+      if (enEntry?.photoUrl) {
+        return {
+          photoUrl: enEntry.photoUrl,
+          note: jaEntry.description,
+        };
+      }
+    }
+    return await searchWikipediaPortrait(trimmed, 640);
+  } catch {
+    return null;
+  }
 }
