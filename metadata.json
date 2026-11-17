@@ -1,0 +1,6 @@
+{
+  "name": "歴史年表アーカイブ",
+  "description": "歴史出来事データベース（JSON）を読み込み、時系列・因果関係・人物・出典ごとにわかりやすく整理して表示する歴史年表ビューア",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
