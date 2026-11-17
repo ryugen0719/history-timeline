@@ -24,9 +24,9 @@ export function Header({
         <button
           type="button"
           onClick={() => onChangeView('timeline')}
-          className="text-lg font-serif font-bold tracking-tight text-[#1C1917] whitespace-nowrap shrink-0 text-left focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#9A3412]"
+          className="text-xl font-serif font-bold tracking-tight text-[#1C1917] whitespace-nowrap shrink-0 text-left focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#9A3412]"
         >
-          歴史年表
+          ChronoNote
         </button>
 
         {/* Zone 2 (Desktop): 3 clean single-line navigation tabs */}
