@@ -41,7 +41,7 @@ export interface HistoricalDatabase {
   events: HistoricalEvent[];
 }
 
-export type ViewMode = 'timeline' | 'places' | 'people';
+export type ViewMode = 'timeline' | 'places' | 'people' | 'flashcards';
 export type SortOrder = 'asc' | 'desc';
 export type TimelineGroupMode = 'era' | 'color';
 

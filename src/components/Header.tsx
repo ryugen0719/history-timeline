@@ -10,6 +10,7 @@ const NAV_ITEMS: Array<{ id: ViewMode; label: string }> = [
   { id: 'timeline', label: '年表' },
   { id: 'places', label: '地域別' },
   { id: 'people', label: '人物' },
+  { id: 'flashcards', label: '一問一答' },
 ];
 
 export function Header({

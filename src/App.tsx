@@ -3,6 +3,7 @@ import { ColorEditModal } from './components/ColorEditModal';
 import { EventDetailPanel } from './components/EventDetailPanel';
 import { EventImageLightbox, EventImageModal } from './components/EventImageModal';
 import { FilterToolbar } from './components/FilterToolbar';
+import { FlashcardWorkspace } from './components/flashcards/FlashcardWorkspace';
 import { Header } from './components/Header';
 import { ImportModal } from './components/ImportModal';
 import { PeopleDirectoryView } from './components/PeopleDirectoryView';
@@ -487,7 +488,7 @@ export default function App() {
         onOpenImport={() => setIsImportOpen(true)}
       />
 
-      {activeView !== 'people' && (
+      {activeView !== 'people' && activeView !== 'flashcards' && (
         <FilterToolbar
           datasetTitle={datasetTitle}
           totalCount={database.events.length}
@@ -506,7 +507,9 @@ export default function App() {
       )}
 
       <main className="flex-1 max-w-[1280px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        {activeView === 'people' ? (
+        {activeView === 'flashcards' ? (
+          <FlashcardWorkspace />
+        ) : activeView === 'people' ? (
           <PeopleDirectoryView
             events={database.events}
             eventColors={eventColors}
