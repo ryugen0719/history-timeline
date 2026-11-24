@@ -19,18 +19,42 @@ const parsed = parseFlashcardsCsv(rawCsv, {
 });
 
 assert.equal(parsed.ok, true, 'CSV should parse cleanly');
-assert.equal(parsed.cards.length, 310, 'All 310 questions must be preserved without deduplication');
+assert.equal(parsed.cards.length, 289, 'All 289 deduplicated questions must be preserved');
 assert.equal(parsed.cards[0].number, 1);
 assert.equal(parsed.cards[0].back, '主権国家体制');
-assert.equal(parsed.cards[309].number, 310);
-assert.equal(parsed.cards[309].back, '幣原外交（国際協調政策）');
+assert.equal(parsed.cards[288].number, 289);
+assert.equal(parsed.cards[288].back, '幣原外交（国際協調政策）');
 
-// Verify # prefix tags on No.288-310 are normalized cleanly
-const card288 = parsed.cards[287];
-assert.equal(card288.number, 288);
-assert.equal(card288.tags.includes('分類_思想'), true);
-assert.equal(card288.tags.some((t) => t.startsWith('#')), false);
-assert.equal(parseTagMeta(card288.tags[0]).categoryKey, 'category');
+// Verify zero duplicate question prompts across the entire dataset
+const seenFronts = new Set<string>();
+for (const card of parsed.cards) {
+  assert.equal(
+    seenFronts.has(card.front),
+    false,
+    `Duplicate question found at No.${card.number}: ${card.front}`
+  );
+  seenFronts.add(card.front);
+}
+
+// Verify Lesson 23 and Lesson 24 separation
+const lesson23Cards = parsed.cards.filter((c) => c.unit === '23. 日清戦争');
+const lesson24Cards = parsed.cards.filter(
+  (c) => c.unit === '24. 日露戦争から韓国併合へ'
+);
+assert.equal(lesson23Cards.length, 21, 'Lesson 23 should have 21 cards');
+assert.equal(lesson24Cards.length, 24, 'Lesson 24 should have 24 cards');
+assert.equal(
+  lesson24Cards.some((c) => c.tags.includes('授業_23_日清戦争')),
+  false,
+  'Lesson 24 must not contain Lesson 23 tagged questions'
+);
+
+// Verify # prefix tags on No.267-289 are normalized cleanly
+const card267 = parsed.cards[266];
+assert.equal(card267.number, 267);
+assert.equal(card267.tags.includes('分類_思想'), true);
+assert.equal(card267.tags.some((t) => t.startsWith('#')), false);
+assert.equal(parseTagMeta(card267.tags[0]).categoryKey, 'category');
 
 // Verify SM-2 forgetting curve scheduler
 const now = 1764000000000;
@@ -58,4 +82,4 @@ assert.equal(afterAgain.next.lapses, 1);
 assert.equal(evaluateTypedAnswer('幣原外交', '幣原外交（国際協調政策）').verdict, 'exact');
 assert.equal(evaluateTypedAnswer('主権国家体制', '主権国家体制').verdict, 'exact');
 
-console.log('All flashcard & SRS engine assertions passed (310/310 cards verified).');
+console.log('All flashcard & SRS engine assertions passed (289/289 cards verified, 0 duplicates).');

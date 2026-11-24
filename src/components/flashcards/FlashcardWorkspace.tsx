@@ -66,6 +66,117 @@ function downloadTextFile(filename: string, content: string, mimeType: string) {
   URL.revokeObjectURL(url);
 }
 
+const UNIT_23_NAME = '23. 日清戦争';
+const UNIT_24_NAME = '24. 日露戦争から韓国併合へ';
+const TAG_LESSON_23 = '授業_23_日清戦争';
+
+function deduplicateStoredTerm3Data(
+  scopes: ExamScope[],
+  cards: Flashcard[],
+  srsMap: SrsProgressMap
+): {
+  scopes: ExamScope[];
+  cards: Flashcard[];
+  srsMap: SrsProgressMap;
+  removedCount: number;
+} {
+  const lesson23ByKey = new Map<string, Flashcard>();
+  for (const card of cards) {
+    if (card.scopeId === TERM3_SCOPE_ID && card.unit === UNIT_23_NAME) {
+      lesson23ByKey.set(`${card.front}\u0000${card.back}`, card);
+    }
+  }
+
+  const dupToOriginal = new Map<string, Flashcard>();
+  for (const card of cards) {
+    if (
+      card.scopeId === TERM3_SCOPE_ID &&
+      card.unit === UNIT_24_NAME &&
+      card.tags.includes(TAG_LESSON_23)
+    ) {
+      const original = lesson23ByKey.get(`${card.front}\u0000${card.back}`);
+      if (original && original.id !== card.id) {
+        dupToOriginal.set(card.id, original);
+      }
+    }
+  }
+
+  const nextScopes = scopes.map((scope) =>
+    scope.id === TERM3_SCOPE_ID && scope.description.includes('全14単元・310問')
+      ? {
+          ...scope,
+          description: scope.description.replace(
+            '全14単元・310問',
+            `全14単元・${INITIAL_FLASHCARDS.length}問`
+          ),
+        }
+      : scope
+  );
+
+  if (dupToOriginal.size === 0) {
+    return { scopes: nextScopes, cards, srsMap, removedCount: 0 };
+  }
+
+  const starredOriginalIds = new Set<string>();
+  const nextSrsMap: SrsProgressMap = { ...srsMap };
+
+  for (const card of cards) {
+    const original = dupToOriginal.get(card.id);
+    if (!original) continue;
+
+    if (card.starred) {
+      starredOriginalIds.add(original.id);
+    }
+
+    const dupProgress = nextSrsMap[card.id];
+    if (dupProgress) {
+      const origProgress = nextSrsMap[original.id];
+      if (!origProgress || dupProgress.totalReviews > origProgress.totalReviews) {
+        nextSrsMap[original.id] = {
+          ...dupProgress,
+          cardId: original.id,
+        };
+      }
+      delete nextSrsMap[card.id];
+    }
+  }
+
+  let term3Seq = 1;
+  const nextCards: Flashcard[] = [];
+  for (const card of cards) {
+    if (dupToOriginal.has(card.id)) continue;
+    if (card.scopeId === TERM3_SCOPE_ID) {
+      nextCards.push({
+        ...card,
+        number: term3Seq++,
+        starred: card.starred || starredOriginalIds.has(card.id),
+      });
+    } else {
+      nextCards.push(card);
+    }
+  }
+
+  return {
+    scopes: nextScopes,
+    cards: nextCards,
+    srsMap: nextSrsMap,
+    removedCount: dupToOriginal.size,
+  };
+}
+
+function loadInitialFlashcardState() {
+  const savedScopes = loadFromStorage<ExamScope[] | null>(STORAGE_KEY_SCOPES, null);
+  const savedCards = loadFromStorage<Flashcard[] | null>(STORAGE_KEY_CARDS, null);
+  const savedSrs = loadFromStorage<SrsProgressMap>(STORAGE_KEY_SRS, {});
+
+  const baseScopes =
+    savedScopes && savedScopes.length > 0 ? savedScopes : INITIAL_EXAM_SCOPES;
+  const baseCards =
+    savedCards && savedCards.length > 0 ? savedCards : INITIAL_FLASHCARDS;
+
+  return deduplicateStoredTerm3Data(baseScopes, baseCards, savedSrs);
+}
+
 const DEFAULT_SESSION_CONFIG: StudySessionConfig = {
   scopeId: TERM3_SCOPE_ID,
   chapter: 'all',
@@ -81,19 +192,10 @@ const DEFAULT_SESSION_CONFIG: StudySessionConfig = {
 };
 
 export function FlashcardWorkspace() {
-  const [scopes, setScopes] = useState<ExamScope[]>(() => {
-    const saved = loadFromStorage<ExamScope[] | null>(STORAGE_KEY_SCOPES, null);
-    return saved && saved.length > 0 ? saved : INITIAL_EXAM_SCOPES;
-  });
-
-  const [cards, setCards] = useState<Flashcard[]>(() => {
-    const saved = loadFromStorage<Flashcard[] | null>(STORAGE_KEY_CARDS, null);
-    return saved && saved.length > 0 ? saved : INITIAL_FLASHCARDS;
-  });
-
-  const [srsMap, setSrsMap] = useState<SrsProgressMap>(() =>
-    loadFromStorage<SrsProgressMap>(STORAGE_KEY_SRS, {})
-  );
+  const [initialData] = useState(() => loadInitialFlashcardState());
+  const [scopes, setScopes] = useState<ExamScope[]>(initialData.scopes);
+  const [cards, setCards] = useState<Flashcard[]>(initialData.cards);
+  const [srsMap, setSrsMap] = useState<SrsProgressMap>(initialData.srsMap);
 
   const [dailyLogs, setDailyLogs] = useState<DailyStudyLogsMap>(() =>
     loadFromStorage<DailyStudyLogsMap>(STORAGE_KEY_LOGS, {})
@@ -101,14 +203,14 @@ export function FlashcardWorkspace() {
 
   const [subView, setSubView] = useState<FlashcardSubView>('hub');
   const [activeScopeId, setActiveScopeId] = useState<string>(
-    () => scopes[0]?.id ?? TERM3_SCOPE_ID
+    () => initialData.scopes[0]?.id ?? TERM3_SCOPE_ID
   );
 
   const [sessionConfig, setSessionConfig] = useState<StudySessionConfig>(
     DEFAULT_SESSION_CONFIG
   );
   const [sessionQueue, setSessionQueue] = useState<Flashcard[]>(() =>
-    buildStudyQueue(INITIAL_FLASHCARDS, {}, DEFAULT_SESSION_CONFIG)
+    buildStudyQueue(initialData.cards, initialData.srsMap, DEFAULT_SESSION_CONFIG)
   );
   const [isStudyMobileDockActive, setIsStudyMobileDockActive] = useState(false);
 
@@ -426,16 +528,27 @@ export function FlashcardWorkspace() {
 
   const handleRestoreBackup = useCallback(
     (backup: FlashcardBackupPayload) => {
+      const cleaned = deduplicateStoredTerm3Data(
+        backup.scopes && backup.scopes.length > 0 ? backup.scopes : scopes,
+        backup.cards,
+        backup.srsMap ?? srsMap
+      );
       if (backup.scopes && backup.scopes.length > 0) {
-        setScopes(backup.scopes);
-        setActiveScopeId(backup.scopes[0].id);
+        setScopes(cleaned.scopes);
+        setActiveScopeId(cleaned.scopes[0].id);
       }
-      setCards(backup.cards);
-      if (backup.srsMap) setSrsMap(backup.srsMap);
+      setCards(cleaned.cards);
+      if (backup.srsMap || cleaned.removedCount > 0) {
+        setSrsMap(cleaned.srsMap);
+      }
       if (backup.dailyLogs) setDailyLogs(backup.dailyLogs);
-      showToast(`バックアップから ${backup.cards.length} 問を復元しました。`);
+      showToast(
+        cleaned.removedCount > 0
+          ? `バックアップから ${cleaned.cards.length} 問を復元しました（重複 ${cleaned.removedCount} 問を自動除外）。`
+          : `バックアップから ${cleaned.cards.length} 問を復元しました。`
+      );
     },
-    [showToast]
+    [scopes, srsMap, showToast]
   );
 
   const handleCreateScope = useCallback(
@@ -513,7 +626,12 @@ export function FlashcardWorkspace() {
     const freshTerm3 = buildInitialTerm3Flashcards();
     setScopes((prev) => {
       const hasTerm3 = prev.some((s) => s.id === TERM3_SCOPE_ID);
-      return hasTerm3 ? prev : [INITIAL_EXAM_SCOPES[0], ...prev];
+      if (!hasTerm3) return [INITIAL_EXAM_SCOPES[0], ...prev];
+      return prev.map((s) =>
+        s.id === TERM3_SCOPE_ID
+          ? { ...s, description: INITIAL_EXAM_SCOPES[0].description }
+          : s
+      );
     });
     setCards((prev) => {
       const nonTerm3 = prev.filter((c) => c.scopeId !== TERM3_SCOPE_ID);

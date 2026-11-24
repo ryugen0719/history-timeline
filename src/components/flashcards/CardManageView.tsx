@@ -18,6 +18,7 @@ import {
   Trash2,
   Upload,
 } from 'lucide-react';
+import { INITIAL_FLASHCARDS } from '../../data/initialFlashcards';
 import type {
   ExamScope,
   Flashcard,
@@ -554,7 +555,9 @@ export function CardManageView({
             </div>
 
             <div className="pt-3 border-t border-[#F4F0E8] flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-[#78716C]">
-              <span>第3回定期考査（初期310問）を初期状態に戻す</span>
+              <span>
+                第3回定期考査（初期{INITIAL_FLASHCARDS.length}問）を初期状態に戻す
+              </span>
               {confirmRestore ? (
                 <div className="flex items-center gap-2 shrink-0">
                   <button
@@ -565,7 +568,7 @@ export function CardManageView({
                     }}
                     className="min-h-[38px] px-3.5 text-xs font-medium text-white bg-[#9A3412] rounded-lg whitespace-nowrap"
                   >
-                    310問を復元実行
+                    {INITIAL_FLASHCARDS.length}問を復元実行
                   </button>
                   <button
                     type="button"
@@ -581,7 +584,7 @@ export function CardManageView({
                   onClick={() => setConfirmRestore(true)}
                   className="text-left sm:text-right text-xs text-[#57534E] hover:text-[#9A3412] underline whitespace-nowrap"
                 >
-                  初期310問を再復元
+                  初期{INITIAL_FLASHCARDS.length}問を再復元
                 </button>
               )}
             </div>

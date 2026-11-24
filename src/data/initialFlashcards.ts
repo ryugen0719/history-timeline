@@ -9,7 +9,7 @@ export const INITIAL_EXAM_SCOPES: ExamScope[] = [
     id: TERM3_SCOPE_ID,
     name: '第3回定期考査範囲',
     description:
-      '歴史総合：第3章（20〜21）・第4章（22〜25）・第5章（26〜33）の全14単元・310問',
+      '歴史総合：第3章（20〜21）・第4章（22〜25）・第5章（26〜33）の全14単元・289問',
     createdAt: 1763960000000,
   },
 ];
