@@ -3,8 +3,7 @@ import {
   BarChart3,
   BookOpen,
   Check,
-  LayoutGrid,
-  ListChecks,
+  SlidersHorizontal,
 } from 'lucide-react';
 import {
   buildInitialTerm3Flashcards,
@@ -128,7 +127,7 @@ export function FlashcardWorkspace() {
 
   useEffect(() => {
     if (!toastMessage) return;
-    const timer = window.setTimeout(() => setToastMessage(null), 3200);
+    const timer = window.setTimeout(() => setToastMessage(null), 3000);
     return () => window.clearTimeout(timer);
   }, [toastMessage]);
 
@@ -251,26 +250,6 @@ export function FlashcardWorkspace() {
     [cards, srsMap]
   );
 
-  const handleOpenStudyTabDirectly = () => {
-    if (sessionQueue.length === 0) {
-      const hasDue = totalDueInActiveScope > 0;
-      const scopeName =
-        activeScopeId === 'all'
-          ? 'すべての考査範囲'
-          : scopes.find((s) => s.id === activeScopeId)?.name ?? '選択範囲';
-      handleLaunchSession({
-        ...DEFAULT_SESSION_CONFIG,
-        scopeId: activeScopeId,
-        filterPreset: hasDue ? 'due' : 'all',
-        orderMode: hasDue ? 'srs' : 'unit',
-        label: hasDue ? `${scopeName} · 今日の復習` : scopeName,
-      });
-    } else {
-      setSubView('study');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  };
-
   const handleRateCard = useCallback(
     (cardId: string, rating: SrsRating, recordToSrs: boolean) => {
       const previous = getSrsProgress(srsMap, cardId);
@@ -353,7 +332,7 @@ export function FlashcardWorkspace() {
         delete next[cardId];
         return next;
       });
-      showToast('カードの学習履歴を未学習にリセットしました。');
+      showToast('カードの学習履歴をリセットしました。');
     },
     [showToast]
   );
@@ -409,7 +388,7 @@ export function FlashcardWorkspace() {
           updatedAt: now,
         };
         setCards((prev) => [...prev, newCard]);
-        showToast(`新しい問題（No.${payload.number}）を追加しました。`);
+        showToast(`問題 No.${payload.number} を追加しました。`);
       }
     },
     [showToast]
@@ -438,8 +417,8 @@ export function FlashcardWorkspace() {
       setCards((prev) => [...prev, ...payload.cards]);
       showToast(
         payload.newScope
-          ? `「${payload.newScope.name}」を作成し、${payload.cards.length}問を追加しました。`
-          : `${payload.cards.length}問を一括追加しました。`
+          ? `「${payload.newScope.name}」に ${payload.cards.length} 問を追加しました。`
+          : `${payload.cards.length} 問を一括追加しました。`
       );
     },
     [showToast]
@@ -454,7 +433,7 @@ export function FlashcardWorkspace() {
       setCards(backup.cards);
       if (backup.srsMap) setSrsMap(backup.srsMap);
       if (backup.dailyLogs) setDailyLogs(backup.dailyLogs);
-      showToast(`バックアップから ${backup.cards.length} 問と学習履歴を復元しました。`);
+      showToast(`バックアップから ${backup.cards.length} 問を復元しました。`);
     },
     [showToast]
   );
@@ -495,7 +474,7 @@ export function FlashcardWorkspace() {
         return next;
       });
       setCards((prev) => prev.filter((c) => c.scopeId !== id));
-      showToast('考査範囲と含まれる問題を削除しました。');
+      showToast('考査範囲を削除しました。');
     },
     [activeScopeId, showToast]
   );
@@ -508,7 +487,7 @@ export function FlashcardWorkspace() {
         csv,
         'text/csv;charset=utf-8'
       );
-      showToast(`${cardsToExport.length}問をCSV形式で書き出しました。`);
+      showToast(`${cardsToExport.length} 問をCSV書き出ししました。`);
     },
     [showToast]
   );
@@ -527,7 +506,7 @@ export function FlashcardWorkspace() {
       JSON.stringify(payload, null, 2),
       'application/json'
     );
-    showToast('問題データと忘却曲線履歴をJSONバックアップ保存しました。');
+    showToast('バックアップをJSON保存しました。');
   }, [scopes, cards, srsMap, dailyLogs, showToast]);
 
   const handleRestoreInitialTerm3 = useCallback(() => {
@@ -541,92 +520,85 @@ export function FlashcardWorkspace() {
       return [...freshTerm3, ...nonTerm3];
     });
     setActiveScopeId(TERM3_SCOPE_ID);
-    showToast(`第3回定期考査範囲（全${freshTerm3.length}問）を初期状態に復元しました。`);
+    showToast(`第3回定期考査（全${freshTerm3.length}問）を復元しました。`);
   }, [showToast]);
 
-  const showMobileBottomNav = !isStudyMobileDockActive;
+  const isInStudyFocus = subView === 'study';
+  const showMobileBottomNav = !isInStudyFocus && !isStudyMobileDockActive;
 
   return (
     <div
-      className={`space-y-5 md:space-y-6 ${
-        isStudyMobileDockActive ? 'pb-40 md:pb-0' : 'pb-20 md:pb-0'
+      className={`space-y-6 ${
+        isStudyMobileDockActive
+          ? 'pb-36 md:pb-0'
+          : showMobileBottomNav
+            ? 'pb-20 md:pb-0'
+            : 'pb-8 md:pb-0'
       }`}
     >
-      {/* Desktop sub-navigation bar (hidden on mobile where bottom thumb bar takes over) */}
-      <div className="hidden md:flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-[#E6E0D6]">
-        <nav
-          aria-label="一問一答ページ内ナビゲーション"
-          className="flex items-center gap-1 p-1 bg-[#F4F0E8] rounded-lg"
-        >
-          <button
-            type="button"
-            onClick={() => setSubView('hub')}
-            className={`inline-flex items-center gap-1.5 px-3.5 py-2 text-sm font-medium rounded-md transition-colors whitespace-nowrap shrink-0 ${
-              subView === 'hub'
-                ? 'bg-white text-[#1C1917] shadow-xs'
-                : 'text-[#57534E] hover:text-[#1C1917]'
-            }`}
+      {/* Clean 3-Pillar Desktop Navigation (hidden during distraction-free study stage) */}
+      {!isInStudyFocus && (
+        <div className="hidden md:flex items-center justify-between gap-4 pb-3 border-b border-[#E6E0D6]">
+          <nav
+            aria-label="一問一答セクション切替"
+            className="flex items-center gap-1 p-1 bg-[#F4F0E8] rounded-lg"
           >
-            <LayoutGrid className="w-4 h-4" aria-hidden="true" />
-            学習ハブ・タグ別
-          </button>
+            <button
+              type="button"
+              onClick={() => setSubView('hub')}
+              className={`inline-flex items-center gap-1.5 px-4 py-1.5 text-sm font-medium rounded-md transition-colors whitespace-nowrap shrink-0 ${
+                subView === 'hub'
+                  ? 'bg-white text-[#1C1917] shadow-xs'
+                  : 'text-[#57534E] hover:text-[#1C1917]'
+              }`}
+            >
+              <BookOpen className="w-4 h-4" aria-hidden="true" />
+              学習
+              {totalDueInActiveScope > 0 && (
+                <span className="font-mono text-xs tabular-nums text-[#9A3412] ml-0.5">
+                  {totalDueInActiveScope}
+                </span>
+              )}
+            </button>
 
-          <button
-            type="button"
-            onClick={handleOpenStudyTabDirectly}
-            className={`inline-flex items-center gap-1.5 px-3.5 py-2 text-sm font-medium rounded-md transition-colors whitespace-nowrap shrink-0 ${
-              subView === 'study'
-                ? 'bg-white text-[#1C1917] shadow-xs'
-                : 'text-[#57534E] hover:text-[#1C1917]'
-            }`}
-          >
-            <BookOpen className="w-4 h-4" aria-hidden="true" />
-            演習ステージ
-            {totalDueInActiveScope > 0 && (
-              <span className="font-mono text-[11px] tabular-nums text-[#9A3412] font-semibold">
-                ({totalDueInActiveScope})
-              </span>
-            )}
-          </button>
+            <button
+              type="button"
+              onClick={() => setSubView('analytics')}
+              className={`inline-flex items-center gap-1.5 px-4 py-1.5 text-sm font-medium rounded-md transition-colors whitespace-nowrap shrink-0 ${
+                subView === 'analytics'
+                  ? 'bg-white text-[#1C1917] shadow-xs'
+                  : 'text-[#57534E] hover:text-[#1C1917]'
+              }`}
+            >
+              <BarChart3 className="w-4 h-4" aria-hidden="true" />
+              記録・忘却曲線
+            </button>
 
-          <button
-            type="button"
-            onClick={() => setSubView('analytics')}
-            className={`inline-flex items-center gap-1.5 px-3.5 py-2 text-sm font-medium rounded-md transition-colors whitespace-nowrap shrink-0 ${
-              subView === 'analytics'
-                ? 'bg-white text-[#1C1917] shadow-xs'
-                : 'text-[#57534E] hover:text-[#1C1917]'
-            }`}
-          >
-            <BarChart3 className="w-4 h-4" aria-hidden="true" />
-            忘却曲線・統計
-          </button>
+            <button
+              type="button"
+              onClick={() => setSubView('manage')}
+              className={`inline-flex items-center gap-1.5 px-4 py-1.5 text-sm font-medium rounded-md transition-colors whitespace-nowrap shrink-0 ${
+                subView === 'manage'
+                  ? 'bg-white text-[#1C1917] shadow-xs'
+                  : 'text-[#57534E] hover:text-[#1C1917]'
+              }`}
+            >
+              <SlidersHorizontal className="w-4 h-4" aria-hidden="true" />
+              問題管理
+            </button>
+          </nav>
 
-          <button
-            type="button"
-            onClick={() => setSubView('manage')}
-            className={`inline-flex items-center gap-1.5 px-3.5 py-2 text-sm font-medium rounded-md transition-colors whitespace-nowrap shrink-0 ${
-              subView === 'manage'
-                ? 'bg-white text-[#1C1917] shadow-xs'
-                : 'text-[#57534E] hover:text-[#1C1917]'
-            }`}
-          >
-            <ListChecks className="w-4 h-4" aria-hidden="true" />
-            問題一覧・追加
-          </button>
-        </nav>
-
-        {/* Desktop quiet status toast */}
-        {toastMessage && (
-          <div
-            role="status"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-[#166534] bg-[#F0FDF4] border border-[#BBF7D0] rounded-md"
-          >
-            <Check className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
-            <span>{toastMessage}</span>
-          </div>
-        )}
-      </div>
+          {toastMessage && (
+            <div
+              role="status"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-[#166534] bg-[#F0FDF4] border border-[#BBF7D0] rounded-md"
+            >
+              <Check className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+              <span>{toastMessage}</span>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Mobile floating toast */}
       {toastMessage && (
@@ -639,23 +611,17 @@ export function FlashcardWorkspace() {
         </div>
       )}
 
-      {/* Active Sub-View */}
+      {/* Active View */}
       {subView === 'hub' && (
         <FlashcardHubView
           scopes={scopes}
           cards={cards}
           srsMap={srsMap}
           activeScopeId={activeScopeId}
-          streakDays={streakDays}
           todayReviews={todayReviews}
           onChangeScopeId={setActiveScopeId}
           onLaunchSession={handleLaunchSession}
-          onOpenAddCard={() => {
-            setEditingCard(null);
-            setIsCardEditorOpen(true);
-          }}
-          onOpenBulkImport={() => setIsBulkImportOpen(true)}
-          onOpenScopeManager={() => setIsScopeManagerOpen(true)}
+          onGoToManage={() => setSubView('manage')}
         />
       )}
 
@@ -713,19 +679,20 @@ export function FlashcardWorkspace() {
           onToggleSuspend={handleToggleSuspend}
           onResetCardSrs={handleResetCardSrs}
           onOpenBulkImport={() => setIsBulkImportOpen(true)}
+          onOpenScopeManager={() => setIsScopeManagerOpen(true)}
           onExportCsv={handleExportCsv}
           onExportBackupJson={handleExportBackupJson}
           onRestoreInitialTerm3={handleRestoreInitialTerm3}
         />
       )}
 
-      {/* Mobile Fixed Thumb-Zone Bottom Navigation Bar (hidden during active flip/typing dock) */}
+      {/* Clean 3-Tab Mobile Bottom Navigation Bar */}
       {showMobileBottomNav && (
         <nav
           aria-label="一問一答モバイルナビゲーション"
           className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-[#FBF9F5]/95 backdrop-blur-md border-t border-[#E6E0D6] pb-safe"
         >
-          <div className="grid grid-cols-4 h-15">
+          <div className="grid grid-cols-3 h-15">
             <button
               type="button"
               onClick={() => {
@@ -737,21 +704,9 @@ export function FlashcardWorkspace() {
                 subView === 'hub' ? 'text-[#9A3412]' : 'text-[#57534E]'
               }`}
             >
-              <LayoutGrid className="w-5 h-5" aria-hidden="true" />
-              <span className="text-[11px] font-medium whitespace-nowrap">ハブ</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={handleOpenStudyTabDirectly}
-              aria-current={subView === 'study' ? 'page' : undefined}
-              className={`relative flex flex-col items-center justify-center gap-0.5 transition-colors ${
-                subView === 'study' ? 'text-[#9A3412]' : 'text-[#57534E]'
-              }`}
-            >
               <BookOpen className="w-5 h-5" aria-hidden="true" />
               <span className="text-[11px] font-medium whitespace-nowrap">
-                演習{totalDueInActiveScope > 0 ? `(${totalDueInActiveScope})` : ''}
+                学習{totalDueInActiveScope > 0 ? ` (${totalDueInActiveScope})` : ''}
               </span>
             </button>
 
@@ -767,7 +722,7 @@ export function FlashcardWorkspace() {
               }`}
             >
               <BarChart3 className="w-5 h-5" aria-hidden="true" />
-              <span className="text-[11px] font-medium whitespace-nowrap">忘却曲線</span>
+              <span className="text-[11px] font-medium whitespace-nowrap">記録</span>
             </button>
 
             <button
@@ -781,8 +736,8 @@ export function FlashcardWorkspace() {
                 subView === 'manage' ? 'text-[#9A3412]' : 'text-[#57534E]'
               }`}
             >
-              <ListChecks className="w-5 h-5" aria-hidden="true" />
-              <span className="text-[11px] font-medium whitespace-nowrap">一覧・追加</span>
+              <SlidersHorizontal className="w-5 h-5" aria-hidden="true" />
+              <span className="text-[11px] font-medium whitespace-nowrap">管理</span>
             </button>
           </div>
         </nav>

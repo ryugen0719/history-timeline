@@ -585,13 +585,16 @@ export default function App() {
       {/* Mobile slide-over detail drawer for Timeline view */}
       {isMobileDetailOpen && selectedEvent && activeView === 'timeline' && (
         <div
-          className="fixed inset-0 z-40 lg:hidden bg-[#1C1917]/40 flex items-end sm:items-center justify-center p-0 sm:p-4"
+          className="fixed inset-0 z-40 lg:hidden bg-[#1C1917]/45 backdrop-blur-[2px] flex items-end sm:items-center justify-center p-0 sm:p-4"
           role="presentation"
           onClick={(e) => {
             if (e.target === e.currentTarget) setIsMobileDetailOpen(false);
           }}
         >
-          <div className="w-full sm:max-w-lg max-h-[85vh] overflow-y-auto archival-scroll rounded-t-xl sm:rounded-lg shadow-xl">
+          <div className="w-full sm:max-w-lg max-h-[88dvh] overflow-y-auto archival-scroll rounded-t-2xl sm:rounded-xl shadow-2xl bg-white pb-safe">
+            <div className="sm:hidden flex justify-center pt-2.5 pb-1 bg-white">
+              <div className="w-10 h-1 bg-[#D6CEBE] rounded-full" />
+            </div>
             <EventDetailPanel
               event={selectedEvent}
               allEvents={database.events}
@@ -620,7 +623,7 @@ export default function App() {
       {/* Slide-over detail drawer for Full-Width Places view */}
       {isPlacesDetailOpen && selectedEvent && activeView === 'places' && (
         <div
-          className="fixed inset-0 z-40 bg-[#1C1917]/35 flex justify-end items-end sm:items-stretch"
+          className="fixed inset-0 z-40 bg-[#1C1917]/40 backdrop-blur-[2px] flex justify-end items-end sm:items-stretch"
           role="dialog"
           aria-modal="true"
           aria-label="出来事の詳細"
@@ -628,7 +631,10 @@ export default function App() {
             if (e.target === e.currentTarget) setIsPlacesDetailOpen(false);
           }}
         >
-          <div className="w-full sm:max-w-[440px] max-h-[88vh] sm:max-h-screen sm:h-full bg-[#FBF9F5] border-l border-[#E6E0D6] shadow-2xl overflow-y-auto archival-scroll p-3 sm:p-4 rounded-t-xl sm:rounded-none">
+          <div className="w-full sm:max-w-[440px] max-h-[88dvh] sm:max-h-screen sm:h-full bg-[#FBF9F5] border-l border-[#E6E0D6] shadow-2xl overflow-y-auto archival-scroll p-3 sm:p-4 rounded-t-2xl sm:rounded-none pb-safe">
+            <div className="sm:hidden flex justify-center pb-2">
+              <div className="w-10 h-1 bg-[#D6CEBE] rounded-full" />
+            </div>
             <EventDetailPanel
               event={selectedEvent}
               allEvents={database.events}

@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Play } from 'lucide-react';
+import { ChevronDown, ChevronRight, Play } from 'lucide-react';
 import type {
   DailyStudyLogsMap,
   ExamScope,
@@ -39,11 +39,11 @@ function EbbinghausCurveChart({
   reviewCountStage: 1 | 2 | 3;
 }) {
   const width = 620;
-  const height = 220;
+  const height = 210;
   const padL = 44;
   const padR = 18;
   const padT = 18;
-  const padB = 34;
+  const padB = 30;
   const plotW = width - padL - padR;
   const plotH = height - padT - padB;
   const maxDays = 30;
@@ -51,7 +51,6 @@ function EbbinghausCurveChart({
   const toX = (day: number) => padL + (plotW * day) / maxDays;
   const toY = (pct: number) => padT + plotH * (1 - pct / 100);
 
-  // Unreviewed Ebbinghaus decay curve (rapid forgetting: S ≈ 2.2 days)
   const unreviewedPoints = useMemo(() => {
     const pts: string[] = [];
     for (let d = 0; d <= maxDays; d += 0.5) {
@@ -61,18 +60,15 @@ function EbbinghausCurveChart({
     return pts.join(' ');
   }, []);
 
-  // Spaced Repetition reinforced curves (review at Day 1, Day 4, Day 12)
   const srsSegments = useMemo(() => {
     const segs: Array<{ points: string; reviewDay?: number }> = [];
 
-    // Segment 0: Day 0 -> Day 1 (S = 2.2)
     const s0: string[] = [];
     for (let d = 0; d <= 1; d += 0.2) {
       s0.push(`${toX(d).toFixed(1)},${toY(100 * Math.exp(-d / 2.2)).toFixed(1)}`);
     }
     segs.push({ points: s0.join(' ') });
 
-    // Segment 1: Day 1 -> Day 4 (or 30 if stage=1) with S = 8
     const end1 = reviewCountStage >= 2 ? 4 : maxDays;
     const s1: string[] = [];
     for (let d = 1; d <= end1; d += 0.25) {
@@ -105,10 +101,9 @@ function EbbinghausCurveChart({
       viewBox={`0 0 ${width} ${height}`}
       className="w-full h-auto"
       role="img"
-      aria-label="エビングハウスの忘却曲線と間隔反復による記憶保持率の推移グラフ"
+      aria-label="エビングハウスの忘却曲線と間隔反復による記憶保持率"
     >
-      {/* Y-axis gridlines */}
-      {[100, 80, 60, 40, 20, 0].map((pct) => {
+      {[100, 80, 50, 0].map((pct) => {
         const y = toY(pct);
         return (
           <g key={pct}>
@@ -135,18 +130,6 @@ function EbbinghausCurveChart({
         );
       })}
 
-      {/* Optimal 85% review threshold reference */}
-      <text
-        x={width - padR - 4}
-        y={toY(80) - 5}
-        textAnchor="end"
-        fontSize="9"
-        fill="#78716C"
-      >
-        復習推奨ライン（約80%）
-      </text>
-
-      {/* Unreviewed decay curve */}
       <polyline
         fill="none"
         stroke="#A8A29E"
@@ -155,21 +138,8 @@ function EbbinghausCurveChart({
         points={unreviewedPoints}
       />
 
-      {/* SRS reinforced curves */}
       {srsSegments.map((seg, idx) => (
         <g key={idx}>
-          {seg.reviewDay !== undefined && (
-            <line
-              x1={toX(seg.reviewDay)}
-              y1={toY(100)}
-              x2={toX(seg.reviewDay)}
-              y2={toY(0)}
-              stroke="#9A3412"
-              strokeOpacity="0.2"
-              strokeWidth="1"
-              strokeDasharray="2 2"
-            />
-          )}
           <polyline
             fill="none"
             stroke="#9A3412"
@@ -180,7 +150,7 @@ function EbbinghausCurveChart({
             <circle
               cx={toX(seg.reviewDay)}
               cy={toY(100)}
-              r="4"
+              r="3.5"
               fill="#9A3412"
               stroke="#FFFFFF"
               strokeWidth="1.5"
@@ -189,7 +159,6 @@ function EbbinghausCurveChart({
         </g>
       ))}
 
-      {/* User's current average retention horizontal marker */}
       {avgRetention !== null && (
         <g>
           <line
@@ -208,17 +177,16 @@ function EbbinghausCurveChart({
             fill="#15803D"
             fontWeight="600"
           >
-            現在の平均記憶保持率: {avgRetention}%
+            現在の平均保持率: {avgRetention}%
           </text>
         </g>
       )}
 
-      {/* X-axis ticks */}
-      {[0, 1, 4, 7, 12, 20, 30].map((d) => (
+      {[0, 1, 4, 12, 30].map((d) => (
         <text
           key={d}
           x={toX(d)}
-          y={height - 10}
+          y={height - 8}
           textAnchor="middle"
           fontSize="10"
           fill="#78716C"
@@ -241,6 +209,9 @@ export function ForgettingCurveAnalyticsView({
   onLaunchSession,
 }: ForgettingCurveAnalyticsViewProps) {
   const [curveStage, setCurveStage] = useState<1 | 2 | 3>(3);
+  const [showUnitsDetail, setShowUnitsDetail] = useState(false);
+  const [showCurveModel, setShowCurveModel] = useState(false);
+
   const nowMs = Date.now();
 
   const scopeCards = useMemo(
@@ -257,7 +228,6 @@ export function ForgettingCurveAnalyticsView({
     let review = 0;
     let mastered = 0;
     let due = 0;
-    let weak = 0;
     let retSum = 0;
     let retCount = 0;
 
@@ -280,7 +250,6 @@ export function ForgettingCurveAnalyticsView({
         }
       }
       if (isCardDue(p, nowMs)) due += 1;
-      if (isCardWeak(p, nowMs)) weak += 1;
     }
 
     return {
@@ -290,7 +259,6 @@ export function ForgettingCurveAnalyticsView({
       review,
       mastered,
       due,
-      weak,
       avgRetention: retCount > 0 ? Math.round(retSum / retCount) : null,
     };
   }, [scopeCards, srsMap, nowMs]);
@@ -299,7 +267,6 @@ export function ForgettingCurveAnalyticsView({
     () => build14DayForecast(scopeCards, srsMap, nowMs),
     [scopeCards, srsMap, nowMs]
   );
-
   const maxForecast = Math.max(1, ...forecast.map((f) => f.dueCount));
 
   const recent7Days = useMemo(() => {
@@ -314,17 +281,19 @@ export function ForgettingCurveAnalyticsView({
         key,
         label: i === 0 ? '今日' : `${d.getMonth() + 1}/${d.getDate()}`,
         reviews: log?.reviews ?? 0,
-        correct: log?.correct ?? 0,
       });
     }
     return items;
   }, [dailyLogs, nowMs]);
-
   const maxDailyReviews = Math.max(1, ...recent7Days.map((d) => d.reviews));
 
   const chapterGroups = useMemo(
     () => buildChapterHierarchy(scopeCards, srsMap, nowMs),
     [scopeCards, srsMap, nowMs]
+  );
+  const allUnits = useMemo(
+    () => chapterGroups.flatMap((ch) => ch.units),
+    [chapterGroups]
   );
 
   const weakTags = useMemo(() => {
@@ -337,10 +306,9 @@ export function ForgettingCurveAnalyticsView({
       .filter((t) => t.weak > 0 || (t.avgRetention !== null && t.avgRetention < 85))
       .sort(
         (a, b) =>
-          b.weak - a.weak ||
-          (a.avgRetention ?? 100) - (b.avgRetention ?? 100)
+          b.weak - a.weak || (a.avgRetention ?? 100) - (b.avgRetention ?? 100)
       )
-      .slice(0, 8);
+      .slice(0, 6);
   }, [scopeCards, srsMap, nowMs]);
 
   const activeScopeName =
@@ -349,184 +317,110 @@ export function ForgettingCurveAnalyticsView({
       : scopes.find((s) => s.id === activeScopeId)?.name ?? '選択中';
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 pb-4 border-b border-[#E6E0D6]">
-        <div>
-          <h2 className="text-xl sm:text-2xl font-serif font-bold text-[#1C1917]">
-            忘却曲線と記憶定着レポート
-          </h2>
-          <p className="text-xs sm:text-sm text-[#57534E] mt-1">
-            対象：{activeScopeName}（全 {maturity.total} 問） · 連続学習 {streakDays} 日
-          </p>
-        </div>
-        {maturity.due > 0 && (
-          <button
-            type="button"
-            onClick={() =>
-              onLaunchSession({
-                scopeId: activeScopeId,
-                chapter: 'all',
-                unit: 'all',
-                selectedTags: [],
-                tagMatchMode: 'and',
-                filterPreset: 'due',
-                orderMode: 'srs',
-                swapFrontBack: false,
-                recordToSrs: true,
-                mode: 'flip',
-                label: '今日の忘却曲線復習',
-              })
-            }
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 min-h-[44px] sm:min-h-[36px] px-4 py-2 text-xs font-medium text-[#FBF9F5] bg-[#9A3412] hover:bg-[#7C2D12] rounded-xl sm:rounded-md transition-colors whitespace-nowrap shrink-0"
-          >
-            <Play className="w-3.5 h-3.5" aria-hidden="true" />
-            今日の復習待ち（{maturity.due}問）を開始
-          </button>
-        )}
-      </div>
-
-      {/* Top Row: Ebbinghaus Forgetting Curve + Maturity Distribution */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-6 items-stretch">
-        <section className="lg:col-span-8 bg-white border border-[#E6E0D6] rounded-2xl sm:rounded-lg p-4 sm:p-5 space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div>
-              <h3 className="text-base font-serif font-bold text-[#1C1917]">
-                エビングハウス忘却曲線と間隔反復（SRS）の効果
-              </h3>
-              <p className="text-xs text-[#78716C] mt-0.5">
-                実線（朱色）：復習による記憶強化 · 破線（灰色）：復習しなかった場合の減衰
-              </p>
-            </div>
-            <div
-              role="group"
-              aria-label="復習回数のシミュレーション"
-              className="grid grid-cols-3 sm:flex items-center gap-1 p-1 sm:p-0.5 bg-[#F4F0E8] rounded-lg sm:rounded-md"
-            >
-              {([1, 2, 3] as const).map((stage) => (
-                <button
-                  key={stage}
-                  type="button"
-                  onClick={() => setCurveStage(stage)}
-                  className={`min-h-[38px] sm:min-h-[28px] px-2.5 py-1 text-xs font-medium rounded-md sm:rounded transition-colors whitespace-nowrap ${
-                    curveStage === stage
-                      ? 'bg-white text-[#1C1917] shadow-xs'
-                      : 'text-[#57534E] hover:text-[#1C1917]'
-                  }`}
-                >
-                  復習{stage}回
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <EbbinghausCurveChart
-            avgRetention={maturity.avgRetention}
-            reviewCountStage={curveStage}
-          />
-        </section>
-
-        <section className="lg:col-span-4 bg-white border border-[#E6E0D6] rounded-2xl sm:rounded-lg p-4 sm:p-5 flex flex-col justify-between gap-4">
-          <div className="space-y-3">
-            <h3 className="text-base font-serif font-bold text-[#1C1917]">
-              記憶定着ステージ内訳
-            </h3>
-
-            {/* Stacked distribution bar */}
-            <div className="h-3 w-full bg-[#F4F0E8] rounded-full overflow-hidden flex">
-              {maturity.total > 0 && (
-                <>
-                  <div
-                    className="bg-[#15803D] h-full"
-                    style={{ width: `${(maturity.mastered / maturity.total) * 100}%` }}
-                    title={`長期定着: ${maturity.mastered}`}
-                  />
-                  <div
-                    className="bg-[#1D4ED8] h-full"
-                    style={{ width: `${(maturity.review / maturity.total) * 100}%` }}
-                    title={`定着中: ${maturity.review}`}
-                  />
-                  <div
-                    className="bg-[#D97706] h-full"
-                    style={{ width: `${(maturity.learning / maturity.total) * 100}%` }}
-                    title={`学習中: ${maturity.learning}`}
-                  />
-                </>
-              )}
-            </div>
-
-            <div className="space-y-2.5 pt-2 text-xs">
-              <div className="flex items-center justify-between">
-                <span className="text-[#166534] font-medium">長期定着（間隔14日以上）</span>
-                <span className="font-mono tabular-nums text-[#1C1917] font-semibold">
-                  {maturity.mastered} 問
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-[#1E40AF] font-medium">定着中（間隔1〜13日）</span>
-                <span className="font-mono tabular-nums text-[#1C1917] font-semibold">
-                  {maturity.review} 問
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-[#92400E] font-medium">学習中・再学習</span>
-                <span className="font-mono tabular-nums text-[#1C1917] font-semibold">
-                  {maturity.learning} 問
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-[#78716C]">未学習（新規）</span>
-                <span className="font-mono tabular-nums text-[#57534E]">
-                  {maturity.newCount} 問
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Past 7 Days Activity Mini Bar */}
-          <div className="pt-4 border-t border-[#E6E0D6] space-y-2">
-            <div className="text-xs font-medium text-[#57534E]">直近7日間の学習回数</div>
-            <div className="grid grid-cols-7 gap-1.5 items-end h-20 pt-2">
-              {recent7Days.map((d) => {
-                const heightPct = Math.round((d.reviews / maxDailyReviews) * 100);
-                return (
-                  <div key={d.key} className="flex flex-col items-center gap-1 h-full justify-end">
-                    <span className="text-[10px] font-mono tabular-nums text-[#78716C]">
-                      {d.reviews > 0 ? d.reviews : ''}
-                    </span>
-                    <div className="w-full bg-[#F4F0E8] rounded-xs h-12 flex items-end overflow-hidden">
-                      <div
-                        className="w-full bg-[#1C1917] rounded-xs transition-all"
-                        style={{ height: `${d.reviews > 0 ? Math.max(12, heightPct) : 0}%` }}
-                      />
-                    </div>
-                    <span className="text-[10px] text-[#78716C] font-mono">{d.label}</span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </section>
-      </div>
-
-      {/* 14-Day Scheduled Review Forecast (horizontally scrollable on narrow mobile screens) */}
-      <section className="bg-white border border-[#E6E0D6] rounded-2xl sm:rounded-lg p-4 sm:p-5 space-y-4">
-        <div className="flex items-center justify-between gap-2">
+    <div className="max-w-4xl mx-auto space-y-5">
+      {/* TIER 1: Actionable Summary */}
+      <section className="bg-white border border-[#E6E0D6] rounded-2xl sm:rounded-xl p-5 sm:p-6 space-y-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h3 className="text-base font-serif font-bold text-[#1C1917]">
-              今後14日間の復習予定スケジュール
-            </h3>
-            <p className="text-xs text-[#78716C]">
-              各日に忘却曲線上の復習期限を迎える問題数の予測
+            <h2 className="text-lg sm:text-xl font-serif font-bold text-[#1C1917]">
+              記憶定着・復習スケジュール
+            </h2>
+            <p className="text-xs text-[#78716C] mt-0.5">
+              {activeScopeName}（全 {maturity.total} 問）
             </p>
           </div>
-          <span className="text-xs font-mono tabular-nums text-[#57534E] shrink-0">
+          {maturity.due > 0 && (
+            <button
+              type="button"
+              onClick={() =>
+                onLaunchSession({
+                  scopeId: activeScopeId,
+                  chapter: 'all',
+                  unit: 'all',
+                  selectedTags: [],
+                  tagMatchMode: 'and',
+                  filterPreset: 'due',
+                  orderMode: 'srs',
+                  swapFrontBack: false,
+                  recordToSrs: true,
+                  mode: 'flip',
+                  label: '今日の復習',
+                })
+              }
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 min-h-[44px] sm:min-h-[38px] px-4 text-xs font-semibold text-[#FBF9F5] bg-[#9A3412] hover:bg-[#7C2D12] rounded-xl sm:rounded-lg transition-colors whitespace-nowrap shrink-0"
+            >
+              <Play className="w-3.5 h-3.5 fill-current" aria-hidden="true" />
+              今日の復習を開始（{maturity.due}問）
+            </button>
+          )}
+        </div>
+
+        {/* 3 Clean Key Metrics */}
+        <div className="grid grid-cols-3 gap-3 pt-4 border-t border-[#F4F0E8]">
+          <div>
+            <div className="text-[11px] sm:text-xs text-[#78716C]">平均記憶保持</div>
+            <div className="text-xl sm:text-2xl font-mono font-semibold tabular-nums text-[#15803D] mt-0.5">
+              {maturity.avgRetention !== null ? `${maturity.avgRetention}%` : '—'}
+            </div>
+          </div>
+          <div>
+            <div className="text-[11px] sm:text-xs text-[#78716C]">長期定着</div>
+            <div className="text-xl sm:text-2xl font-mono font-semibold tabular-nums text-[#1C1917] mt-0.5">
+              {maturity.mastered}
+              <span className="text-xs font-normal text-[#78716C]">/{maturity.total}</span>
+            </div>
+          </div>
+          <div>
+            <div className="text-[11px] sm:text-xs text-[#78716C]">連続学習</div>
+            <div className="text-xl sm:text-2xl font-mono font-semibold tabular-nums text-[#1C1917] mt-0.5">
+              {streakDays}
+              <span className="text-xs font-sans font-normal text-[#78716C] ml-0.5">日</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Maturity Bar */}
+        <div className="space-y-2 pt-3 border-t border-[#F4F0E8]">
+          <div className="h-2.5 w-full bg-[#F4F0E8] rounded-full overflow-hidden flex">
+            {maturity.total > 0 && (
+              <>
+                <div
+                  className="bg-[#15803D] h-full"
+                  style={{ width: `${(maturity.mastered / maturity.total) * 100}%` }}
+                />
+                <div
+                  className="bg-[#1D4ED8] h-full"
+                  style={{ width: `${(maturity.review / maturity.total) * 100}%` }}
+                />
+                <div
+                  className="bg-[#D97706] h-full"
+                  style={{ width: `${(maturity.learning / maturity.total) * 100}%` }}
+                />
+              </>
+            )}
+          </div>
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] sm:text-xs text-[#57534E] font-mono tabular-nums">
+            <span className="text-[#166534]">長期定着 {maturity.mastered}</span>
+            <span className="text-[#1E40AF]">定着中 {maturity.review}</span>
+            <span className="text-[#92400E]">学習中 {maturity.learning}</span>
+            <span className="text-[#78716C]">未学習 {maturity.newCount}</span>
+          </div>
+        </div>
+      </section>
+
+      {/* TIER 1: 14-Day Scheduled Review Forecast */}
+      <section className="bg-white border border-[#E6E0D6] rounded-2xl sm:rounded-xl p-5 space-y-3">
+        <div className="flex items-center justify-between gap-2">
+          <h3 className="text-sm sm:text-base font-serif font-bold text-[#1C1917]">
+            今後14日間の復習予定
+          </h3>
+          <span className="text-xs font-mono tabular-nums text-[#78716C]">
             計 {forecast.reduce((s, f) => s + f.dueCount, 0)} 問
           </span>
         </div>
 
-        <div className="overflow-x-auto no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
-          <div className="grid grid-cols-14 gap-2 items-end h-32 pt-3 min-w-[520px] sm:min-w-0">
+        <div className="overflow-x-auto no-scrollbar -mx-5 px-5 sm:mx-0 sm:px-0">
+          <div className="grid grid-cols-14 gap-2 items-end h-28 pt-2 min-w-[500px] sm:min-w-0">
             {forecast.map((day) => {
               const hPct = Math.round((day.dueCount / maxForecast) * 100);
               return (
@@ -535,9 +429,9 @@ export function ForgettingCurveAnalyticsView({
                   className="flex flex-col items-center justify-end gap-1 h-full"
                 >
                   <span className="text-[10px] font-mono tabular-nums text-[#57534E]">
-                    {day.dueCount > 0 ? day.dueCount : '0'}
+                    {day.dueCount > 0 ? day.dueCount : ''}
                   </span>
-                  <div className="w-full max-w-[32px] h-20 bg-[#F4F0E8] rounded-xs flex items-end overflow-hidden">
+                  <div className="w-full max-w-[28px] h-16 bg-[#F4F0E8] rounded-xs flex items-end overflow-hidden">
                     <div
                       className={`w-full rounded-xs transition-all ${
                         day.isToday ? 'bg-[#9A3412]' : 'bg-[#1C1917]/75'
@@ -559,31 +453,96 @@ export function ForgettingCurveAnalyticsView({
         </div>
       </section>
 
-      {/* Bottom 2-Column: Weak Tags + Unit Mastery */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-6 items-start">
-        {/* Weak Tags */}
-        <section className="lg:col-span-5 bg-white border border-[#E6E0D6] rounded-2xl sm:rounded-lg p-4 sm:p-5 space-y-4">
-          <h3 className="text-base font-serif font-bold text-[#1C1917]">
-            弱点・要復習タグ
+      {/* TIER 1 (Conditional): Weak Tags Action List */}
+      {weakTags.length > 0 && (
+        <section className="bg-white border border-[#E6E0D6] rounded-2xl sm:rounded-xl p-5 space-y-3">
+          <h3 className="text-sm sm:text-base font-serif font-bold text-[#1C1917]">
+            優先して復習したい弱点タグ
           </h3>
-          {weakTags.length === 0 ? (
-            <p className="text-xs text-[#78716C] leading-relaxed">
-              学習を進めると、忘却回数の多いタグや記憶保持率が低下しているタグが自動でここに抽出されます。
-            </p>
+          <div className="divide-y divide-[#F4F0E8]">
+            {weakTags.map((t) => (
+              <div
+                key={t.meta.raw}
+                className="py-2.5 flex items-center justify-between gap-3"
+              >
+                <div className="min-w-0">
+                  <div className="text-sm font-medium text-[#1C1917] truncate">
+                    {t.meta.displayLabel}
+                  </div>
+                  <div className="text-xs text-[#78716C] font-mono tabular-nums">
+                    苦手 {t.weak} · 保持{' '}
+                    {t.avgRetention !== null ? `${t.avgRetention}%` : '—'}
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() =>
+                    onLaunchSession({
+                      scopeId: activeScopeId,
+                      chapter: 'all',
+                      unit: 'all',
+                      selectedTags: [t.meta.raw],
+                      tagMatchMode: 'and',
+                      filterPreset: t.weak > 0 ? 'weak' : 'all',
+                      orderMode: 'srs',
+                      swapFrontBack: false,
+                      recordToSrs: true,
+                      mode: 'flip',
+                      label: `弱点復習：${t.meta.displayLabel}`,
+                    })
+                  }
+                  className="min-h-[38px] px-3.5 text-xs font-medium text-[#FBF9F5] bg-[#9A3412] hover:bg-[#7C2D12] rounded-lg transition-colors whitespace-nowrap shrink-0"
+                >
+                  復習
+                </button>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* TIER 2 (Collapsible): Unit Mastery Details */}
+      <section className="bg-white border border-[#E6E0D6] rounded-2xl sm:rounded-xl overflow-hidden">
+        <button
+          type="button"
+          onClick={() => setShowUnitsDetail((prev) => !prev)}
+          aria-expanded={showUnitsDetail}
+          className="w-full min-h-[52px] px-5 py-3 flex items-center justify-between text-left hover:bg-[#FBF9F5] transition-colors"
+        >
+          <span className="text-sm font-medium text-[#1C1917]">
+            単元別の定着状況（{allUnits.length}単元）
+          </span>
+          {showUnitsDetail ? (
+            <ChevronDown className="w-4 h-4 text-[#78716C]" />
           ) : (
-            <div className="divide-y divide-[#E6E0D6]">
-              {weakTags.map((t) => (
+            <ChevronRight className="w-4 h-4 text-[#78716C]" />
+          )}
+        </button>
+
+        {showUnitsDetail && (
+          <div className="px-5 pb-4 border-t border-[#F4F0E8] divide-y divide-[#F4F0E8]">
+            {allUnits.map((u) => {
+              const learnedPct =
+                u.total > 0 ? Math.round((u.learned / u.total) * 100) : 0;
+              return (
                 <div
-                  key={t.meta.raw}
+                  key={`${u.chapter}-${u.unit}`}
                   className="py-3 flex items-center justify-between gap-3"
                 >
-                  <div className="min-w-0">
-                    <div className="text-sm font-medium text-[#1C1917] truncate">
-                      {t.meta.categoryLabel}: {t.meta.displayLabel}
+                  <div className="min-w-0 flex-1 space-y-1">
+                    <div className="text-xs font-medium text-[#1C1917] truncate">
+                      {u.unit}
                     </div>
-                    <div className="text-xs text-[#78716C] font-mono tabular-nums mt-0.5">
-                      苦手 {t.weak}問 · 保持率{' '}
-                      {t.avgRetention !== null ? `${t.avgRetention}%` : '—'} · 全{t.total}問
+                    <div className="flex items-center gap-2.5">
+                      <div className="h-1.5 flex-1 bg-[#F4F0E8] rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-[#15803D]"
+                          style={{ width: `${learnedPct}%` }}
+                        />
+                      </div>
+                      <span className="text-xs font-mono tabular-nums text-[#57534E] w-16 text-right shrink-0">
+                        {u.learned}/{u.total}
+                      </span>
                     </div>
                   </div>
                   <button
@@ -591,87 +550,104 @@ export function ForgettingCurveAnalyticsView({
                     onClick={() =>
                       onLaunchSession({
                         scopeId: activeScopeId,
-                        chapter: 'all',
-                        unit: 'all',
-                        selectedTags: [t.meta.raw],
+                        chapter: u.chapter,
+                        unit: u.unit,
+                        selectedTags: [],
                         tagMatchMode: 'and',
-                        filterPreset: t.weak > 0 ? 'weak' : 'all',
+                        filterPreset: u.due > 0 ? 'due' : 'all',
                         orderMode: 'srs',
                         swapFrontBack: false,
                         recordToSrs: true,
                         mode: 'flip',
-                        label: `弱点タグ復習：${t.meta.displayLabel}`,
+                        label: u.unit,
                       })
                     }
-                    className="min-h-[40px] sm:min-h-[32px] px-3 py-1.5 text-xs font-medium text-[#FBF9F5] bg-[#9A3412] hover:bg-[#7C2D12] rounded-lg sm:rounded-md transition-colors whitespace-nowrap shrink-0"
+                    className="min-h-[38px] px-3 text-xs font-medium text-[#1C1917] bg-[#F4F0E8] hover:bg-[#E6E0D6] rounded-lg whitespace-nowrap shrink-0"
                   >
-                    復習
+                    演習
                   </button>
                 </div>
-              ))}
-            </div>
-          )}
-        </section>
-
-        {/* Unit Mastery List */}
-        <section className="lg:col-span-7 bg-white border border-[#E6E0D6] rounded-2xl sm:rounded-lg p-4 sm:p-5 space-y-4">
-          <h3 className="text-base font-serif font-bold text-[#1C1917]">
-            単元別の定着状況
-          </h3>
-          <div className="divide-y divide-[#E6E0D6]">
-            {chapterGroups.flatMap((ch) =>
-              ch.units.map((u) => {
-                const learnedPct =
-                  u.total > 0 ? Math.round((u.learned / u.total) * 100) : 0;
-                return (
-                  <div
-                    key={`${ch.chapter}-${u.unit}`}
-                    className="py-3 flex items-center justify-between gap-3"
-                  >
-                    <div className="min-w-0 flex-1 space-y-1">
-                      <div className="text-xs font-medium text-[#1C1917] truncate">
-                        {u.unit}
-                      </div>
-                      <div className="flex items-center gap-2.5">
-                        <div className="h-1.5 flex-1 bg-[#F4F0E8] rounded-full overflow-hidden">
-                          <div
-                            className="h-full bg-[#15803D]"
-                            style={{ width: `${learnedPct}%` }}
-                          />
-                        </div>
-                        <span className="text-xs font-mono tabular-nums text-[#57534E] w-20 text-right shrink-0">
-                          {u.learned}/{u.total} ({learnedPct}%)
-                        </span>
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        onLaunchSession({
-                          scopeId: activeScopeId,
-                          chapter: ch.chapter,
-                          unit: u.unit,
-                          selectedTags: [],
-                          tagMatchMode: 'and',
-                          filterPreset: u.due > 0 ? 'due' : 'all',
-                          orderMode: 'srs',
-                          swapFrontBack: false,
-                          recordToSrs: true,
-                          mode: 'flip',
-                          label: u.unit,
-                        })
-                      }
-                      className="min-h-[40px] sm:min-h-[30px] px-3 py-1 text-xs font-medium text-[#1C1917] bg-[#F4F0E8] hover:bg-[#E6E0D6] rounded-lg sm:rounded transition-colors whitespace-nowrap shrink-0"
-                    >
-                      演習
-                    </button>
-                  </div>
-                );
-              })
-            )}
+              );
+            })}
           </div>
-        </section>
-      </div>
+        )}
+      </section>
+
+      {/* TIER 2 (Collapsible): 7-Day Activity & Ebbinghaus Theory Curve */}
+      <section className="bg-white border border-[#E6E0D6] rounded-2xl sm:rounded-xl overflow-hidden">
+        <button
+          type="button"
+          onClick={() => setShowCurveModel((prev) => !prev)}
+          aria-expanded={showCurveModel}
+          className="w-full min-h-[52px] px-5 py-3 flex items-center justify-between text-left hover:bg-[#FBF9F5] transition-colors"
+        >
+          <span className="text-sm font-medium text-[#1C1917]">
+            直近7日間の実績・忘却曲線モデル
+          </span>
+          {showCurveModel ? (
+            <ChevronDown className="w-4 h-4 text-[#78716C]" />
+          ) : (
+            <ChevronRight className="w-4 h-4 text-[#78716C]" />
+          )}
+        </button>
+
+        {showCurveModel && (
+          <div className="p-5 border-t border-[#F4F0E8] space-y-6">
+            {/* Past 7 Days */}
+            <div className="space-y-2">
+              <div className="text-xs font-medium text-[#57534E]">直近7日間の学習回数</div>
+              <div className="grid grid-cols-7 gap-2 items-end h-20 pt-2 max-w-md">
+                {recent7Days.map((d) => {
+                  const heightPct = Math.round((d.reviews / maxDailyReviews) * 100);
+                  return (
+                    <div key={d.key} className="flex flex-col items-center gap-1 h-full justify-end">
+                      <span className="text-[10px] font-mono tabular-nums text-[#78716C]">
+                        {d.reviews > 0 ? d.reviews : ''}
+                      </span>
+                      <div className="w-full bg-[#F4F0E8] rounded-xs h-12 flex items-end overflow-hidden">
+                        <div
+                          className="w-full bg-[#1C1917] rounded-xs"
+                          style={{ height: `${d.reviews > 0 ? Math.max(12, heightPct) : 0}%` }}
+                        />
+                      </div>
+                      <span className="text-[10px] text-[#78716C] font-mono">{d.label}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Ebbinghaus Curve Reference */}
+            <div className="space-y-3 pt-4 border-t border-[#F4F0E8]">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div className="text-xs text-[#57534E]">
+                  エビングハウス忘却曲線と間隔反復の効果
+                </div>
+                <div className="inline-flex items-center gap-1 p-1 bg-[#F4F0E8] rounded-lg self-start">
+                  {([1, 2, 3] as const).map((stage) => (
+                    <button
+                      key={stage}
+                      type="button"
+                      onClick={() => setCurveStage(stage)}
+                      className={`min-h-[30px] px-2.5 text-xs font-medium rounded-md transition-colors ${
+                        curveStage === stage
+                          ? 'bg-white text-[#1C1917] shadow-xs'
+                          : 'text-[#57534E]'
+                      }`}
+                    >
+                      復習{stage}回
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <EbbinghausCurveChart
+                avgRetention={maturity.avgRetention}
+                reviewCountStage={curveStage}
+              />
+            </div>
+          </div>
+        )}
+      </section>
     </div>
   );
 }

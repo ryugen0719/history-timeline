@@ -252,18 +252,18 @@ export function PlaceTimelineView({
               )}
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-2">
             {/* Granularity Toggle */}
             <div
               role="group"
               aria-label="地域のまとめ方"
-              className="inline-flex items-center p-0.5 bg-[#F4F0E8] rounded-md"
+              className="grid grid-cols-2 sm:inline-flex items-center p-0.5 bg-[#F4F0E8] rounded-lg sm:rounded-md"
             >
               <button
                 type="button"
                 onClick={() => handleChangeGranularity('macro')}
                 aria-pressed={granularity === 'macro'}
-                className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded transition-colors whitespace-nowrap ${
+                className={`inline-flex items-center justify-center gap-1 min-h-[38px] sm:min-h-0 px-2.5 py-1 text-xs font-medium rounded-md sm:rounded transition-colors whitespace-nowrap ${
                   granularity === 'macro'
                     ? 'bg-white text-[#1C1917] shadow-xs'
                     : 'text-[#57534E] hover:text-[#1C1917]'
@@ -276,7 +276,7 @@ export function PlaceTimelineView({
                 type="button"
                 onClick={() => handleChangeGranularity('exact')}
                 aria-pressed={granularity === 'exact'}
-                className={`px-2.5 py-1 text-xs font-medium rounded transition-colors whitespace-nowrap ${
+                className={`inline-flex items-center justify-center min-h-[38px] sm:min-h-0 px-2.5 py-1 text-xs font-medium rounded-md sm:rounded transition-colors whitespace-nowrap ${
                   granularity === 'exact'
                     ? 'bg-white text-[#1C1917] shadow-xs'
                     : 'text-[#57534E] hover:text-[#1C1917]'
@@ -290,46 +290,46 @@ export function PlaceTimelineView({
             <div
               role="group"
               aria-label="地域別表示方式"
-              className="inline-flex items-center p-0.5 bg-[#F4F0E8] rounded-md"
+              className="grid grid-cols-3 sm:inline-flex items-center p-0.5 bg-[#F4F0E8] rounded-lg sm:rounded-md"
             >
               <button
                 type="button"
                 onClick={() => setDisplayMode('matrix')}
                 aria-pressed={displayMode === 'matrix'}
-                className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded transition-colors whitespace-nowrap ${
+                className={`inline-flex items-center justify-center gap-1 min-h-[38px] sm:min-h-0 px-2 sm:px-2.5 py-1 text-xs font-medium rounded-md sm:rounded transition-colors whitespace-nowrap ${
                   displayMode === 'matrix'
                     ? 'bg-white text-[#1C1917] shadow-xs'
                     : 'text-[#57534E] hover:text-[#1C1917]'
                 }`}
               >
-                <TableProperties className="w-3.5 h-3.5" aria-hidden="true" />
+                <TableProperties className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
                 対照年表
               </button>
               <button
                 type="button"
                 onClick={() => setDisplayMode('relations')}
                 aria-pressed={displayMode === 'relations'}
-                className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded transition-colors whitespace-nowrap ${
+                className={`inline-flex items-center justify-center gap-1 min-h-[38px] sm:min-h-0 px-2 sm:px-2.5 py-1 text-xs font-medium rounded-md sm:rounded transition-colors whitespace-nowrap ${
                   displayMode === 'relations'
                     ? 'bg-white text-[#1C1917] shadow-xs'
                     : 'text-[#57534E] hover:text-[#1C1917]'
                 }`}
               >
-                <GitFork className="w-3.5 h-3.5" aria-hidden="true" />
-                地域のつながり
+                <GitFork className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+                つながり
               </button>
               <button
                 type="button"
                 onClick={() => setDisplayMode('lanes')}
                 aria-pressed={displayMode === 'lanes'}
-                className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded transition-colors whitespace-nowrap ${
+                className={`inline-flex items-center justify-center gap-1 min-h-[38px] sm:min-h-0 px-2 sm:px-2.5 py-1 text-xs font-medium rounded-md sm:rounded transition-colors whitespace-nowrap ${
                   displayMode === 'lanes'
                     ? 'bg-white text-[#1C1917] shadow-xs'
                     : 'text-[#57534E] hover:text-[#1C1917]'
                 }`}
               >
-                <Columns3 className="w-3.5 h-3.5" aria-hidden="true" />
-                地域別一覧
+                <Columns3 className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+                地域一覧
               </button>
             </div>
           </div>
@@ -337,12 +337,12 @@ export function PlaceTimelineView({
 
         {/* Region Filter Strip + Quick 2-Region Comparison */}
         <div className="space-y-2">
-          <div className="flex items-center gap-1.5 overflow-x-auto sm:overflow-visible sm:flex-wrap pb-0.5">
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0 sm:overflow-visible sm:flex-wrap pb-0.5">
             <button
               type="button"
               onClick={() => setSelectedRegionsFilter([])}
               aria-pressed={selectedRegionsFilter.length === 0}
-              className={`px-2.5 py-1 text-xs font-medium rounded border whitespace-nowrap shrink-0 transition-colors ${
+              className={`min-h-[36px] sm:min-h-0 px-3 sm:px-2.5 py-1 text-xs font-medium rounded-lg sm:rounded border whitespace-nowrap shrink-0 transition-colors ${
                 selectedRegionsFilter.length === 0
                   ? 'bg-[#1C1917] text-[#FBF9F5] border-[#1C1917]'
                   : 'bg-[#FBF9F5] text-[#57534E] border-[#E6E0D6] hover:text-[#1C1917]'
@@ -545,7 +545,7 @@ export function PlaceTimelineView({
         return (
           <div className="space-y-2.5">
             <div className="space-y-1.5 text-xs text-[#57534E] px-0.5">
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+              <div className="hidden sm:flex flex-wrap items-center gap-x-4 gap-y-1">
                 <span>
                   年ごとの行に地域を並べています。複数地域に関わる出来事は中心地域の四角形（長方形）から関連地域へ線でつないで表示しています。
                 </span>
@@ -569,16 +569,19 @@ export function PlaceTimelineView({
                   </span>
                 </span>
               </div>
+              <div className="sm:hidden flex items-center justify-between text-[11px] text-[#78716C]">
+                <span>← 横にスクロールして地域を比較 →</span>
+              </div>
               <div className="min-h-[20px] flex flex-wrap items-center justify-between gap-2">
                 {selectedEvent ? (
                   <>
                     {relatedEventIds.size > 0 ? (
                       <span className="font-medium text-[#1D4ED8]">
-                        選択中「{selectedEvent.title}」の関連出来事 {relatedEventIds.size}件を強調中（もう一度タップで解除）
+                        選択中「{selectedEvent.title}」の関連 {relatedEventIds.size}件を強調中
                       </span>
                     ) : (
                       <span className="text-[#78716C]">
-                        選択中「{selectedEvent.title}」のみ強調中（もう一度タップで解除）
+                        選択中「{selectedEvent.title}」を強調中
                       </span>
                     )}
                     {onClearSelection && (
@@ -592,19 +595,19 @@ export function PlaceTimelineView({
                     )}
                   </>
                 ) : (
-                  <span className="text-[#78716C]">
+                  <span className="hidden sm:inline text-[#78716C]">
                     出来事をタップすると関連する出来事を強調表示し、詳細を確認できます
                   </span>
                 )}
               </div>
             </div>
 
-            <div className="bg-white border border-[#E6E0D6] rounded-lg overflow-hidden">
+            <div className="bg-white border border-[#E6E0D6] rounded-xl sm:rounded-lg overflow-hidden">
               <div className="overflow-x-auto archival-scroll">
                 <div style={{ minWidth: `${minTableWidth}px` }}>
                   {/* Column Header Row */}
                   <div className="flex bg-[#F4F0E8] border-b border-[#E6E0D6] text-xs font-semibold text-[#57534E]">
-                    <div className="w-[88px] shrink-0 sticky left-0 z-20 bg-[#F4F0E8] px-3 py-2.5 border-r border-[#E6E0D6] flex items-center">
+                    <div className="w-[66px] sm:w-[88px] shrink-0 sticky left-0 z-20 bg-[#F4F0E8] px-2 sm:px-3 py-2.5 border-r border-[#E6E0D6] flex items-center">
                       年・時代
                     </div>
                     <div
@@ -641,7 +644,7 @@ export function PlaceTimelineView({
                     {matrixRows.map((row) => (
                       <div key={row.key} className="flex items-stretch">
                         {/* Sticky Year Label */}
-                        <div className="w-[88px] shrink-0 sticky left-0 z-10 bg-[#FBF9F5] border-r border-[#E6E0D6] px-3 py-3 flex items-start">
+                        <div className="w-[66px] sm:w-[88px] shrink-0 sticky left-0 z-10 bg-[#FBF9F5] border-r border-[#E6E0D6] px-2 sm:px-3 py-3 flex items-start">
                           <span className="font-serif text-xs sm:text-sm font-bold text-[#1C1917] tabular-nums whitespace-nowrap">
                             {row.label}
                           </span>

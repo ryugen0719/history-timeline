@@ -148,7 +148,7 @@ export function EventDetailPanel({
               type="button"
               onClick={onClose ?? onCloseMobile}
               aria-label="詳細パネルを閉じる"
-              className={`p-2 -mr-1 -mt-1 text-[#57534E] hover:text-[#1C1917] hover:bg-black/5 rounded-md shrink-0 transition-colors ${
+              className={`min-h-[44px] min-w-[44px] sm:min-h-[36px] sm:min-w-[36px] flex items-center justify-center -mr-2 -mt-1 text-[#57534E] hover:text-[#1C1917] hover:bg-black/5 rounded-lg shrink-0 transition-colors ${
                 onClose ? '' : 'lg:hidden'
               }`}
             >
@@ -159,9 +159,9 @@ export function EventDetailPanel({
       </div>
 
       {/* Study Reading Body */}
-      <div className="p-5 space-y-5">
+      <div className="p-4 sm:p-5 space-y-5">
         {/* 1. Overview */}
-        <p className="text-sm leading-relaxed text-[#1C1917]">
+        <p className="text-[15px] sm:text-sm leading-relaxed text-[#1C1917]">
           {event.description || '説明の記載はありません。'}
         </p>
 
@@ -179,7 +179,7 @@ export function EventDetailPanel({
                 <button
                   type="button"
                   onClick={() => onOpenAddImage(event.id)}
-                  className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-[#1C1917] bg-[#F4F0E8] hover:bg-[#E6E0D6] rounded transition-colors"
+                  className="inline-flex items-center gap-1 min-h-[38px] sm:min-h-0 px-3 sm:px-2.5 py-1.5 sm:py-1 text-xs font-medium text-[#1C1917] bg-[#F4F0E8] hover:bg-[#E6E0D6] rounded-lg sm:rounded transition-colors"
                 >
                   <ImagePlus className="w-3.5 h-3.5 text-[#9A3412]" aria-hidden="true" />
                   画像を追加
@@ -305,13 +305,13 @@ export function EventDetailPanel({
             <h3 className="text-xs font-semibold text-[#78716C] mb-2">
               つながりのある出来事
             </h3>
-            <ul className="space-y-1.5">
+            <ul className="space-y-2">
               {allRelated.map((rel) => (
                 <li key={rel.id}>
                   <button
                     type="button"
                     onClick={() => onSelectEvent(rel.id)}
-                    className="w-full text-left px-3 py-2 rounded-md border border-[#E6E0D6] hover:border-[#9A3412] hover:bg-[#FBF9F5] transition-colors flex items-center justify-between gap-2 group"
+                    className="w-full min-h-[44px] text-left px-3.5 py-2.5 rounded-xl sm:rounded-md border border-[#E6E0D6] hover:border-[#9A3412] hover:bg-[#FBF9F5] transition-colors flex items-center justify-between gap-2 group"
                   >
                     <div className="min-w-0">
                       <span className="text-xs font-mono tabular-nums text-[#78716C] mr-2">
@@ -322,7 +322,7 @@ export function EventDetailPanel({
                       </span>
                     </div>
                     <ArrowRight
-                      className="w-3.5 h-3.5 text-[#78716C] group-hover:text-[#9A3412] shrink-0"
+                      className="w-4 h-4 sm:w-3.5 sm:h-3.5 text-[#78716C] group-hover:text-[#9A3412] shrink-0"
                       aria-hidden="true"
                     />
                   </button>
@@ -368,9 +368,9 @@ export function EventDetailPanel({
                       onClick={() => onEditPersonPhoto(person)}
                       aria-label={`${person} の顔写真を登録・変更`}
                       title="顔写真を登録・変更"
-                      className="p-1.5 text-[#78716C] hover:text-[#1C1917] hover:bg-[#F4F0E8] rounded transition-colors shrink-0"
+                      className="min-h-[40px] min-w-[40px] sm:min-h-0 sm:min-w-0 flex items-center justify-center p-1.5 text-[#78716C] hover:text-[#1C1917] hover:bg-[#F4F0E8] rounded-lg sm:rounded transition-colors shrink-0"
                     >
-                      <Camera className="w-3.5 h-3.5" aria-hidden="true" />
+                      <Camera className="w-4 h-4 sm:w-3.5 sm:h-3.5" aria-hidden="true" />
                     </button>
                   </li>
                 );

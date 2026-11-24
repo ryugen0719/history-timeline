@@ -66,17 +66,17 @@ export function Header({
           <button
             type="button"
             onClick={onOpenImport}
-            className="px-3 py-1.5 text-xs sm:text-sm font-medium text-[#1C1917] bg-white border border-[#D6CEBE] hover:border-[#1C1917] rounded-md transition-colors duration-150 whitespace-nowrap shrink-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9A3412]"
+            className="min-h-[38px] sm:min-h-[34px] px-3 py-1.5 text-xs sm:text-sm font-medium text-[#1C1917] bg-white border border-[#D6CEBE] hover:border-[#1C1917] rounded-lg sm:rounded-md transition-colors duration-150 whitespace-nowrap shrink-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9A3412]"
           >
             データ読込
           </button>
         </div>
       </div>
 
-      {/* Mobile view switcher row */}
+      {/* Mobile view switcher row (44px touch targets) */}
       <nav
         aria-label="モバイル表示モード"
-        className="md:hidden border-t border-[#E6E0D6] px-4 flex items-center justify-around gap-4 bg-[#FBF9F5]"
+        className="md:hidden border-t border-[#E6E0D6] grid grid-cols-4 bg-[#FBF9F5]"
       >
         {NAV_ITEMS.map((item) => {
           const isActive = activeView === item.id;
@@ -86,15 +86,15 @@ export function Header({
               type="button"
               onClick={() => onChangeView(item.id)}
               aria-current={isActive ? 'page' : undefined}
-              className={`relative py-2 px-3 text-xs font-medium whitespace-nowrap shrink-0 transition-colors ${
-                isActive ? 'text-[#1C1917]' : 'text-[#57534E]'
+              className={`relative min-h-[44px] flex items-center justify-center px-2 text-xs font-medium whitespace-nowrap transition-colors ${
+                isActive ? 'text-[#9A3412] font-semibold' : 'text-[#57534E]'
               }`}
             >
               {item.label}
               {isActive && (
                 <span
                   aria-hidden="true"
-                  className="absolute inset-x-0 bottom-0 h-0.5 bg-[#9A3412]"
+                  className="absolute inset-x-3 bottom-0 h-0.5 bg-[#9A3412] rounded-full"
                 />
               )}
             </button>

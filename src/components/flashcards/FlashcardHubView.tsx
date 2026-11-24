@@ -1,18 +1,13 @@
 import { useMemo, useState } from 'react';
 import {
-  BookOpen,
   ChevronDown,
   ChevronRight,
   Eye,
-  FolderPlus,
-  Layers,
   PenLine,
   Play,
-  Plus,
+  Search,
   Shuffle,
   Star,
-  Tag,
-  Upload,
 } from 'lucide-react';
 import type {
   ExamScope,
@@ -41,13 +36,10 @@ interface FlashcardHubViewProps {
   cards: Flashcard[];
   srsMap: SrsProgressMap;
   activeScopeId: string;
-  streakDays: number;
   todayReviews: number;
   onChangeScopeId: (scopeId: string) => void;
   onLaunchSession: (config: StudySessionConfig) => void;
-  onOpenAddCard: () => void;
-  onOpenBulkImport: () => void;
-  onOpenScopeManager: () => void;
+  onGoToManage: () => void;
 }
 
 export function FlashcardHubView({
@@ -55,18 +47,18 @@ export function FlashcardHubView({
   cards,
   srsMap,
   activeScopeId,
-  streakDays,
   todayReviews,
   onChangeScopeId,
   onLaunchSession,
-  onOpenAddCard,
-  onOpenBulkImport,
-  onOpenScopeManager,
+  onGoToManage,
 }: FlashcardHubViewProps) {
+  const [browseTab, setBrowseTab] = useState<'units' | 'tags'>('units');
+  const [showMoreOptions, setShowMoreOptions] = useState(false);
+
+  // Tag selection state
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [tagMatchMode, setTagMatchMode] = useState<TagMatchMode>('and');
   const [tagSearch, setTagSearch] = useState('');
-  const [mobileBrowseTab, setMobileBrowseTab] = useState<'units' | 'tags'>('units');
   const [collapsedChapters, setCollapsedChapters] = useState<Record<string, boolean>>({});
   const [expandedTagCategories, setExpandedTagCategories] = useState<Record<string, boolean>>({
     importance: true,
@@ -172,6 +164,11 @@ export function FlashcardHubView({
     ).length;
   }, [matchedBySelectedTags, srsMap, nowMs]);
 
+  const mostImportantCount = useMemo(
+    () => scopeCards.filter((c) => c.tags.includes('重要度_最重要')).length,
+    [scopeCards]
+  );
+
   const activeScope = scopes.find((s) => s.id === activeScopeId);
 
   const toggleTag = (rawTag: string) => {
@@ -214,382 +211,302 @@ export function FlashcardHubView({
       mode,
       label:
         selectedTags.length > 0
-          ? `タグ演習（${selectedTags.length}件選択・${tagMatchMode.toUpperCase()}）`
+          ? `タグ演習（${selectedTags.length}件・${tagMatchMode.toUpperCase()}）`
           : activeScope?.name ?? '全範囲',
     });
   };
 
-  const cardCountsByScope = useMemo(() => {
-    const counts: Record<string, number> = {};
-    for (const c of cards) {
-      if (!c.suspended) {
-        counts[c.scopeId] = (counts[c.scopeId] ?? 0) + 1;
-      }
+  const handlePrimaryStart = () => {
+    if (scopeStats.due > 0) {
+      launchQuickPreset('due', 'flip', {
+        label: `${activeScope?.name ?? '全範囲'} · 今日の復習`,
+      });
+    } else if (scopeStats.newCount > 0) {
+      launchQuickPreset('new', 'flip', {
+        label: `${activeScope?.name ?? '全範囲'} · 未学習`,
+      });
+    } else {
+      launchQuickPreset('all', 'flip', {
+        label: `${activeScope?.name ?? '全範囲'} · 全問復習`,
+      });
     }
-    return counts;
-  }, [cards]);
+  };
+
+  const primaryLabel =
+    scopeStats.due > 0
+      ? `今日の復習を開始（${scopeStats.due}問）`
+      : scopeStats.newCount > 0
+        ? `学習を開始（未学習 ${scopeStats.newCount}問）`
+        : `全問を復習する（${scopeStats.total}問）`;
 
   return (
-    <div className="space-y-6 sm:space-y-8">
-      {/* Scope selector bar (Horizontal scroll strip on mobile) */}
-      <section className="flex flex-col lg:flex-row lg:items-center justify-between gap-3.5 pb-4 sm:pb-5 border-b border-[#E6E0D6]">
-        <div className="space-y-2 min-w-0">
-          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap">
-            <button
-              type="button"
-              onClick={() => {
-                onChangeScopeId('all');
-                setSelectedTags([]);
-              }}
-              className={`min-h-[40px] sm:min-h-[34px] px-3.5 sm:px-3 py-1.5 text-xs font-medium rounded-lg sm:rounded-md border transition-colors whitespace-nowrap shrink-0 ${
-                activeScopeId === 'all'
-                  ? 'bg-[#1C1917] text-[#FBF9F5] border-[#1C1917]'
-                  : 'bg-white text-[#57534E] border-[#D6CEBE] hover:border-[#1C1917] hover:text-[#1C1917]'
-              }`}
-            >
-              全範囲（{cards.filter((c) => !c.suspended).length}）
-            </button>
-            {scopes.map((scope) => {
-              const isSelected = activeScopeId === scope.id;
-              return (
-                <button
-                  key={scope.id}
-                  type="button"
-                  onClick={() => {
-                    onChangeScopeId(scope.id);
+    <div className="max-w-4xl mx-auto space-y-6">
+      {/* TIER 1: Single Primary Study Hero */}
+      <section className="bg-white border border-[#E6E0D6] rounded-2xl sm:rounded-xl p-5 sm:p-7 space-y-5">
+        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+          <div className="space-y-1.5 min-w-0">
+            {scopes.length > 1 ? (
+              <div className="flex items-center gap-2">
+                <select
+                  aria-label="試験範囲を選択"
+                  value={activeScopeId}
+                  onChange={(e) => {
+                    onChangeScopeId(e.target.value);
                     setSelectedTags([]);
                   }}
-                  className={`min-h-[40px] sm:min-h-[34px] px-3.5 sm:px-3 py-1.5 text-xs font-medium rounded-lg sm:rounded-md border transition-colors whitespace-nowrap shrink-0 ${
-                    isSelected
-                      ? 'bg-[#9A3412] text-[#FBF9F5] border-[#9A3412]'
-                      : 'bg-white text-[#57534E] border-[#D6CEBE] hover:border-[#1C1917] hover:text-[#1C1917]'
-                  }`}
+                  className="text-xl sm:text-2xl font-serif font-bold text-[#1C1917] bg-transparent border-b border-dashed border-[#D6CEBE] pb-0.5 pr-2 focus:outline-none focus:border-[#9A3412] max-w-full cursor-pointer"
                 >
-                  {scope.name}（{cardCountsByScope[scope.id] ?? 0}）
-                </button>
-              );
-            })}
-          </div>
-          {activeScope?.description && (
-            <p className="text-xs text-[#57534E] leading-relaxed">{activeScope.description}</p>
-          )}
-        </div>
-
-        <div className="grid grid-cols-3 sm:flex items-center gap-2 shrink-0">
-          <button
-            type="button"
-            onClick={onOpenScopeManager}
-            className="inline-flex items-center justify-center gap-1.5 min-h-[42px] sm:min-h-[36px] px-2.5 sm:px-3 py-2 text-xs font-medium text-[#1C1917] bg-white border border-[#D6CEBE] hover:border-[#1C1917] rounded-lg sm:rounded-md transition-colors whitespace-nowrap shrink-0"
-          >
-            <FolderPlus className="w-3.5 h-3.5 text-[#57534E] shrink-0" aria-hidden="true" />
-            <span>範囲管理</span>
-          </button>
-          <button
-            type="button"
-            onClick={onOpenBulkImport}
-            className="inline-flex items-center justify-center gap-1.5 min-h-[42px] sm:min-h-[36px] px-2.5 sm:px-3 py-2 text-xs font-medium text-[#1C1917] bg-white border border-[#D6CEBE] hover:border-[#1C1917] rounded-lg sm:rounded-md transition-colors whitespace-nowrap shrink-0"
-          >
-            <Upload className="w-3.5 h-3.5 text-[#9A3412] shrink-0" aria-hidden="true" />
-            <span>一括追加</span>
-          </button>
-          <button
-            type="button"
-            onClick={onOpenAddCard}
-            className="inline-flex items-center justify-center gap-1.5 min-h-[42px] sm:min-h-[36px] px-2.5 sm:px-3.5 py-2 text-xs font-medium text-[#FBF9F5] bg-[#1C1917] hover:bg-[#9A3412] rounded-lg sm:rounded-md transition-colors whitespace-nowrap shrink-0"
-          >
-            <Plus className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
-            <span>1問追加</span>
-          </button>
-        </div>
-      </section>
-
-      {/* Hero Review Action Banner + 4 KPI Strip */}
-      <section className="bg-white border border-[#E6E0D6] rounded-2xl sm:rounded-lg p-4 sm:p-6 space-y-5 sm:space-y-6">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-5">
-          <div className="space-y-1.5">
-            <div className="text-xs font-medium text-[#9A3412]">
-              忘却曲線スペースド・リピティション（SM-2）
-            </div>
-            <h2 className="text-xl sm:text-3xl font-serif font-bold text-[#1C1917]">
-              {activeScope ? activeScope.name : 'すべての考査範囲'}
-            </h2>
-            <p className="text-xs sm:text-sm text-[#57534E] max-w-2xl leading-relaxed">
-              {scopeStats.due > 0
-                ? `忘却曲線にもとづき、現在 ${scopeStats.due} 問が復習の最適タイミングを迎えています。`
-                : scopeStats.newCount > 0
-                  ? `今日の復習待ちは完了しています。未学習の ${scopeStats.newCount} 問から新しいカードを学習できます。`
-                  : 'すべてのカードを学習済みです。試験前集中演習や弱点タグ復習で定着度を高めましょう。'}
-            </p>
-          </div>
-
-          <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-2.5 shrink-0">
-            {scopeStats.due > 0 ? (
-              <button
-                type="button"
-                onClick={() =>
-                  launchQuickPreset('due', 'flip', {
-                    label: `${activeScope?.name ?? '全範囲'} · 今日の忘却曲線復習`,
-                  })
-                }
-                className="inline-flex items-center justify-center gap-2 min-h-[48px] px-5 py-3 text-sm font-semibold text-[#FBF9F5] bg-[#9A3412] hover:bg-[#7C2D12] active:scale-[0.99] rounded-xl sm:rounded-md transition-all whitespace-nowrap shrink-0"
-              >
-                <Play className="w-4 h-4" aria-hidden="true" />
-                今日の復習を開始（{scopeStats.due}問）
-              </button>
+                  {scopes.map((s) => (
+                    <option key={s.id} value={s.id}>
+                      {s.name}
+                    </option>
+                  ))}
+                  <option value="all">すべての考査範囲</option>
+                </select>
+              </div>
             ) : (
-              <button
-                type="button"
-                onClick={() =>
-                  launchQuickPreset(
-                    scopeStats.newCount > 0 ? 'new' : 'all',
-                    'flip',
-                    {
-                      label:
-                        scopeStats.newCount > 0
-                          ? `${activeScope?.name ?? '全範囲'} · 未学習カード`
-                          : `${activeScope?.name ?? '全範囲'} · 全問復習`,
-                    }
-                  )
-                }
-                disabled={scopeStats.total === 0}
-                className="inline-flex items-center justify-center gap-2 min-h-[48px] px-5 py-3 text-sm font-semibold text-[#FBF9F5] bg-[#9A3412] hover:bg-[#7C2D12] active:scale-[0.99] disabled:opacity-40 rounded-xl sm:rounded-md transition-all whitespace-nowrap shrink-0"
-              >
-                <Play className="w-4 h-4" aria-hidden="true" />
-                {scopeStats.newCount > 0
-                  ? `未学習から開始（${scopeStats.newCount}問）`
-                  : `全問カード開始（${scopeStats.total}問）`}
-              </button>
+              <h2 className="text-xl sm:text-2xl font-serif font-bold text-[#1C1917]">
+                {activeScope ? activeScope.name : 'すべての考査範囲'}
+              </h2>
             )}
 
-            <div className="grid grid-cols-2 sm:flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() =>
-                  launchQuickPreset('all', 'redsheet', {
-                    label: `${activeScope?.name ?? '全範囲'} · 赤シート総ざらい`,
-                  })
-                }
-                disabled={scopeStats.total === 0}
-                className="inline-flex items-center justify-center gap-1.5 min-h-[44px] px-4 py-2.5 text-xs sm:text-sm font-medium text-[#1C1917] bg-[#F4F0E8] hover:bg-[#E6E0D6] disabled:opacity-40 rounded-xl sm:rounded-md transition-colors whitespace-nowrap shrink-0"
-              >
-                <Eye className="w-4 h-4 text-[#9A3412]" aria-hidden="true" />
-                赤シート
-              </button>
-              <button
-                type="button"
-                onClick={() =>
-                  launchQuickPreset('all', 'typing', {
-                    label: `${activeScope?.name ?? '全範囲'} · 記述テスト`,
-                  })
-                }
-                disabled={scopeStats.total === 0}
-                className="inline-flex items-center justify-center gap-1.5 min-h-[44px] px-4 py-2.5 text-xs sm:text-sm font-medium text-[#1C1917] bg-[#F4F0E8] hover:bg-[#E6E0D6] disabled:opacity-40 rounded-xl sm:rounded-md transition-colors whitespace-nowrap shrink-0"
-              >
-                <PenLine className="w-4 h-4 text-[#57534E]" aria-hidden="true" />
-                記述チェック
-              </button>
+            {/* Quiet Unboxed Progress Line */}
+            <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs sm:text-sm text-[#57534E] font-mono tabular-nums">
+              <span>
+                復習待ち <strong className="text-[#9A3412] font-semibold">{scopeStats.due}</strong>
+              </span>
+              <span aria-hidden="true" className="text-[#D6CEBE]">
+                ·
+              </span>
+              <span>
+                学習済 {scopeStats.learned}/{scopeStats.total}
+              </span>
+              {scopeStats.avgRetention !== null && (
+                <>
+                  <span aria-hidden="true" className="text-[#D6CEBE]">
+                    ·
+                  </span>
+                  <span>記憶保持 {scopeStats.avgRetention}%</span>
+                </>
+              )}
+              {todayReviews > 0 && (
+                <>
+                  <span aria-hidden="true" className="text-[#D6CEBE]">
+                    ·
+                  </span>
+                  <span>本日 {todayReviews}回</span>
+                </>
+              )}
             </div>
           </div>
         </div>
 
-        {/* 4-column metric strip */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4 pt-4 sm:pt-5 border-t border-[#E6E0D6]">
-          <div className="space-y-0.5">
-            <div className="text-[11px] sm:text-xs text-[#57534E]">復習待ち（忘却曲線）</div>
-            <div className="text-xl sm:text-2xl font-mono font-semibold tabular-nums text-[#9A3412]">
-              {scopeStats.due}
-              <span className="text-xs font-sans font-normal text-[#78716C] ml-1">問</span>
-            </div>
-            <div className="text-[11px] sm:text-xs text-[#78716C]">
-              本日解答: <span className="font-mono tabular-nums">{todayReviews}</span> 回
-            </div>
-          </div>
-
-          <div className="space-y-0.5">
-            <div className="text-[11px] sm:text-xs text-[#57534E]">学習進捗（総問題数）</div>
-            <div className="text-xl sm:text-2xl font-mono font-semibold tabular-nums text-[#1C1917]">
-              {scopeStats.learned}
-              <span className="text-sm font-normal text-[#78716C]"> / {scopeStats.total}</span>
-            </div>
-            <div className="text-[11px] sm:text-xs text-[#78716C]">
-              未学習: <span className="font-mono tabular-nums">{scopeStats.newCount}</span> 問
-            </div>
-          </div>
-
-          <div className="space-y-0.5">
-            <div className="text-[11px] sm:text-xs text-[#57534E]">推定記憶保持率</div>
-            <div className="text-xl sm:text-2xl font-mono font-semibold tabular-nums text-[#15803D]">
-              {scopeStats.avgRetention !== null ? `${scopeStats.avgRetention}%` : '—'}
-            </div>
-            <div className="text-[11px] sm:text-xs text-[#78716C]">
-              長期定着: <span className="font-mono tabular-nums">{scopeStats.mastered}</span> 問
-            </div>
-          </div>
-
-          <div className="space-y-0.5">
-            <div className="text-[11px] sm:text-xs text-[#57534E]">連続学習・苦手</div>
-            <div className="text-xl sm:text-2xl font-mono font-semibold tabular-nums text-[#1C1917]">
-              {streakDays}
-              <span className="text-xs font-sans font-normal text-[#78716C] ml-1">日連続</span>
-            </div>
-            <div className="text-[11px] sm:text-xs text-[#78716C]">
-              苦手: <span className="font-mono tabular-nums">{scopeStats.weak}</span> · 星: <span className="font-mono tabular-nums">{scopeStats.starred}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Quick Preset Launch Strip (horizontally scrollable on mobile) */}
-        <div className="pt-4 border-t border-[#E6E0D6] flex items-center gap-2 overflow-x-auto no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap">
-          <span className="text-xs font-medium text-[#57534E] shrink-0">クイック:</span>
-          <button
-            type="button"
-            onClick={() =>
-              onLaunchSession({
-                scopeId: activeScopeId,
-                chapter: 'all',
-                unit: 'all',
-                selectedTags: ['重要度_最重要'],
-                tagMatchMode: 'and',
-                filterPreset: 'all',
-                orderMode: 'unit',
-                swapFrontBack: false,
-                recordToSrs: true,
-                mode: 'flip',
-                label: '重要度：最重要のみ集中演習',
-              })
-            }
-            className="min-h-[40px] sm:min-h-[32px] px-3 py-1.5 text-xs font-medium text-[#1C1917] bg-[#FBF9F5] hover:bg-[#F4F0E8] border border-[#D6CEBE] rounded-lg sm:rounded-md transition-colors whitespace-nowrap shrink-0"
-          >
-            最重要のみ（{scopeCards.filter((c) => c.tags.includes('重要度_最重要')).length}）
-          </button>
-          <button
-            type="button"
-            disabled={scopeStats.weak === 0}
-            onClick={() =>
-              launchQuickPreset('weak', 'flip', {
-                orderMode: 'srs',
-                label: '苦手・要復習カード集中演習',
-              })
-            }
-            className="min-h-[40px] sm:min-h-[32px] px-3 py-1.5 text-xs font-medium text-[#1C1917] bg-[#FBF9F5] hover:bg-[#F4F0E8] border border-[#D6CEBE] disabled:opacity-40 rounded-lg sm:rounded-md transition-colors whitespace-nowrap shrink-0"
-          >
-            苦手のみ（{scopeStats.weak}）
-          </button>
-          <button
-            type="button"
-            disabled={scopeStats.starred === 0}
-            onClick={() =>
-              launchQuickPreset('starred', 'flip', {
-                label: 'ブックマーク済み問題',
-              })
-            }
-            className="inline-flex items-center gap-1 min-h-[40px] sm:min-h-[32px] px-3 py-1.5 text-xs font-medium text-[#1C1917] bg-[#FBF9F5] hover:bg-[#F4F0E8] border border-[#D6CEBE] disabled:opacity-40 rounded-lg sm:rounded-md transition-colors whitespace-nowrap shrink-0"
-          >
-            <Star className="w-3 h-3 text-[#B45309]" aria-hidden="true" />
-            星付き（{scopeStats.starred}）
-          </button>
+        {/* One Dominant Primary CTA */}
+        <div className="space-y-3">
           <button
             type="button"
             disabled={scopeStats.total === 0}
-            onClick={() =>
-              launchQuickPreset('all', 'flip', {
-                orderMode: 'shuffle',
-                label: '全問シャッフル演習',
-              })
-            }
-            className="inline-flex items-center gap-1 min-h-[40px] sm:min-h-[32px] px-3 py-1.5 text-xs font-medium text-[#1C1917] bg-[#FBF9F5] hover:bg-[#F4F0E8] border border-[#D6CEBE] disabled:opacity-40 rounded-lg sm:rounded-md transition-colors whitespace-nowrap shrink-0"
+            onClick={handlePrimaryStart}
+            className="w-full sm:w-auto sm:min-w-[280px] inline-flex items-center justify-center gap-2 min-h-[50px] px-6 py-3 text-sm sm:text-base font-semibold text-[#FBF9F5] bg-[#9A3412] hover:bg-[#7C2D12] active:scale-[0.99] disabled:opacity-40 rounded-xl sm:rounded-lg transition-all whitespace-nowrap"
           >
-            <Shuffle className="w-3 h-3 text-[#57534E]" aria-hidden="true" />
-            全問シャッフル
+            <Play className="w-4 h-4 fill-current" aria-hidden="true" />
+            {primaryLabel}
           </button>
-          <button
-            type="button"
-            disabled={scopeStats.total === 0}
-            onClick={() =>
-              launchQuickPreset('all', 'flip', {
-                swapFrontBack: true,
-                orderMode: 'shuffle',
-                label: '表裏反転（用語→説明）演習',
-              })
-            }
-            className="min-h-[40px] sm:min-h-[32px] px-3 py-1.5 text-xs font-medium text-[#1C1917] bg-[#FBF9F5] hover:bg-[#F4F0E8] border border-[#D6CEBE] disabled:opacity-40 rounded-lg sm:rounded-md transition-colors whitespace-nowrap shrink-0"
-          >
-            表裏反転
-          </button>
+
+          {/* Quiet Secondary Mode Row + Progressive Disclosure for Presets */}
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 pt-1 text-xs">
+            <button
+              type="button"
+              disabled={scopeStats.total === 0}
+              onClick={() =>
+                launchQuickPreset('all', 'redsheet', {
+                  label: `${activeScope?.name ?? '全範囲'} · 赤シート`,
+                })
+              }
+              className="inline-flex items-center gap-1.5 min-h-[36px] text-[#57534E] hover:text-[#1C1917] disabled:opacity-40 font-medium transition-colors whitespace-nowrap"
+            >
+              <Eye className="w-3.5 h-3.5 text-[#9A3412]" aria-hidden="true" />
+              赤シート
+            </button>
+            <button
+              type="button"
+              disabled={scopeStats.total === 0}
+              onClick={() =>
+                launchQuickPreset('all', 'typing', {
+                  label: `${activeScope?.name ?? '全範囲'} · 記述`,
+                })
+              }
+              className="inline-flex items-center gap-1.5 min-h-[36px] text-[#57534E] hover:text-[#1C1917] disabled:opacity-40 font-medium transition-colors whitespace-nowrap"
+            >
+              <PenLine className="w-3.5 h-3.5 text-[#57534E]" aria-hidden="true" />
+              記述チェック
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setShowMoreOptions((prev) => !prev)}
+              aria-expanded={showMoreOptions}
+              className="inline-flex items-center gap-1 min-h-[36px] text-[#57534E] hover:text-[#1C1917] font-medium transition-colors whitespace-nowrap sm:ml-auto"
+            >
+              <span>その他の出題方法</span>
+              {showMoreOptions ? (
+                <ChevronDown className="w-3.5 h-3.5" aria-hidden="true" />
+              ) : (
+                <ChevronRight className="w-3.5 h-3.5" aria-hidden="true" />
+              )}
+            </button>
+          </div>
         </div>
+
+        {/* TIER 2 (Collapsed by default): Extra Study Presets */}
+        {showMoreOptions && (
+          <div className="pt-4 border-t border-[#E6E0D6] flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              disabled={mostImportantCount === 0}
+              onClick={() =>
+                onLaunchSession({
+                  scopeId: activeScopeId,
+                  chapter: 'all',
+                  unit: 'all',
+                  selectedTags: ['重要度_最重要'],
+                  tagMatchMode: 'and',
+                  filterPreset: 'all',
+                  orderMode: 'unit',
+                  swapFrontBack: false,
+                  recordToSrs: true,
+                  mode: 'flip',
+                  label: '最重要のみ',
+                })
+              }
+              className="min-h-[40px] sm:min-h-[34px] px-3 py-1.5 text-xs font-medium text-[#1C1917] bg-[#FBF9F5] hover:bg-[#F4F0E8] border border-[#E6E0D6] disabled:opacity-40 rounded-lg transition-colors whitespace-nowrap"
+            >
+              最重要のみ（{mostImportantCount}）
+            </button>
+            <button
+              type="button"
+              disabled={scopeStats.weak === 0}
+              onClick={() =>
+                launchQuickPreset('weak', 'flip', {
+                  orderMode: 'srs',
+                  label: '苦手のみ',
+                })
+              }
+              className="min-h-[40px] sm:min-h-[34px] px-3 py-1.5 text-xs font-medium text-[#1C1917] bg-[#FBF9F5] hover:bg-[#F4F0E8] border border-[#E6E0D6] disabled:opacity-40 rounded-lg transition-colors whitespace-nowrap"
+            >
+              苦手のみ（{scopeStats.weak}）
+            </button>
+            <button
+              type="button"
+              disabled={scopeStats.starred === 0}
+              onClick={() =>
+                launchQuickPreset('starred', 'flip', {
+                  label: '星付き問題',
+                })
+              }
+              className="inline-flex items-center gap-1 min-h-[40px] sm:min-h-[34px] px-3 py-1.5 text-xs font-medium text-[#1C1917] bg-[#FBF9F5] hover:bg-[#F4F0E8] border border-[#E6E0D6] disabled:opacity-40 rounded-lg transition-colors whitespace-nowrap"
+            >
+              <Star className="w-3 h-3 text-[#B45309]" aria-hidden="true" />
+              星付き（{scopeStats.starred}）
+            </button>
+            <button
+              type="button"
+              disabled={scopeStats.total === 0}
+              onClick={() =>
+                launchQuickPreset('all', 'flip', {
+                  orderMode: 'shuffle',
+                  label: '全問シャッフル',
+                })
+              }
+              className="inline-flex items-center gap-1 min-h-[40px] sm:min-h-[34px] px-3 py-1.5 text-xs font-medium text-[#1C1917] bg-[#FBF9F5] hover:bg-[#F4F0E8] border border-[#E6E0D6] disabled:opacity-40 rounded-lg transition-colors whitespace-nowrap"
+            >
+              <Shuffle className="w-3 h-3 text-[#57534E]" aria-hidden="true" />
+              全問シャッフル
+            </button>
+            <button
+              type="button"
+              disabled={scopeStats.total === 0}
+              onClick={() =>
+                launchQuickPreset('all', 'flip', {
+                  swapFrontBack: true,
+                  orderMode: 'shuffle',
+                  label: '表裏反転（用語→説明）',
+                })
+              }
+              className="min-h-[40px] sm:min-h-[34px] px-3 py-1.5 text-xs font-medium text-[#1C1917] bg-[#FBF9F5] hover:bg-[#F4F0E8] border border-[#E6E0D6] disabled:opacity-40 rounded-lg transition-colors whitespace-nowrap"
+            >
+              表裏反転
+            </button>
+          </div>
+        )}
       </section>
 
-      {/* Mobile-only Section Switcher: Instant 1-tap toggle between Chapter/Unit and Tag Explorer */}
-      <div
-        role="tablist"
-        aria-label="出題範囲の選び方"
-        className="lg:hidden grid grid-cols-2 gap-1 p-1 bg-[#F4F0E8] rounded-xl"
-      >
-        <button
-          type="button"
-          role="tab"
-          aria-selected={mobileBrowseTab === 'units'}
-          onClick={() => setMobileBrowseTab('units')}
-          className={`min-h-[44px] inline-flex items-center justify-center gap-1.5 text-xs font-semibold rounded-lg transition-colors whitespace-nowrap ${
-            mobileBrowseTab === 'units'
-              ? 'bg-white text-[#1C1917] shadow-xs'
-              : 'text-[#57534E]'
-          }`}
-        >
-          <Layers className="w-4 h-4 text-[#9A3412]" aria-hidden="true" />
-          章・単元から選ぶ
-        </button>
-        <button
-          type="button"
-          role="tab"
-          aria-selected={mobileBrowseTab === 'tags'}
-          onClick={() => setMobileBrowseTab('tags')}
-          className={`min-h-[44px] inline-flex items-center justify-center gap-1.5 text-xs font-semibold rounded-lg transition-colors whitespace-nowrap ${
-            mobileBrowseTab === 'tags'
-              ? 'bg-white text-[#1C1917] shadow-xs'
-              : 'text-[#57534E]'
-          }`}
-        >
-          <Tag className="w-4 h-4 text-[#9A3412]" aria-hidden="true" />
-          タグ別学習{selectedTags.length > 0 ? ` (${selectedTags.length})` : ''}
-        </button>
-      </div>
-
-      {/* Main 2-column Hub (Desktop side-by-side / Mobile tab-switched) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
-        {/* Left 7 cols: Chapter & Unit Breakdown */}
-        <section
-          className={`lg:col-span-7 space-y-4 ${
-            mobileBrowseTab === 'units' ? 'block' : 'hidden lg:block'
-          }`}
-        >
-          <div className="flex items-center justify-between gap-2">
-            <h3 className="text-base sm:text-lg font-serif font-bold text-[#1C1917] flex items-center gap-2">
-              <Layers className="w-4 h-4 text-[#9A3412]" aria-hidden="true" />
-              章・単元から学習する
-            </h3>
-            <span className="text-xs text-[#78716C] font-mono tabular-nums">
-              全 {chapterGroups.reduce((sum, ch) => sum + ch.units.length, 0)} 単元
-            </span>
+      {/* TIER 2: Single-Focus Scope Browser (単元別 | タグ別) */}
+      <section className="space-y-4">
+        <div className="flex items-center justify-between gap-3">
+          <div
+            role="tablist"
+            aria-label="範囲の選び方"
+            className="grid grid-cols-2 sm:inline-flex gap-1 p-1 bg-[#F4F0E8] rounded-xl sm:rounded-lg w-full sm:w-auto"
+          >
+            <button
+              type="button"
+              role="tab"
+              aria-selected={browseTab === 'units'}
+              onClick={() => setBrowseTab('units')}
+              className={`min-h-[42px] sm:min-h-[34px] px-5 text-xs sm:text-sm font-medium rounded-lg sm:rounded-md transition-colors whitespace-nowrap ${
+                browseTab === 'units'
+                  ? 'bg-white text-[#1C1917] shadow-xs'
+                  : 'text-[#57534E] hover:text-[#1C1917]'
+              }`}
+            >
+              単元から選ぶ
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={browseTab === 'tags'}
+              onClick={() => setBrowseTab('tags')}
+              className={`min-h-[42px] sm:min-h-[34px] px-5 text-xs sm:text-sm font-medium rounded-lg sm:rounded-md transition-colors whitespace-nowrap ${
+                browseTab === 'tags'
+                  ? 'bg-white text-[#1C1917] shadow-xs'
+                  : 'text-[#57534E] hover:text-[#1C1917]'
+              }`}
+            >
+              タグから選ぶ{selectedTags.length > 0 ? ` (${selectedTags.length})` : ''}
+            </button>
           </div>
+        </div>
 
-          {chapterGroups.length === 0 ? (
-            <div className="bg-white border border-[#E6E0D6] rounded-xl sm:rounded-lg p-8 text-center text-sm text-[#57534E]">
-              この考査範囲にはまだ問題が登録されていません。「1問追加」または「一括追加」から登録できます。
+        {/* Units Browser: Clean Tappable Rows (No Per-Row Button Clutter) */}
+        {browseTab === 'units' ? (
+          chapterGroups.length === 0 ? (
+            <div className="bg-white border border-[#E6E0D6] rounded-2xl sm:rounded-xl p-8 text-center space-y-3">
+              <p className="text-sm text-[#57534E]">
+                この考査範囲にはまだ問題が登録されていません。
+              </p>
+              <button
+                type="button"
+                onClick={onGoToManage}
+                className="min-h-[42px] px-4 py-2 text-xs font-medium text-[#9A3412] bg-[#FBF9F5] border border-[#E6E0D6] rounded-lg hover:border-[#9A3412] transition-colors"
+              >
+                問題管理から追加する
+              </button>
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-3">
               {chapterGroups.map((group) => {
                 const isCollapsed = Boolean(collapsedChapters[group.chapter]);
                 const chapterPct =
                   group.total > 0 ? Math.round((group.learned / group.total) * 100) : 0;
+
                 return (
                   <div
                     key={group.chapter}
-                    className="bg-white border border-[#E6E0D6] rounded-xl sm:rounded-lg overflow-hidden"
+                    className="bg-white border border-[#E6E0D6] rounded-2xl sm:rounded-xl overflow-hidden"
                   >
                     {/* Chapter Header */}
-                    <div className="px-4 py-3 bg-[#FBF9F5] border-b border-[#E6E0D6] flex items-center justify-between gap-2">
+                    <div className="px-4 py-2.5 bg-[#FBF9F5] border-b border-[#E6E0D6] flex items-center justify-between gap-2">
                       <button
                         type="button"
                         onClick={() =>
@@ -598,31 +515,19 @@ export function FlashcardHubView({
                             [group.chapter]: !prev[group.chapter],
                           }))
                         }
-                        className="flex items-center gap-2 text-left min-w-0 flex-1 min-h-[44px]"
+                        className="flex items-center gap-2 text-left min-w-0 flex-1 min-h-[40px]"
                       >
                         {isCollapsed ? (
                           <ChevronRight className="w-4 h-4 text-[#78716C] shrink-0" />
                         ) : (
                           <ChevronDown className="w-4 h-4 text-[#78716C] shrink-0" />
                         )}
-                        <div className="min-w-0">
-                          <div className="text-sm font-serif font-bold text-[#1C1917] leading-snug">
-                            {group.chapter}
-                          </div>
-                          <div className="text-xs text-[#78716C] flex items-center gap-2 font-mono tabular-nums mt-0.5">
-                            <span>{group.total}問</span>
-                            <span aria-hidden="true">·</span>
-                            <span>学習済 {chapterPct}%</span>
-                            {group.due > 0 && (
-                              <>
-                                <span aria-hidden="true">·</span>
-                                <span className="text-[#9A3412] font-medium">
-                                  復習 {group.due}
-                                </span>
-                              </>
-                            )}
-                          </div>
-                        </div>
+                        <span className="text-sm font-serif font-bold text-[#1C1917] truncate">
+                          {group.chapter}
+                        </span>
+                        <span className="text-xs text-[#78716C] font-mono tabular-nums shrink-0">
+                          {chapterPct}%
+                        </span>
                       </button>
 
                       <button
@@ -642,113 +547,66 @@ export function FlashcardHubView({
                             label: group.chapter,
                           })
                         }
-                        className="min-h-[38px] px-3 py-1.5 text-xs font-medium text-[#1C1917] bg-white border border-[#D6CEBE] hover:border-[#1C1917] rounded-lg sm:rounded-md transition-colors whitespace-nowrap shrink-0"
+                        className="min-h-[36px] px-2.5 text-xs font-medium text-[#57534E] hover:text-[#9A3412] transition-colors whitespace-nowrap shrink-0"
                       >
                         章ごと
                       </button>
                     </div>
 
-                    {/* Units list */}
+                    {/* Clean Full-Row Tappable Units */}
                     {!isCollapsed && (
                       <div className="divide-y divide-[#E6E0D6]">
                         {group.units.map((u) => {
                           const learnedPct =
                             u.total > 0 ? Math.round((u.learned / u.total) * 100) : 0;
-                          const masteredPct =
-                            u.total > 0 ? Math.round((u.mastered / u.total) * 100) : 0;
 
                           return (
-                            <div
+                            <button
                               key={`${group.chapter}-${u.unit}`}
-                              className="p-4 hover:bg-[#FBF9F5]/60 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                              type="button"
+                              onClick={() =>
+                                onLaunchSession({
+                                  scopeId: activeScopeId,
+                                  chapter: group.chapter,
+                                  unit: u.unit,
+                                  selectedTags: [],
+                                  tagMatchMode: 'and',
+                                  filterPreset: u.due > 0 ? 'due' : 'all',
+                                  orderMode: u.due > 0 ? 'srs' : 'unit',
+                                  swapFrontBack: false,
+                                  recordToSrs: true,
+                                  mode: 'flip',
+                                  label: u.unit,
+                                })
+                              }
+                              className="w-full text-left px-4 py-3.5 hover:bg-[#FBF9F5] active:bg-[#F4F0E8]/60 transition-colors flex items-center justify-between gap-3 min-h-[60px]"
                             >
                               <div className="min-w-0 flex-1 space-y-1.5">
                                 <div className="text-sm font-medium text-[#1C1917] leading-snug">
                                   {u.unit}
                                 </div>
-                                <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-[#78716C] font-mono tabular-nums">
-                                  <span>{u.total}問</span>
-                                  <span aria-hidden="true">·</span>
-                                  <span>済 {u.learned}/{u.total}</span>
-                                  {u.due > 0 && (
-                                    <>
-                                      <span aria-hidden="true">·</span>
-                                      <span className="text-[#9A3412] font-medium">
+                                <div className="flex items-center gap-2.5">
+                                  <div className="h-1 flex-1 max-w-[140px] bg-[#F4F0E8] rounded-full overflow-hidden">
+                                    <div
+                                      className="h-full bg-[#15803D]"
+                                      style={{ width: `${learnedPct}%` }}
+                                    />
+                                  </div>
+                                  <span className="text-xs text-[#78716C] font-mono tabular-nums">
+                                    {u.learned}/{u.total}
+                                    {u.due > 0 && (
+                                      <span className="text-[#9A3412] font-medium ml-2">
                                         復習 {u.due}
                                       </span>
-                                    </>
-                                  )}
-                                  {u.weak > 0 && (
-                                    <>
-                                      <span aria-hidden="true">·</span>
-                                      <span className="text-[#B45309]">苦手 {u.weak}</span>
-                                    </>
-                                  )}
-                                  {u.avgRetention !== null && (
-                                    <>
-                                      <span aria-hidden="true">·</span>
-                                      <span>保持 {u.avgRetention}%</span>
-                                    </>
-                                  )}
-                                </div>
-                                <div className="h-1.5 w-full sm:max-w-xs bg-[#F4F0E8] rounded-full overflow-hidden relative">
-                                  <div
-                                    className="h-full bg-[#D97706]/55 transition-all"
-                                    style={{ width: `${learnedPct}%` }}
-                                  />
-                                  <div
-                                    className="h-full bg-[#15803D] absolute top-0 left-0 transition-all"
-                                    style={{ width: `${masteredPct}%` }}
-                                  />
+                                    )}
+                                  </span>
                                 </div>
                               </div>
-
-                              <div className="grid grid-cols-2 sm:flex items-center gap-2 sm:gap-1.5 shrink-0">
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    onLaunchSession({
-                                      scopeId: activeScopeId,
-                                      chapter: group.chapter,
-                                      unit: u.unit,
-                                      selectedTags: [],
-                                      tagMatchMode: 'and',
-                                      filterPreset: u.due > 0 ? 'due' : 'all',
-                                      orderMode: u.due > 0 ? 'srs' : 'unit',
-                                      swapFrontBack: false,
-                                      recordToSrs: true,
-                                      mode: 'flip',
-                                      label: u.unit,
-                                    })
-                                  }
-                                  className="inline-flex items-center justify-center gap-1.5 min-h-[44px] sm:min-h-[34px] px-3 py-1.5 text-xs font-medium text-[#FBF9F5] bg-[#1C1917] hover:bg-[#9A3412] rounded-lg sm:rounded-md transition-colors whitespace-nowrap"
-                                >
-                                  <BookOpen className="w-3.5 h-3.5" aria-hidden="true" />
-                                  {u.due > 0 ? `復習 (${u.due})` : 'カード学習'}
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    onLaunchSession({
-                                      scopeId: activeScopeId,
-                                      chapter: group.chapter,
-                                      unit: u.unit,
-                                      selectedTags: [],
-                                      tagMatchMode: 'and',
-                                      filterPreset: 'all',
-                                      orderMode: 'unit',
-                                      swapFrontBack: false,
-                                      recordToSrs: true,
-                                      mode: 'redsheet',
-                                      label: `${u.unit} · 赤シート`,
-                                    })
-                                  }
-                                  className="min-h-[44px] sm:min-h-[34px] px-3 py-1.5 text-xs font-medium text-[#57534E] hover:text-[#1C1917] bg-[#F4F0E8] hover:bg-[#E6E0D6] rounded-lg sm:rounded-md transition-colors whitespace-nowrap"
-                                >
-                                  赤シート
-                                </button>
-                              </div>
-                            </div>
+                              <ChevronRight
+                                className="w-4 h-4 text-[#A8A29E] shrink-0"
+                                aria-hidden="true"
+                              />
+                            </button>
                           );
                         })}
                       </div>
@@ -757,207 +615,178 @@ export function FlashcardHubView({
                 );
               })}
             </div>
-          )}
-        </section>
+          )
+        ) : (
+          /* Tags Browser: Focused Tag Filtering */
+          <div className="bg-white border border-[#E6E0D6] rounded-2xl sm:rounded-xl p-4 sm:p-5 space-y-4">
+            {/* Search & AND/OR */}
+            <div className="flex items-center gap-2">
+              <div className="relative flex-1">
+                <Search
+                  className="w-4 h-4 text-[#78716C] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
+                  aria-hidden="true"
+                />
+                <input
+                  type="text"
+                  value={tagSearch}
+                  onChange={(e) => setTagSearch(e.target.value)}
+                  placeholder="タグを検索..."
+                  className="w-full h-11 sm:h-10 pl-9 pr-3 text-base sm:text-sm bg-[#FBF9F5] border border-[#E6E0D6] rounded-xl sm:rounded-lg text-[#1C1917] focus:outline-none focus:border-[#9A3412]"
+                />
+              </div>
 
-        {/* Right 5 cols: Multi-Axis Tag Study Builder */}
-        <aside
-          className={`lg:col-span-5 bg-white border border-[#E6E0D6] rounded-xl sm:rounded-lg p-4 sm:p-5 space-y-4 lg:sticky lg:top-20 ${
-            mobileBrowseTab === 'tags' ? 'block' : 'hidden lg:block'
-          }`}
-        >
-          <div className="flex items-center justify-between gap-2">
-            <h3 className="text-base sm:text-lg font-serif font-bold text-[#1C1917] flex items-center gap-2">
-              <Tag className="w-4 h-4 text-[#9A3412]" aria-hidden="true" />
-              タグで絞り込んで学習
-            </h3>
-            {selectedTags.length > 0 && (
-              <button
-                type="button"
-                onClick={() => setSelectedTags([])}
-                className="min-h-[36px] px-2 text-xs text-[#9A3412] font-medium hover:underline whitespace-nowrap"
+              <div
+                role="group"
+                aria-label="複数タグの結合条件"
+                className="flex items-center p-1 bg-[#F4F0E8] rounded-lg shrink-0"
               >
-                選択解除（{selectedTags.length}）
-              </button>
-            )}
-          </div>
-
-          <p className="text-xs text-[#57534E]">
-            重要度・分類・地域・授業タグを選ぶと、該当する問題だけを抽出して学習できます。
-          </p>
-
-          {/* Search & AND/OR segmented toggle */}
-          <div className="flex items-center gap-2">
-            <input
-              type="text"
-              value={tagSearch}
-              onChange={(e) => setTagSearch(e.target.value)}
-              placeholder="タグを検索（例：条約、日本）"
-              className="flex-1 h-11 sm:h-9 px-3 text-base sm:text-xs bg-[#FBF9F5] border border-[#D6CEBE] rounded-lg sm:rounded-md text-[#1C1917] focus:outline-none focus:border-[#9A3412]"
-            />
-            <div
-              role="group"
-              aria-label="複数タグの結合条件"
-              className="flex items-center p-1 sm:p-0.5 bg-[#F4F0E8] rounded-lg sm:rounded-md shrink-0"
-            >
-              <button
-                type="button"
-                onClick={() => setTagMatchMode('and')}
-                className={`min-h-[36px] sm:min-h-[28px] px-3 sm:px-2.5 py-1 text-xs font-medium rounded-md sm:rounded transition-colors whitespace-nowrap ${
-                  tagMatchMode === 'and'
-                    ? 'bg-white text-[#1C1917] shadow-xs'
-                    : 'text-[#57534E] hover:text-[#1C1917]'
-                }`}
-              >
-                AND
-              </button>
-              <button
-                type="button"
-                onClick={() => setTagMatchMode('or')}
-                className={`min-h-[36px] sm:min-h-[28px] px-3 sm:px-2.5 py-1 text-xs font-medium rounded-md sm:rounded transition-colors whitespace-nowrap ${
-                  tagMatchMode === 'or'
-                    ? 'bg-white text-[#1C1917] shadow-xs'
-                    : 'text-[#57534E] hover:text-[#1C1917]'
-                }`}
-              >
-                OR
-              </button>
-            </div>
-          </div>
-
-          {/* Selected tags launch box */}
-          <div className="p-3.5 bg-[#FBF9F5] border border-[#E6E0D6] rounded-xl sm:rounded-md space-y-3">
-            <div className="flex items-center justify-between gap-2 text-xs">
-              <span className="text-[#57534E]">
-                {selectedTags.length === 0
-                  ? 'タグ未選択（範囲全体）'
-                  : `選択中: ${selectedTags.length}件（${tagMatchMode === 'and' ? 'すべて含む' : 'いずれか'}）`}
-              </span>
-              <span className="font-mono font-semibold tabular-nums text-[#1C1917]">
-                該当 {matchedBySelectedTags.length} 問
-              </span>
-            </div>
-
-            <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-2">
-              <button
-                type="button"
-                disabled={matchedBySelectedTags.length === 0}
-                onClick={() => launchTagStudy('flip', 'all')}
-                className="flex-1 inline-flex items-center justify-center gap-1.5 min-h-[44px] sm:min-h-[36px] px-3 py-2 text-xs font-semibold text-[#FBF9F5] bg-[#9A3412] hover:bg-[#7C2D12] disabled:opacity-40 rounded-lg sm:rounded-md transition-colors whitespace-nowrap"
-              >
-                <Play className="w-3.5 h-3.5" aria-hidden="true" />
-                カード学習（{matchedBySelectedTags.length}問）
-              </button>
-              <div className="grid grid-cols-2 sm:flex items-center gap-2">
-                {matchedDueCount > 0 && (
-                  <button
-                    type="button"
-                    onClick={() => launchTagStudy('flip', 'due')}
-                    className="col-span-2 sm:col-span-1 min-h-[44px] sm:min-h-[36px] px-3 py-2 text-xs font-medium text-[#9A3412] bg-white border border-[#9A3412] hover:bg-[#9A3412]/5 rounded-lg sm:rounded-md transition-colors whitespace-nowrap"
-                  >
-                    復習待ち（{matchedDueCount}）
-                  </button>
-                )}
                 <button
                   type="button"
-                  disabled={matchedBySelectedTags.length === 0}
-                  onClick={() => launchTagStudy('redsheet', 'all')}
-                  className="min-h-[44px] sm:min-h-[36px] px-3 py-2 text-xs font-medium text-[#1C1917] bg-white border border-[#D6CEBE] hover:border-[#1C1917] disabled:opacity-40 rounded-lg sm:rounded-md transition-colors whitespace-nowrap"
+                  onClick={() => setTagMatchMode('and')}
+                  className={`min-h-[34px] sm:min-h-[30px] px-2.5 text-xs font-medium rounded-md transition-colors ${
+                    tagMatchMode === 'and'
+                      ? 'bg-white text-[#1C1917] shadow-xs'
+                      : 'text-[#57534E]'
+                  }`}
                 >
-                  赤シート
+                  AND
                 </button>
                 <button
                   type="button"
-                  disabled={matchedBySelectedTags.length === 0}
-                  onClick={() => launchTagStudy('typing', 'all')}
-                  className="min-h-[44px] sm:min-h-[36px] px-3 py-2 text-xs font-medium text-[#1C1917] bg-white border border-[#D6CEBE] hover:border-[#1C1917] disabled:opacity-40 rounded-lg sm:rounded-md transition-colors whitespace-nowrap"
+                  onClick={() => setTagMatchMode('or')}
+                  className={`min-h-[34px] sm:min-h-[30px] px-2.5 text-xs font-medium rounded-md transition-colors ${
+                    tagMatchMode === 'or'
+                      ? 'bg-white text-[#1C1917] shadow-xs'
+                      : 'text-[#57534E]'
+                  }`}
                 >
-                  記述
+                  OR
                 </button>
               </div>
             </div>
-          </div>
 
-          {/* Grouped Tag Lists (larger tap chips on mobile) */}
-          <div className="space-y-3 lg:max-h-[540px] lg:overflow-y-auto archival-scroll lg:pr-1">
-            {filteredTagGroups.map((group) => {
-              const isOpen =
-                Boolean(expandedTagCategories[group.key]) || tagSearch.trim().length > 0;
-              return (
-                <div
-                  key={group.key}
-                  className="border-t border-[#E6E0D6] pt-3 first:border-t-0 first:pt-0"
-                >
+            {/* Selection Action Strip (only highlighted when tags are chosen) */}
+            {selectedTags.length > 0 && (
+              <div className="p-3.5 bg-[#FBF9F5] border border-[#E6E0D6] rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex items-center justify-between sm:justify-start gap-3 text-xs">
+                  <span className="font-mono font-semibold tabular-nums text-[#1C1917]">
+                    該当 {matchedBySelectedTags.length} 問
+                  </span>
                   <button
                     type="button"
-                    onClick={() =>
-                      setExpandedTagCategories((prev) => ({
-                        ...prev,
-                        [group.key]: !prev[group.key],
-                      }))
-                    }
-                    className="w-full min-h-[40px] sm:min-h-[32px] flex items-center justify-between text-xs font-medium text-[#57534E] hover:text-[#1C1917] mb-1.5"
+                    onClick={() => setSelectedTags([])}
+                    className="text-[#9A3412] hover:underline"
                   >
-                    <span className="flex items-center gap-1.5">
-                      {isOpen ? (
-                        <ChevronDown className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
-                      ) : (
-                        <ChevronRight className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
-                      )}
-                      {group.label}
-                    </span>
-                    <span className="font-mono tabular-nums text-[#78716C]">
-                      {group.items.length}
-                    </span>
+                    選択をクリア
                   </button>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    disabled={matchedBySelectedTags.length === 0}
+                    onClick={() => launchTagStudy('flip', 'all')}
+                    className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 min-h-[42px] sm:min-h-[36px] px-4 text-xs font-semibold text-[#FBF9F5] bg-[#9A3412] hover:bg-[#7C2D12] disabled:opacity-40 rounded-lg transition-colors whitespace-nowrap"
+                  >
+                    <Play className="w-3.5 h-3.5 fill-current" aria-hidden="true" />
+                    学習を開始
+                  </button>
+                  {matchedDueCount > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => launchTagStudy('flip', 'due')}
+                      className="min-h-[42px] sm:min-h-[36px] px-3 text-xs font-medium text-[#9A3412] bg-white border border-[#9A3412] rounded-lg whitespace-nowrap"
+                    >
+                      復習 ({matchedDueCount})
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    disabled={matchedBySelectedTags.length === 0}
+                    onClick={() => launchTagStudy('redsheet', 'all')}
+                    className="min-h-[42px] sm:min-h-[36px] px-3 text-xs font-medium text-[#57534E] bg-white border border-[#E6E0D6] rounded-lg whitespace-nowrap"
+                  >
+                    赤シート
+                  </button>
+                </div>
+              </div>
+            )}
 
-                  {isOpen && (
-                    <div className="flex flex-wrap gap-2 sm:gap-1.5">
-                      {group.items.map((item) => {
-                        const active = selectedTags.includes(item.meta.raw);
-                        return (
-                          <button
-                            key={item.meta.raw}
-                            type="button"
-                            onClick={() => toggleTag(item.meta.raw)}
-                            className={`inline-flex items-center gap-1.5 min-h-[40px] sm:min-h-[32px] px-3 sm:px-2.5 py-1.5 text-xs rounded-lg sm:rounded-md border transition-colors text-left max-w-full ${
-                              active
-                                ? 'bg-[#1C1917] text-[#FBF9F5] border-[#1C1917]'
-                                : 'bg-[#FBF9F5] text-[#1C1917] border-[#E6E0D6] hover:border-[#1C1917]'
-                            }`}
-                          >
-                            <span className="truncate max-w-[230px]">
-                              {item.meta.displayLabel}
-                            </span>
-                            <span
-                              className={`font-mono text-[11px] tabular-nums shrink-0 ${
-                                active ? 'text-[#D6CEBE]' : 'text-[#78716C]'
+            {/* Grouped Tags */}
+            <div className="space-y-4">
+              {filteredTagGroups.map((group) => {
+                const isOpen =
+                  Boolean(expandedTagCategories[group.key]) || tagSearch.trim().length > 0;
+                return (
+                  <div
+                    key={group.key}
+                    className="border-t border-[#E6E0D6] pt-3 first:border-t-0 first:pt-0"
+                  >
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setExpandedTagCategories((prev) => ({
+                          ...prev,
+                          [group.key]: !prev[group.key],
+                        }))
+                      }
+                      className="w-full min-h-[36px] flex items-center justify-between text-xs font-medium text-[#57534E] hover:text-[#1C1917] mb-2"
+                    >
+                      <span className="flex items-center gap-1.5">
+                        {isOpen ? (
+                          <ChevronDown className="w-4 h-4" />
+                        ) : (
+                          <ChevronRight className="w-4 h-4" />
+                        )}
+                        {group.label}
+                      </span>
+                      <span className="font-mono tabular-nums text-[#78716C]">
+                        {group.items.length}
+                      </span>
+                    </button>
+
+                    {isOpen && (
+                      <div className="flex flex-wrap gap-2">
+                        {group.items.map((item) => {
+                          const active = selectedTags.includes(item.meta.raw);
+                          return (
+                            <button
+                              key={item.meta.raw}
+                              type="button"
+                              onClick={() => toggleTag(item.meta.raw)}
+                              className={`inline-flex items-center gap-1.5 min-h-[40px] sm:min-h-[34px] px-3 py-1.5 text-xs rounded-lg border transition-colors text-left max-w-full ${
+                                active
+                                  ? 'bg-[#1C1917] text-[#FBF9F5] border-[#1C1917]'
+                                  : 'bg-[#FBF9F5] text-[#1C1917] border-[#E6E0D6] hover:border-[#1C1917]'
                               }`}
                             >
-                              {item.total}
-                            </span>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+                              <span className="truncate max-w-[220px]">
+                                {item.meta.displayLabel}
+                              </span>
+                              <span
+                                className={`font-mono text-[11px] tabular-nums shrink-0 ${
+                                  active ? 'text-[#D6CEBE]' : 'text-[#78716C]'
+                                }`}
+                              >
+                                {item.total}
+                              </span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </div>
-        </aside>
-      </div>
+        )}
+      </section>
 
-      {/* Mobile Floating Tag Selection Action Bar (appears when tags are selected on mobile) */}
-      {mobileBrowseTab === 'tags' && selectedTags.length > 0 && (
-        <div className="lg:hidden fixed left-3 right-3 bottom-18 z-20 bg-[#1C1917] text-[#FBF9F5] rounded-xl px-4 py-2.5 shadow-lg flex items-center justify-between gap-3">
-          <div className="min-w-0">
-            <div className="text-xs font-medium truncate">
-              {selectedTags.length}件のタグを選択中
-            </div>
-            <div className="text-[11px] font-mono tabular-nums text-[#D6CEBE]">
-              該当 {matchedBySelectedTags.length} 問（{tagMatchMode.toUpperCase()}）
-            </div>
+      {/* Mobile Floating Tag Start Bar */}
+      {browseTab === 'tags' && selectedTags.length > 0 && (
+        <div className="md:hidden fixed left-3 right-3 bottom-18 z-20 bg-[#1C1917] text-[#FBF9F5] rounded-xl px-4 py-2.5 shadow-lg flex items-center justify-between gap-3">
+          <div className="text-xs font-mono tabular-nums">
+            {selectedTags.length}件選択 · 該当 {matchedBySelectedTags.length} 問
           </div>
           <button
             type="button"
@@ -965,7 +794,7 @@ export function FlashcardHubView({
             onClick={() => launchTagStudy('flip', 'all')}
             className="inline-flex items-center gap-1.5 min-h-[40px] px-4 text-xs font-semibold text-[#FBF9F5] bg-[#9A3412] active:bg-[#7C2D12] disabled:opacity-40 rounded-lg whitespace-nowrap shrink-0"
           >
-            <Play className="w-3.5 h-3.5" aria-hidden="true" />
+            <Play className="w-3.5 h-3.5 fill-current" aria-hidden="true" />
             学習開始
           </button>
         </div>
