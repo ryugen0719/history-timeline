@@ -3,15 +3,20 @@ import {
   ChevronDown,
   ChevronRight,
   Eye,
+  ListOrdered,
   PenLine,
   Play,
+  RotateCw,
   Search,
   Shuffle,
   Star,
+  X,
 } from 'lucide-react';
 import type {
   ExamScope,
   Flashcard,
+  HubLaunchPrefs,
+  PersistedStudySession,
   SrsProgressMap,
   StudyFilterPreset,
   StudyMode,
@@ -23,6 +28,7 @@ import {
   buildTagCategoryGroups,
   filterCardsByBaseCriteria,
 } from '../../utils/flashcardFilter';
+import { parseTagMeta } from '../../utils/flashcardParser';
 import {
   calculateRetentionPercent,
   getSrsProgress,
@@ -37,10 +43,21 @@ interface FlashcardHubViewProps {
   srsMap: SrsProgressMap;
   activeScopeId: string;
   todayReviews: number;
+  hubPrefs: HubLaunchPrefs;
+  savedSession: PersistedStudySession | null;
+  onChangeHubPrefs: (prefs: HubLaunchPrefs) => void;
   onChangeScopeId: (scopeId: string) => void;
   onLaunchSession: (config: StudySessionConfig) => void;
+  onResumeSession: () => void;
+  onDiscardSavedSession: () => void;
   onGoToManage: () => void;
 }
+
+const HUB_MODE_OPTIONS: Array<{ id: StudyMode; label: string }> = [
+  { id: 'flip', label: 'カード' },
+  { id: 'typing', label: '記述' },
+  { id: 'redsheet', label: '赤シート' },
+];
 
 export function FlashcardHubView({
   scopes,
@@ -48,8 +65,13 @@ export function FlashcardHubView({
   srsMap,
   activeScopeId,
   todayReviews,
+  hubPrefs,
+  savedSession,
+  onChangeHubPrefs,
   onChangeScopeId,
   onLaunchSession,
+  onResumeSession,
+  onDiscardSavedSession,
   onGoToManage,
 }: FlashcardHubViewProps) {
   const [browseTab, setBrowseTab] = useState<'units' | 'tags'>('units');
@@ -179,7 +201,7 @@ export function FlashcardHubView({
 
   const launchQuickPreset = (
     filterPreset: StudyFilterPreset,
-    mode: StudyMode,
+    mode: StudyMode = hubPrefs.mode,
     extra?: Partial<StudySessionConfig>
   ) => {
     onLaunchSession({
@@ -189,7 +211,10 @@ export function FlashcardHubView({
       selectedTags: [],
       tagMatchMode: 'and',
       filterPreset,
-      orderMode: filterPreset === 'due' ? 'srs' : 'unit',
+      orderMode:
+        filterPreset === 'due'
+          ? 'srs'
+          : hubPrefs.orderMode,
       swapFrontBack: false,
       recordToSrs: true,
       mode,
@@ -197,7 +222,10 @@ export function FlashcardHubView({
     });
   };
 
-  const launchTagStudy = (mode: StudyMode, filterPreset: StudyFilterPreset = 'all') => {
+  const launchTagStudy = (
+    mode: StudyMode = hubPrefs.mode,
+    filterPreset: StudyFilterPreset = 'all'
+  ) => {
     onLaunchSession({
       scopeId: activeScopeId,
       chapter: 'all',
@@ -205,7 +233,7 @@ export function FlashcardHubView({
       selectedTags,
       tagMatchMode,
       filterPreset,
-      orderMode: filterPreset === 'due' ? 'srs' : 'unit',
+      orderMode: filterPreset === 'due' ? 'srs' : hubPrefs.orderMode,
       swapFrontBack: false,
       recordToSrs: true,
       mode,
@@ -218,15 +246,15 @@ export function FlashcardHubView({
 
   const handlePrimaryStart = () => {
     if (scopeStats.due > 0) {
-      launchQuickPreset('due', 'flip', {
+      launchQuickPreset('due', hubPrefs.mode, {
         label: `${activeScope?.name ?? '全範囲'} · 今日の復習`,
       });
     } else if (scopeStats.newCount > 0) {
-      launchQuickPreset('new', 'flip', {
+      launchQuickPreset('new', hubPrefs.mode, {
         label: `${activeScope?.name ?? '全範囲'} · 未学習`,
       });
     } else {
-      launchQuickPreset('all', 'flip', {
+      launchQuickPreset('all', hubPrefs.mode, {
         label: `${activeScope?.name ?? '全範囲'} · 全問復習`,
       });
     }
@@ -239,8 +267,58 @@ export function FlashcardHubView({
         ? `学習を開始（未学習 ${scopeStats.newCount}問）`
         : `全問を復習する（${scopeStats.total}問）`;
 
+  const savedSessionRemaining = savedSession
+    ? savedSession.config.mode === 'redsheet'
+      ? Math.max(
+          0,
+          savedSession.queueIds.length -
+            Object.keys(savedSession.redSheetRated).length
+        )
+      : Math.max(0, savedSession.queueIds.length - savedSession.currentIndex)
+    : 0;
+
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-4xl mx-auto space-y-5">
+      {/* Quick Resume Strip when an in-progress session exists */}
+      {savedSession && savedSessionRemaining > 0 && (
+        <section
+          aria-label="前回の続きから再開"
+          className="bg-[#FFFBEB] border border-[#FDE68A] rounded-2xl sm:rounded-xl px-4 py-3 sm:px-5 flex items-center justify-between gap-3"
+        >
+          <div className="min-w-0 flex-1">
+            <div className="text-[11px] font-medium text-[#92400E]">
+              前回の続きから再開できます
+            </div>
+            <div className="text-sm font-serif font-bold text-[#1C1917] truncate mt-0.5">
+              {savedSession.config.label || '一問一答'}
+              <span className="ml-2 text-xs font-mono font-normal tabular-nums text-[#78716C]">
+                {savedSession.config.mode === 'redsheet'
+                  ? `未評価 ${savedSessionRemaining}/${savedSession.queueIds.length}問`
+                  : `${savedSession.currentIndex + 1}/${savedSession.queueIds.length}問目`}
+              </span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-1.5 shrink-0">
+            <button
+              type="button"
+              onClick={onResumeSession}
+              className="inline-flex items-center justify-center gap-1.5 min-h-[40px] sm:min-h-[36px] px-3.5 text-xs font-semibold text-[#92400E] bg-white hover:bg-[#FEF3C7] border border-[#F59E0B] rounded-lg transition-colors whitespace-nowrap"
+            >
+              <RotateCw className="w-3.5 h-3.5" aria-hidden="true" />
+              続きから再開
+            </button>
+            <button
+              type="button"
+              onClick={onDiscardSavedSession}
+              aria-label="前回の続きをクリア"
+              className="min-h-[40px] min-w-[36px] sm:min-h-[36px] sm:min-w-[36px] flex items-center justify-center text-[#92400E] hover:text-[#1C1917] hover:bg-[#FEF3C7] rounded-lg transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        </section>
+      )}
       {/* TIER 1: Single Primary Study Hero */}
       <section className="bg-white border border-[#E6E0D6] rounded-2xl sm:rounded-xl p-5 sm:p-7 space-y-5">
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
@@ -301,20 +379,78 @@ export function FlashcardHubView({
           </div>
         </div>
 
-        {/* One Dominant Primary CTA */}
-        <div className="space-y-3">
-          <button
-            type="button"
-            disabled={scopeStats.total === 0}
-            onClick={handlePrimaryStart}
-            className="w-full sm:w-auto sm:min-w-[280px] inline-flex items-center justify-center gap-2 min-h-[50px] px-6 py-3 text-sm sm:text-base font-semibold text-[#FBF9F5] bg-[#9A3412] hover:bg-[#7C2D12] active:scale-[0.99] disabled:opacity-40 rounded-xl sm:rounded-lg transition-all whitespace-nowrap"
-          >
-            <Play className="w-4 h-4 fill-current" aria-hidden="true" />
-            {primaryLabel}
-          </button>
+        {/* One Dominant Primary CTA + Inline Mode & Order Preferences */}
+        <div className="space-y-3.5">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+            <button
+              type="button"
+              disabled={scopeStats.total === 0}
+              onClick={handlePrimaryStart}
+              className="w-full sm:w-auto sm:min-w-[260px] inline-flex items-center justify-center gap-2 min-h-[50px] px-6 py-3 text-sm sm:text-base font-semibold text-[#FBF9F5] bg-[#9A3412] hover:bg-[#7C2D12] active:scale-[0.99] disabled:opacity-40 rounded-xl sm:rounded-lg transition-all whitespace-nowrap"
+            >
+              <Play className="w-4 h-4 fill-current" aria-hidden="true" />
+              {primaryLabel}
+            </button>
 
-          {/* Quiet Secondary Mode Row + Progressive Disclosure for Presets */}
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 pt-1 text-xs">
+            {/* Quick Mode & Order Selector (applies to Hero, Unit, Chapter & Tag launches) */}
+            <div className="flex flex-wrap items-center gap-2 sm:ml-auto">
+              <div
+                role="group"
+                aria-label="出題形式"
+                className="flex items-center p-1 bg-[#F4F0E8] rounded-lg"
+              >
+                {HUB_MODE_OPTIONS.map((opt) => (
+                  <button
+                    key={opt.id}
+                    type="button"
+                    aria-pressed={hubPrefs.mode === opt.id}
+                    onClick={() =>
+                      onChangeHubPrefs({ ...hubPrefs, mode: opt.id })
+                    }
+                    className={`min-h-[36px] sm:min-h-[32px] px-3 text-xs font-medium rounded-md transition-colors whitespace-nowrap ${
+                      hubPrefs.mode === opt.id
+                        ? 'bg-white text-[#1C1917] shadow-xs'
+                        : 'text-[#57534E] hover:text-[#1C1917]'
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+
+              <button
+                type="button"
+                aria-pressed={hubPrefs.orderMode === 'shuffle'}
+                onClick={() =>
+                  onChangeHubPrefs({
+                    ...hubPrefs,
+                    orderMode:
+                      hubPrefs.orderMode === 'shuffle' ? 'unit' : 'shuffle',
+                  })
+                }
+                className={`inline-flex items-center gap-1.5 min-h-[42px] sm:min-h-[38px] px-3 text-xs font-medium rounded-lg border transition-colors whitespace-nowrap ${
+                  hubPrefs.orderMode === 'shuffle'
+                    ? 'bg-[#1C1917] text-[#FBF9F5] border-[#1C1917]'
+                    : 'bg-[#FBF9F5] text-[#57534E] border-[#E6E0D6] hover:border-[#1C1917] hover:text-[#1C1917]'
+                }`}
+              >
+                {hubPrefs.orderMode === 'shuffle' ? (
+                  <>
+                    <Shuffle className="w-3.5 h-3.5" aria-hidden="true" />
+                    シャッフル
+                  </>
+                ) : (
+                  <>
+                    <ListOrdered className="w-3.5 h-3.5" aria-hidden="true" />
+                    番号順
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* Quiet Secondary Shortcuts + Progressive Disclosure */}
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 pt-0.5 text-xs">
             <button
               type="button"
               disabled={scopeStats.total === 0}
@@ -326,7 +462,7 @@ export function FlashcardHubView({
               className="inline-flex items-center gap-1.5 min-h-[36px] text-[#57534E] hover:text-[#1C1917] disabled:opacity-40 font-medium transition-colors whitespace-nowrap"
             >
               <Eye className="w-3.5 h-3.5 text-[#9A3412]" aria-hidden="true" />
-              赤シート
+              全問赤シート
             </button>
             <button
               type="button"
@@ -339,7 +475,7 @@ export function FlashcardHubView({
               className="inline-flex items-center gap-1.5 min-h-[36px] text-[#57534E] hover:text-[#1C1917] disabled:opacity-40 font-medium transition-colors whitespace-nowrap"
             >
               <PenLine className="w-3.5 h-3.5 text-[#57534E]" aria-hidden="true" />
-              記述チェック
+              全問記述
             </button>
 
             <button
@@ -348,7 +484,7 @@ export function FlashcardHubView({
               aria-expanded={showMoreOptions}
               className="inline-flex items-center gap-1 min-h-[36px] text-[#57534E] hover:text-[#1C1917] font-medium transition-colors whitespace-nowrap sm:ml-auto"
             >
-              <span>その他の出題方法</span>
+              <span>絞り込み出題</span>
               {showMoreOptions ? (
                 <ChevronDown className="w-3.5 h-3.5" aria-hidden="true" />
               ) : (
@@ -540,20 +676,20 @@ export function FlashcardHubView({
                             selectedTags: [],
                             tagMatchMode: 'and',
                             filterPreset: 'all',
-                            orderMode: 'unit',
+                            orderMode: hubPrefs.orderMode,
                             swapFrontBack: false,
                             recordToSrs: true,
-                            mode: 'flip',
+                            mode: hubPrefs.mode,
                             label: group.chapter,
                           })
                         }
                         className="min-h-[36px] px-2.5 text-xs font-medium text-[#57534E] hover:text-[#9A3412] transition-colors whitespace-nowrap shrink-0"
                       >
-                        章ごと
+                        章ごと（{group.total}）
                       </button>
                     </div>
 
-                    {/* Clean Full-Row Tappable Units */}
+                    {/* Clean Full-Row Tappable Units + Sibling Due Button (No Nested Buttons) */}
                     {!isCollapsed && (
                       <div className="divide-y divide-[#E6E0D6]">
                         {group.units.map((u) => {
@@ -561,52 +697,80 @@ export function FlashcardHubView({
                             u.total > 0 ? Math.round((u.learned / u.total) * 100) : 0;
 
                           return (
-                            <button
+                            <div
                               key={`${group.chapter}-${u.unit}`}
-                              type="button"
-                              onClick={() =>
-                                onLaunchSession({
-                                  scopeId: activeScopeId,
-                                  chapter: group.chapter,
-                                  unit: u.unit,
-                                  selectedTags: [],
-                                  tagMatchMode: 'and',
-                                  filterPreset: u.due > 0 ? 'due' : 'all',
-                                  orderMode: u.due > 0 ? 'srs' : 'unit',
-                                  swapFrontBack: false,
-                                  recordToSrs: true,
-                                  mode: 'flip',
-                                  label: u.unit,
-                                })
-                              }
-                              className="w-full text-left px-4 py-3.5 hover:bg-[#FBF9F5] active:bg-[#F4F0E8]/60 transition-colors flex items-center justify-between gap-3 min-h-[60px]"
+                              className="flex items-stretch hover:bg-[#FBF9F5] transition-colors"
                             >
-                              <div className="min-w-0 flex-1 space-y-1.5">
-                                <div className="text-sm font-medium text-[#1C1917] leading-snug">
-                                  {u.unit}
-                                </div>
-                                <div className="flex items-center gap-2.5">
-                                  <div className="h-1 flex-1 max-w-[140px] bg-[#F4F0E8] rounded-full overflow-hidden">
-                                    <div
-                                      className="h-full bg-[#15803D]"
-                                      style={{ width: `${learnedPct}%` }}
-                                    />
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  onLaunchSession({
+                                    scopeId: activeScopeId,
+                                    chapter: group.chapter,
+                                    unit: u.unit,
+                                    selectedTags: [],
+                                    tagMatchMode: 'and',
+                                    filterPreset: 'all',
+                                    orderMode: hubPrefs.orderMode,
+                                    swapFrontBack: false,
+                                    recordToSrs: true,
+                                    mode: hubPrefs.mode,
+                                    label: u.unit,
+                                  })
+                                }
+                                className="flex-1 min-w-0 text-left px-4 py-3.5 active:bg-[#F4F0E8]/60 flex items-center justify-between gap-3 min-h-[60px]"
+                              >
+                                <div className="min-w-0 flex-1 space-y-1.5">
+                                  <div className="text-sm font-medium text-[#1C1917] leading-snug">
+                                    {u.unit}
                                   </div>
-                                  <span className="text-xs text-[#78716C] font-mono tabular-nums">
-                                    {u.learned}/{u.total}
-                                    {u.due > 0 && (
-                                      <span className="text-[#9A3412] font-medium ml-2">
-                                        復習 {u.due}
-                                      </span>
-                                    )}
-                                  </span>
+                                  <div className="flex items-center gap-2.5">
+                                    <div className="h-1 flex-1 max-w-[140px] bg-[#F4F0E8] rounded-full overflow-hidden">
+                                      <div
+                                        className="h-full bg-[#15803D]"
+                                        style={{ width: `${learnedPct}%` }}
+                                      />
+                                    </div>
+                                    <span className="text-xs text-[#78716C] font-mono tabular-nums">
+                                      {u.learned}/{u.total}問
+                                    </span>
+                                  </div>
                                 </div>
-                              </div>
-                              <ChevronRight
-                                className="w-4 h-4 text-[#A8A29E] shrink-0"
-                                aria-hidden="true"
-                              />
-                            </button>
+                                {u.due === 0 && (
+                                  <ChevronRight
+                                    className="w-4 h-4 text-[#A8A29E] shrink-0"
+                                    aria-hidden="true"
+                                  />
+                                )}
+                              </button>
+
+                              {u.due > 0 && (
+                                <div className="flex items-center pr-3 pl-1 shrink-0">
+                                  <button
+                                    type="button"
+                                    aria-label={`${u.unit}の復習待ち${u.due}問のみを学習`}
+                                    onClick={() =>
+                                      onLaunchSession({
+                                        scopeId: activeScopeId,
+                                        chapter: group.chapter,
+                                        unit: u.unit,
+                                        selectedTags: [],
+                                        tagMatchMode: 'and',
+                                        filterPreset: 'due',
+                                        orderMode: 'srs',
+                                        swapFrontBack: false,
+                                        recordToSrs: true,
+                                        mode: hubPrefs.mode,
+                                        label: `${u.unit} · 復習`,
+                                      })
+                                    }
+                                    className="min-h-[38px] px-3 text-xs font-semibold text-[#9A3412] bg-[#FFF7ED] hover:bg-[#FFEDD5] border border-[#FED7AA] rounded-lg transition-colors whitespace-nowrap font-mono tabular-nums"
+                                  >
+                                    復習 {u.due}
+                                  </button>
+                                </div>
+                              )}
+                            </div>
                           );
                         })}
                       </div>
@@ -665,48 +829,69 @@ export function FlashcardHubView({
               </div>
             </div>
 
-            {/* Selection Action Strip (only highlighted when tags are chosen) */}
+            {/* Selection Action Strip with Removable Active Tag Buttons */}
             {selectedTags.length > 0 && (
-              <div className="p-3.5 bg-[#FBF9F5] border border-[#E6E0D6] rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div className="flex items-center justify-between sm:justify-start gap-3 text-xs">
-                  <span className="font-mono font-semibold tabular-nums text-[#1C1917]">
-                    該当 {matchedBySelectedTags.length} 問
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => setSelectedTags([])}
-                    className="text-[#9A3412] hover:underline"
-                  >
-                    選択をクリア
-                  </button>
+              <div className="p-3.5 bg-[#FBF9F5] border border-[#E6E0D6] rounded-xl space-y-3">
+                <div className="flex flex-wrap items-center gap-1.5">
+                  {selectedTags.map((rawTag) => (
+                    <button
+                      key={rawTag}
+                      type="button"
+                      onClick={() => toggleTag(rawTag)}
+                      aria-label={`タグ「${parseTagMeta(rawTag).displayLabel}」の選択を解除`}
+                      className="inline-flex items-center gap-1 min-h-[32px] px-2.5 text-xs font-medium text-[#FBF9F5] bg-[#1C1917] hover:bg-[#9A3412] rounded-md transition-colors max-w-full"
+                    >
+                      <span className="truncate max-w-[180px]">
+                        {parseTagMeta(rawTag).displayLabel}
+                      </span>
+                      <X className="w-3 h-3 shrink-0" aria-hidden="true" />
+                    </button>
+                  ))}
                 </div>
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    disabled={matchedBySelectedTags.length === 0}
-                    onClick={() => launchTagStudy('flip', 'all')}
-                    className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 min-h-[42px] sm:min-h-[36px] px-4 text-xs font-semibold text-[#FBF9F5] bg-[#9A3412] hover:bg-[#7C2D12] disabled:opacity-40 rounded-lg transition-colors whitespace-nowrap"
-                  >
-                    <Play className="w-3.5 h-3.5 fill-current" aria-hidden="true" />
-                    学習を開始
-                  </button>
-                  {matchedDueCount > 0 && (
+
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                  <div className="flex items-center justify-between sm:justify-start gap-3 text-xs">
+                    <span className="font-mono font-semibold tabular-nums text-[#1C1917]">
+                      該当 {matchedBySelectedTags.length} 問
+                    </span>
                     <button
                       type="button"
-                      onClick={() => launchTagStudy('flip', 'due')}
-                      className="min-h-[42px] sm:min-h-[36px] px-3 text-xs font-medium text-[#9A3412] bg-white border border-[#9A3412] rounded-lg whitespace-nowrap"
+                      onClick={() => setSelectedTags([])}
+                      className="text-[#9A3412] hover:underline"
                     >
-                      復習 ({matchedDueCount})
+                      すべてクリア
                     </button>
-                  )}
-                  <button
-                    type="button"
-                    disabled={matchedBySelectedTags.length === 0}
-                    onClick={() => launchTagStudy('redsheet', 'all')}
-                    className="min-h-[42px] sm:min-h-[36px] px-3 text-xs font-medium text-[#57534E] bg-white border border-[#E6E0D6] rounded-lg whitespace-nowrap"
-                  >
-                    赤シート
-                  </button>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      disabled={matchedBySelectedTags.length === 0}
+                      onClick={() => launchTagStudy(hubPrefs.mode, 'all')}
+                      className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 min-h-[42px] sm:min-h-[36px] px-4 text-xs font-semibold text-[#FBF9F5] bg-[#9A3412] hover:bg-[#7C2D12] disabled:opacity-40 rounded-lg transition-colors whitespace-nowrap"
+                    >
+                      <Play className="w-3.5 h-3.5 fill-current" aria-hidden="true" />
+                      学習を開始
+                    </button>
+                    {matchedDueCount > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => launchTagStudy(hubPrefs.mode, 'due')}
+                        className="min-h-[42px] sm:min-h-[36px] px-3 text-xs font-medium text-[#9A3412] bg-white border border-[#9A3412] rounded-lg whitespace-nowrap"
+                      >
+                        復習 ({matchedDueCount})
+                      </button>
+                    )}
+                    {hubPrefs.mode !== 'redsheet' && (
+                      <button
+                        type="button"
+                        disabled={matchedBySelectedTags.length === 0}
+                        onClick={() => launchTagStudy('redsheet', 'all')}
+                        className="min-h-[42px] sm:min-h-[36px] px-3 text-xs font-medium text-[#57534E] bg-white border border-[#E6E0D6] rounded-lg whitespace-nowrap"
+                      >
+                        赤シート
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             )}
@@ -784,14 +969,14 @@ export function FlashcardHubView({
 
       {/* Mobile Floating Tag Start Bar */}
       {browseTab === 'tags' && selectedTags.length > 0 && (
-        <div className="md:hidden fixed left-3 right-3 bottom-18 z-20 bg-[#1C1917] text-[#FBF9F5] rounded-xl px-4 py-2.5 shadow-lg flex items-center justify-between gap-3">
-          <div className="text-xs font-mono tabular-nums">
+        <div className="md:hidden fixed left-3 right-3 bottom-[68px] z-20 bg-[#1C1917] text-[#FBF9F5] rounded-xl px-3.5 py-2 shadow-lg flex items-center justify-between gap-2">
+          <div className="text-xs font-mono tabular-nums truncate">
             {selectedTags.length}件選択 · 該当 {matchedBySelectedTags.length} 問
           </div>
           <button
             type="button"
             disabled={matchedBySelectedTags.length === 0}
-            onClick={() => launchTagStudy('flip', 'all')}
+            onClick={() => launchTagStudy(hubPrefs.mode, 'all')}
             className="inline-flex items-center gap-1.5 min-h-[40px] px-4 text-xs font-semibold text-[#FBF9F5] bg-[#9A3412] active:bg-[#7C2D12] disabled:opacity-40 rounded-lg whitespace-nowrap shrink-0"
           >
             <Play className="w-3.5 h-3.5 fill-current" aria-hidden="true" />

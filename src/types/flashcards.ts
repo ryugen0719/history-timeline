@@ -93,3 +93,19 @@ export interface FlashcardBackupPayload {
   srsMap?: SrsProgressMap;
   dailyLogs?: DailyStudyLogsMap;
 }
+
+export interface HubLaunchPrefs {
+  mode: StudyMode;
+  orderMode: 'unit' | 'shuffle';
+}
+
+export interface PersistedStudySession {
+  sessionId: string;
+  config: StudySessionConfig;
+  queueIds: string[];
+  currentIndex: number;
+  ratingCounts: Record<SrsRating, number>;
+  againCardIds: string[];
+  redSheetRated: Record<string, SrsRating>;
+  updatedAt: number;
+}

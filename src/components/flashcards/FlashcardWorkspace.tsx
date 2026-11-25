@@ -17,6 +17,8 @@ import type {
   Flashcard,
   FlashcardBackupPayload,
   FlashcardSubView,
+  HubLaunchPrefs,
+  PersistedStudySession,
   SrsProgress,
   SrsProgressMap,
   SrsRating,
@@ -24,6 +26,7 @@ import type {
 } from '../../types/flashcards';
 import { buildStudyQueue } from '../../utils/flashcardFilter';
 import { exportFlashcardsToCsv } from '../../utils/flashcardParser';
+import { reconcilePersistedSession } from '../../utils/studySession';
 import {
   computeStudyStreak,
   getLocalDateKey,
@@ -43,6 +46,13 @@ const STORAGE_KEY_SCOPES = 'chrononote_flashcards_scopes_v1';
 const STORAGE_KEY_CARDS = 'chrononote_flashcards_cards_v1';
 const STORAGE_KEY_SRS = 'chrononote_flashcards_srs_v1';
 const STORAGE_KEY_LOGS = 'chrononote_flashcards_logs_v1';
+const STORAGE_KEY_SESSION = 'chrononote_flashcards_active_session_v1';
+const STORAGE_KEY_HUB_PREFS = 'chrononote_flashcards_hub_prefs_v1';
+
+const DEFAULT_HUB_PREFS: HubLaunchPrefs = {
+  mode: 'flip',
+  orderMode: 'unit',
+};
 
 function loadFromStorage<T>(key: string, fallback: T): T {
   try {
@@ -177,20 +187,6 @@ function loadInitialFlashcardState() {
   return deduplicateStoredTerm3Data(baseScopes, baseCards, savedSrs);
 }
 
-const DEFAULT_SESSION_CONFIG: StudySessionConfig = {
-  scopeId: TERM3_SCOPE_ID,
-  chapter: 'all',
-  unit: 'all',
-  selectedTags: [],
-  tagMatchMode: 'and',
-  filterPreset: 'all',
-  orderMode: 'unit',
-  swapFrontBack: false,
-  recordToSrs: true,
-  mode: 'flip',
-  label: '第3回定期考査範囲',
-};
-
 export function FlashcardWorkspace() {
   const [initialData] = useState(() => loadInitialFlashcardState());
   const [scopes, setScopes] = useState<ExamScope[]>(initialData.scopes);
@@ -206,12 +202,33 @@ export function FlashcardWorkspace() {
     () => initialData.scopes[0]?.id ?? TERM3_SCOPE_ID
   );
 
-  const [sessionConfig, setSessionConfig] = useState<StudySessionConfig>(
-    DEFAULT_SESSION_CONFIG
-  );
-  const [sessionQueue, setSessionQueue] = useState<Flashcard[]>(() =>
-    buildStudyQueue(initialData.cards, initialData.srsMap, DEFAULT_SESSION_CONFIG)
-  );
+  const [hubPrefs, setHubPrefs] = useState<HubLaunchPrefs>(() => {
+    const saved = loadFromStorage<Partial<HubLaunchPrefs> | null>(
+      STORAGE_KEY_HUB_PREFS,
+      null
+    );
+    return {
+      mode:
+        saved?.mode === 'typing' || saved?.mode === 'redsheet' || saved?.mode === 'flip'
+          ? saved.mode
+          : DEFAULT_HUB_PREFS.mode,
+      orderMode:
+        saved?.orderMode === 'shuffle' || saved?.orderMode === 'unit'
+          ? saved.orderMode
+          : DEFAULT_HUB_PREFS.orderMode,
+    };
+  });
+
+  const [savedSession, setSavedSession] = useState<PersistedStudySession | null>(() => {
+    const raw = loadFromStorage<PersistedStudySession | null>(
+      STORAGE_KEY_SESSION,
+      null
+    );
+    const validIds = new Set(initialData.cards.map((c) => c.id));
+    return reconcilePersistedSession(raw, validIds);
+  });
+
+  const [activeSession, setActiveSession] = useState<PersistedStudySession | null>(null);
   const [isStudyMobileDockActive, setIsStudyMobileDockActive] = useState(false);
 
   // Modals
@@ -271,6 +288,26 @@ export function FlashcardWorkspace() {
       // Ignore storage quota errors
     }
   }, [dailyLogs]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY_HUB_PREFS, JSON.stringify(hubPrefs));
+    } catch {
+      // Ignore storage quota errors
+    }
+  }, [hubPrefs]);
+
+  useEffect(() => {
+    try {
+      if (savedSession) {
+        localStorage.setItem(STORAGE_KEY_SESSION, JSON.stringify(savedSession));
+      } else {
+        localStorage.removeItem(STORAGE_KEY_SESSION);
+      }
+    } catch {
+      // Ignore storage quota errors
+    }
+  }, [savedSession]);
 
   const allCardsMap = useMemo(() => {
     const map: Record<string, Flashcard> = {};
@@ -341,15 +378,52 @@ export function FlashcardWorkspace() {
     ).length;
   }, [cards, activeScopeId, srsMap]);
 
+  const reconciledSavedSession = useMemo(() => {
+    const validIds = new Set(cards.map((c) => c.id));
+    return reconcilePersistedSession(savedSession, validIds);
+  }, [savedSession, cards]);
+
   const handleLaunchSession = useCallback(
     (config: StudySessionConfig) => {
       const queue = buildStudyQueue(cards, srsMap, config, Date.now());
-      setSessionConfig(config);
-      setSessionQueue(queue);
+      const now = Date.now();
+      const nextSession: PersistedStudySession = {
+        sessionId: `sess-${now}-${Math.random().toString(36).slice(2, 6)}`,
+        config,
+        queueIds: queue.map((c) => c.id),
+        currentIndex: 0,
+        ratingCounts: { 1: 0, 2: 0, 3: 0, 4: 0 },
+        againCardIds: [],
+        redSheetRated: {},
+        updatedAt: now,
+      };
+      setActiveSession(nextSession);
+      if (nextSession.queueIds.length > 0) {
+        setSavedSession(nextSession);
+      }
       setSubView('study');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     },
     [cards, srsMap]
+  );
+
+  const handleResumeSavedSession = useCallback(() => {
+    if (!reconciledSavedSession) return;
+    setActiveSession(reconciledSavedSession);
+    setSubView('study');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [reconciledSavedSession]);
+
+  const handleDiscardSavedSession = useCallback(() => {
+    setSavedSession(null);
+    showToast('前回の学習セッションをクリアしました。');
+  }, [showToast]);
+
+  const handleSyncActiveSession = useCallback(
+    (nextSession: PersistedStudySession | null) => {
+      setSavedSession(nextSession);
+    },
+    []
   );
 
   const handleRateCard = useCallback(
@@ -504,7 +578,13 @@ export function FlashcardWorkspace() {
         delete next[cardId];
         return next;
       });
-      setSessionQueue((prev) => prev.filter((c) => c.id !== cardId));
+      setActiveSession((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          queueIds: prev.queueIds.filter((id) => id !== cardId),
+        };
+      });
       showToast('問題を削除しました。');
     },
     [showToast]
@@ -737,16 +817,21 @@ export function FlashcardWorkspace() {
           srsMap={srsMap}
           activeScopeId={activeScopeId}
           todayReviews={todayReviews}
+          hubPrefs={hubPrefs}
+          savedSession={reconciledSavedSession}
+          onChangeHubPrefs={setHubPrefs}
           onChangeScopeId={setActiveScopeId}
           onLaunchSession={handleLaunchSession}
+          onResumeSession={handleResumeSavedSession}
+          onDiscardSavedSession={handleDiscardSavedSession}
           onGoToManage={() => setSubView('manage')}
         />
       )}
 
-      {subView === 'study' && (
+      {subView === 'study' && activeSession && (
         <StudyStageView
-          config={sessionConfig}
-          initialQueue={sessionQueue}
+          key={activeSession.sessionId}
+          initialSession={activeSession}
           allCardsMap={allCardsMap}
           srsMap={srsMap}
           onRateCard={handleRateCard}
@@ -757,9 +842,7 @@ export function FlashcardWorkspace() {
             setEditingCard(card);
             setIsCardEditorOpen(true);
           }}
-          onUpdateConfig={(patch) =>
-            setSessionConfig((prev) => ({ ...prev, ...patch }))
-          }
+          onSyncSession={handleSyncActiveSession}
           onMobileDockActiveChange={setIsStudyMobileDockActive}
           onBackToHub={() => setSubView('hub')}
         />
