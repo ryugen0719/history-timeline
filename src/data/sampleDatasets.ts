@@ -1,4 +1,6 @@
 import type { HistoricalDatabase } from '../types/timeline';
+import { parseHistoricalJson } from '../utils/timelineParser';
+import term3TimelineJson from './term3Timeline.json';
 
 export interface SampleDatasetPreset {
   id: string;
@@ -6,6 +8,11 @@ export interface SampleDatasetPreset {
   subtitle: string;
   data: HistoricalDatabase;
 }
+
+export const DEFAULT_TIMELINE_VERSION = 'term3-exam-2026-v1';
+const LEGACY_DEFAULT_TITLE = '幕末〜明治維新：近代日本の夜明け';
+
+const TERM3_TIMELINE_DATA = term3TimelineJson as HistoricalDatabase;
 
 export const GENERATION_PROMPT_TEMPLATE = `# 歴史年表データ生成プロンプト
 
@@ -32,6 +39,13 @@ export const GENERATION_PROMPT_TEMPLATE = `# 歴史年表データ生成プロ�
 JSON形式で出力してください（説明文やMarkdownコードブロックは不要）。`;
 
 export const SAMPLE_DATASETS: SampleDatasetPreset[] = [
+  {
+    id: 'term3-exam',
+    name: '第三回定期考査範囲',
+    subtitle:
+      '近代的な国際関係・帝国主義・第一次世界大戦・アジアの民族運動（17世紀〜1936年 / 198件）',
+    data: TERM3_TIMELINE_DATA,
+  },
   {
     id: 'bakumatsu-meiji',
     name: '幕末〜明治維新：近代日本の夜明け',
@@ -590,3 +604,58 @@ export const SAMPLE_DATASETS: SampleDatasetPreset[] = [
     },
   },
 ];
+
+export interface InitialTimelineResolution {
+  db: HistoricalDatabase;
+  title: string;
+  migratedFromLegacyDefault: boolean;
+}
+
+function isLegacyDefaultDataset(
+  db: HistoricalDatabase,
+  savedTitle: string | null
+): boolean {
+  return (
+    savedTitle === LEGACY_DEFAULT_TITLE &&
+    db.events.length === 14 &&
+    db.events[0]?.id === 'E001' &&
+    db.events[0]?.title === 'ペリー来航'
+  );
+}
+
+export function resolveInitialTimelineState(params: {
+  savedJson: string | null;
+  savedTitle: string | null;
+  savedDefaultVersion: string | null;
+}): InitialTimelineResolution {
+  const defaultDataset = SAMPLE_DATASETS[0];
+  const { savedJson, savedTitle, savedDefaultVersion } = params;
+
+  if (savedJson) {
+    const parsed = parseHistoricalJson(savedJson);
+    if (parsed.ok && parsed.data) {
+      if (
+        savedDefaultVersion !== DEFAULT_TIMELINE_VERSION &&
+        isLegacyDefaultDataset(parsed.data, savedTitle)
+      ) {
+        return {
+          db: defaultDataset.data,
+          title: defaultDataset.name,
+          migratedFromLegacyDefault: true,
+        };
+      }
+      return {
+        db: parsed.data,
+        title: savedTitle || '保存された歴史年表',
+        migratedFromLegacyDefault: false,
+      };
+    }
+  }
+
+  return {
+    db: defaultDataset.data,
+    title: defaultDataset.name,
+    migratedFromLegacyDefault: false,
+  };
+}
+

@@ -137,6 +137,22 @@ export function parseHistoricalDate(
   if (yearMatch) {
     let year = Number.parseInt(yearMatch[1], 10);
     if (isBce && year > 0) year = -year;
+    if (raw.includes('年末')) {
+      return {
+        sortValue: year * 10000 + 1231,
+        isUnknown: false,
+        yearApprox: year,
+        eraLabel: formatEraLabel(year),
+      };
+    }
+    if (raw.includes('年初') || raw.includes('年始')) {
+      return {
+        sortValue: year * 10000 + 101,
+        isUnknown: false,
+        yearApprox: year,
+        eraLabel: formatEraLabel(year),
+      };
+    }
     const decadeBump = raw.includes('年代') ? 5 : 0;
     return {
       sortValue: (year + decadeBump) * 10000,

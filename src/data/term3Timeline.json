@@ -1,0 +1,5739 @@
+{
+  "events": [
+    {
+      "id": "E001",
+      "date": "17世紀",
+      "date_precision": "century",
+      "title": "主権国家体制の成立",
+      "description": "ヨーロッパ諸国で、主権をもった国同士が対等な外交関係を作る国際体制が成立した。",
+      "people": [],
+      "places": [
+        "ヨーロッパ"
+      ],
+      "category": [
+        "diplomacy",
+        "politics"
+      ],
+      "causes": [],
+      "consequences": [
+        "開国後の日本もこの体制に組み込まれ、主権国家としての要素を整える必要が生じた"
+      ],
+      "related_events": [],
+      "importance": 3,
+      "source": "20.近代的な国際関係と国境・領土の画定 p.2",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E002",
+      "date": "1855",
+      "date_precision": "year",
+      "title": "日露和親条約の締結",
+      "description": "日露間で結ばれた条約で、樺太は日露両国民の雑居地とされ国境は明確でなかった。",
+      "people": [],
+      "places": [
+        "日本",
+        "ロシア",
+        "樺太"
+      ],
+      "category": [
+        "diplomacy"
+      ],
+      "causes": [],
+      "consequences": [
+        "樺太の国境が未画定となり、後の樺太・千島交換条約につながった"
+      ],
+      "related_events": [
+        "E021"
+      ],
+      "importance": 2,
+      "source": "20.近代的な国際関係と国境・領土の画定 p.16",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E003",
+      "date": "1869",
+      "date_precision": "year",
+      "title": "北海道への改称と開拓使の設置",
+      "description": "ロシア勢力の南下を受け、蝦夷地を北海道と改めて開拓使と呼ばれる役所を置いた。",
+      "people": [],
+      "places": [
+        "北海道",
+        "蝦夷地"
+      ],
+      "category": [
+        "politics",
+        "diplomacy"
+      ],
+      "causes": [
+        "ロシア勢力の南下"
+      ],
+      "consequences": [
+        "北海道の開拓が進められた"
+      ],
+      "related_events": [
+        "E021",
+        "E038",
+        "E046"
+      ],
+      "importance": 2,
+      "source": "20.近代的な国際関係と国境・領土の画定 p.16",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E004",
+      "date": "1870年代以降",
+      "date_precision": "period",
+      "title": "第2次産業革命と独占資本の形成",
+      "description": "鉄鋼・機械・化学などの重化学工業が発達して企業が大規模化し、買収・合併や協定により少数の大企業が市場を支配する独占資本が形成された。",
+      "people": [],
+      "places": [
+        "ヨーロッパ",
+        "アメリカ"
+      ],
+      "category": [
+        "economy"
+      ],
+      "causes": [
+        "巨額の資本を必要とする産業の成長"
+      ],
+      "consequences": [
+        "1870年代からの大不況も相まって、列強が商品の市場・原料供給地を求めて海外進出を強めた"
+      ],
+      "related_events": [
+        "E005"
+      ],
+      "importance": 3,
+      "source": "22.帝国主義と世界分割 p.6",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E005",
+      "date": "1870～80年代以降",
+      "date_precision": "period",
+      "title": "帝国主義の進展と世界分割",
+      "description": "列強が対外膨張と植民地・勢力圏の獲得行動を展開し、特にアジア太平洋地域やアフリカが世界経済に組み込まれた。",
+      "people": [],
+      "places": [
+        "ヨーロッパ",
+        "アジア太平洋地域",
+        "アフリカ"
+      ],
+      "category": [
+        "diplomacy",
+        "economy",
+        "politics"
+      ],
+      "causes": [
+        "第2次産業革命による独占資本の形成と1870年代からの大不況",
+        "余剰人口の移住先や新たな商品販路・社会問題解決の必要",
+        "文明化の使命や社会進化論による正当化"
+      ],
+      "consequences": [
+        "アフリカ分割や中国分割が進行した"
+      ],
+      "related_events": [
+        "E004",
+        "E044",
+        "E062"
+      ],
+      "importance": 3,
+      "source": "22.帝国主義と世界分割 p.2-9",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E006",
+      "date": "1871",
+      "date_precision": "year",
+      "title": "独仏戦争の終結とアルザス・ロレーヌの割譲",
+      "description": "独仏戦争でフランスが敗北し、鉄や石炭などが豊富なアルザス・ロレーヌがドイツへ割譲された。",
+      "people": [],
+      "places": [
+        "ドイツ",
+        "フランス",
+        "アルザス・ロレーヌ"
+      ],
+      "category": [
+        "military",
+        "diplomacy"
+      ],
+      "causes": [],
+      "consequences": [
+        "フランスの復讐を防ぐため、ビスマルクがフランスを孤立させる外交を展開した"
+      ],
+      "related_events": [
+        "E017",
+        "E041",
+        "E152"
+      ],
+      "importance": 3,
+      "source": "26.緊迫する国際関係 p.2, p.5 / 29.ヴェルサイユ体制とワシントン体制 p.3",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E007",
+      "date": "1871-07",
+      "date_precision": "month",
+      "title": "日清修好条規の締結",
+      "description": "明治4年7月、日本と清が日清修好条規を結び、相互の友好関係と領土の不侵犯を定めて国交を樹立した。",
+      "people": [],
+      "places": [
+        "日本",
+        "清"
+      ],
+      "category": [
+        "diplomacy"
+      ],
+      "causes": [],
+      "consequences": [
+        "日本と清の国交が樹立された"
+      ],
+      "related_events": [],
+      "importance": 3,
+      "source": "20.近代的な国際関係と国境・領土の画定 p.3-4",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E008",
+      "date": "1871",
+      "date_precision": "year",
+      "title": "台湾での琉球民殺害事件",
+      "description": "台湾で琉球民が殺害される事件が発生した。",
+      "people": [],
+      "places": [
+        "台湾",
+        "琉球"
+      ],
+      "category": [
+        "society",
+        "diplomacy"
+      ],
+      "causes": [],
+      "consequences": [
+        "1874年の台湾出兵の契機となった"
+      ],
+      "related_events": [
+        "E019"
+      ],
+      "importance": 1,
+      "source": "20.近代的な国際関係と国境・領土の画定 p.10",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E009",
+      "date": "1871年末",
+      "date_precision": "month",
+      "title": "岩倉使節団の派遣",
+      "description": "明治政府が不平等条約改正のため岩倉具視を全権大使、木戸孝允・大久保利通・伊藤博文らを副使として欧米へ派遣し、津田梅子などの女子留学生も同行した。",
+      "people": [
+        "岩倉具視",
+        "木戸孝允",
+        "大久保利通",
+        "伊藤博文",
+        "津田梅子"
+      ],
+      "places": [
+        "アメリカ",
+        "ヨーロッパ"
+      ],
+      "category": [
+        "diplomacy",
+        "politics"
+      ],
+      "causes": [
+        "不平等条約改正の目的"
+      ],
+      "consequences": [
+        "アメリカとの交渉では条約改正を達成できなかったが、欧米の制度・文物を視察して国家体制作りが急務であると実感した"
+      ],
+      "related_events": [
+        "E010",
+        "E016"
+      ],
+      "importance": 3,
+      "source": "20.近代的な国際関係と国境・領土の画定 p.5",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E010",
+      "date": "1871-11～1873-09",
+      "date_precision": "period",
+      "title": "留守政府による政治",
+      "description": "岩倉使節団の派遣中、西郷隆盛や板垣退助らが留守政府として政治にあたり、学制・徴兵令・地租改正などに着手した。",
+      "people": [
+        "西郷隆盛",
+        "板垣退助"
+      ],
+      "places": [
+        "日本"
+      ],
+      "category": [
+        "politics"
+      ],
+      "causes": [
+        "岩倉使節団の派遣"
+      ],
+      "consequences": [
+        "国内の諸制度改革に着手する一方、朝鮮への西郷派遣を決定した"
+      ],
+      "related_events": [
+        "E009",
+        "E011",
+        "E013",
+        "E014",
+        "E015"
+      ],
+      "importance": 2,
+      "source": "20.近代的な国際関係と国境・領土の画定 p.6",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E011",
+      "date": "1872",
+      "date_precision": "year",
+      "title": "学制の着手",
+      "description": "留守政府によって教育制度である学制に着手した。",
+      "people": [],
+      "places": [
+        "日本"
+      ],
+      "category": [
+        "politics",
+        "culture",
+        "society"
+      ],
+      "causes": [],
+      "consequences": [],
+      "related_events": [
+        "E010"
+      ],
+      "importance": 2,
+      "source": "20.近代的な国際関係と国境・領土の画定 p.6",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E012",
+      "date": "1872",
+      "date_precision": "year",
+      "title": "琉球藩の設置",
+      "description": "薩摩藩の支配下かつ清から冊封を受ける両属関係にあった琉球王国を、琉球藩として日本政府直属にした。",
+      "people": [],
+      "places": [
+        "琉球"
+      ],
+      "category": [
+        "politics",
+        "diplomacy"
+      ],
+      "causes": [],
+      "consequences": [
+        "日本による琉球統合が進み、後の琉球処分につながった"
+      ],
+      "related_events": [
+        "E028"
+      ],
+      "importance": 2,
+      "source": "20.近代的な国際関係と国境・領土の画定 p.10",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E013",
+      "date": "1873",
+      "date_precision": "year",
+      "title": "徴兵令の着手",
+      "description": "留守政府によって軍制である徴兵令に着手した。",
+      "people": [],
+      "places": [
+        "日本"
+      ],
+      "category": [
+        "military",
+        "politics"
+      ],
+      "causes": [],
+      "consequences": [
+        "西南戦争では徴兵制による政府軍が鹿児島の士族と戦った"
+      ],
+      "related_events": [
+        "E010",
+        "E024"
+      ],
+      "importance": 2,
+      "source": "20.近代的な国際関係と国境・領土の画定 p.6, p.9",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E014",
+      "date": "1873",
+      "date_precision": "year",
+      "title": "地租改正の着手",
+      "description": "留守政府によって税制改革である地租改正に着手した。",
+      "people": [],
+      "places": [
+        "日本"
+      ],
+      "category": [
+        "economy",
+        "politics"
+      ],
+      "causes": [],
+      "consequences": [],
+      "related_events": [
+        "E010"
+      ],
+      "importance": 2,
+      "source": "20.近代的な国際関係と国境・領土の画定 p.6",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E015",
+      "date": "1873",
+      "date_precision": "year",
+      "title": "征韓論と西郷隆盛の朝鮮派遣決定",
+      "description": "朝鮮が日本の国交樹立要求を拒否したことを背景に征韓論が高まり、留守政府は軍事的圧力で朝鮮を開国させる計画のもと西郷隆盛の派遣を決定した。",
+      "people": [
+        "西郷隆盛"
+      ],
+      "places": [
+        "日本",
+        "朝鮮"
+      ],
+      "category": [
+        "diplomacy",
+        "politics"
+      ],
+      "causes": [
+        "鎖国政策をとる朝鮮が日本との条約に基づく国交樹立を拒否したこと"
+      ],
+      "consequences": [
+        "帰国した大久保利通らの反対にあい明治六年の政変へ発展した"
+      ],
+      "related_events": [
+        "E010",
+        "E016"
+      ],
+      "importance": 2,
+      "source": "20.近代的な国際関係と国境・領土の画定 p.7",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E016",
+      "date": "1873",
+      "date_precision": "year",
+      "title": "明治六年の政変",
+      "description": "帰国した大久保利通らの反対にあって西郷派遣計画が挫折し、西郷隆盛や板垣退助らが下野した。",
+      "people": [
+        "大久保利通",
+        "西郷隆盛",
+        "板垣退助"
+      ],
+      "places": [
+        "日本"
+      ],
+      "category": [
+        "politics"
+      ],
+      "causes": [
+        "征韓論をめぐる留守政府側と帰国した大久保利通らとの対立"
+      ],
+      "consequences": [
+        "板垣退助らによる民撰議院設立の建白書提出や、西郷隆盛の私学校設立・西南戦争につながった"
+      ],
+      "related_events": [
+        "E015",
+        "E018",
+        "E024"
+      ],
+      "importance": 3,
+      "source": "20.近代的な国際関係と国境・領土の画定 p.8",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E017",
+      "date": "1873",
+      "date_precision": "year",
+      "title": "三帝同盟の締結",
+      "description": "独仏戦争後、ビスマルク外交によりドイツ・オーストリア＝ハンガリー帝国・ロシアが三帝同盟を結んだ（第1次1873～78年、第2次1881～87年）。",
+      "people": [
+        "ビスマルク"
+      ],
+      "places": [
+        "ドイツ",
+        "オーストリア＝ハンガリー帝国",
+        "ロシア"
+      ],
+      "category": [
+        "diplomacy"
+      ],
+      "causes": [
+        "独仏戦争で敗北したフランスを外交的に孤立させドイツの安全を保障するため"
+      ],
+      "consequences": [
+        "1878年のベルリン会議後に有名無実化した"
+      ],
+      "related_events": [
+        "E006",
+        "E025",
+        "E026"
+      ],
+      "importance": 2,
+      "source": "26.緊迫する国際関係 p.2, p.5-6",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E018",
+      "date": "1874",
+      "date_precision": "year",
+      "title": "民撰議院設立の建白書の提出",
+      "description": "板垣退助らが、一部の政府役人による権力掌握を批判し国民の選んだ議員による議会を開くよう求めて政府に提出した。",
+      "people": [
+        "板垣退助"
+      ],
+      "places": [
+        "日本"
+      ],
+      "category": [
+        "politics"
+      ],
+      "causes": [
+        "明治六年の政変と一部藩閥役人による政治権力への批判"
+      ],
+      "consequences": [
+        "建白書は却下されたが新聞に掲載されて世論に大きな影響を与え、自由民権運動の口火となった"
+      ],
+      "related_events": [
+        "E016",
+        "E020"
+      ],
+      "importance": 3,
+      "source": "21.自由民権運動の高まりと立憲国家の成立 p.2, p.4",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E019",
+      "date": "1874",
+      "date_precision": "year",
+      "title": "台湾出兵",
+      "description": "台湾での琉球民殺害事件（1871年）を機に日本が台湾へ出兵し、事件の責任を追及した。",
+      "people": [],
+      "places": [
+        "台湾",
+        "清",
+        "日本"
+      ],
+      "category": [
+        "military",
+        "diplomacy"
+      ],
+      "causes": [
+        "1871年の台湾での琉球民殺害事件"
+      ],
+      "consequences": [
+        "台湾先住民の行為に責任はとれないと主張していた清が日本の出兵を正当と認め、事実上の賠償金を支払った"
+      ],
+      "related_events": [
+        "E008"
+      ],
+      "importance": 2,
+      "source": "20.近代的な国際関係と国境・領土の画定 p.10",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E020",
+      "date": "1875",
+      "date_precision": "year",
+      "title": "新聞紙条例の制定",
+      "description": "新聞や雑誌で活発に政府を攻撃する民権活動家を取り締まるため、政府批判など言論への取り締まりを強化した。",
+      "people": [],
+      "places": [
+        "日本"
+      ],
+      "category": [
+        "politics",
+        "society"
+      ],
+      "causes": [
+        "民権活動家による新聞・雑誌での活発な政府攻撃"
+      ],
+      "consequences": [],
+      "related_events": [
+        "E018"
+      ],
+      "importance": 2,
+      "source": "21.自由民権運動の高まりと立憲国家の成立 p.4",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E021",
+      "date": "1875",
+      "date_precision": "year",
+      "title": "樺太・千島交換条約の締結",
+      "description": "北海道の開拓で手一杯だった日本がロシアと条約を結び、樺太の一切の権利をロシアへ譲る一方、千島全島を日本が領有した。",
+      "people": [],
+      "places": [
+        "樺太",
+        "千島列島",
+        "北海道",
+        "ロシア"
+      ],
+      "category": [
+        "diplomacy"
+      ],
+      "causes": [
+        "北海道の開拓で手一杯であったこと",
+        "日露和親条約で樺太の国境が明確でなかったこと"
+      ],
+      "consequences": [
+        "北方の国境が画定し、樺太在住のアイヌは北海道へ移住させられて日本人への同化政策が進められた"
+      ],
+      "related_events": [
+        "E002",
+        "E003"
+      ],
+      "importance": 3,
+      "source": "20.近代的な国際関係と国境・領土の画定 p.18-19",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E022",
+      "date": "1875",
+      "date_precision": "year",
+      "title": "江華島事件",
+      "description": "日本軍艦が朝鮮の漢城近くにある江華島に接近して交戦し、日本は事件の責任を取るよう朝鮮に迫った。",
+      "people": [],
+      "places": [
+        "江華島",
+        "朝鮮"
+      ],
+      "category": [
+        "military",
+        "diplomacy"
+      ],
+      "causes": [],
+      "consequences": [
+        "翌1876年の日朝修好条規の締結・朝鮮開国につながった"
+      ],
+      "related_events": [
+        "E023"
+      ],
+      "importance": 2,
+      "source": "20.近代的な国際関係と国境・領土の画定 p.12-13",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E023",
+      "date": "1876",
+      "date_precision": "year",
+      "title": "日朝修好条規の締結",
+      "description": "江華島事件を機に朝鮮を開国させた条約。第1款で朝鮮を「自立した国」と定めて清の介入をなくそうとし、領事設置や領事裁判権などを規定した。",
+      "people": [],
+      "places": [
+        "朝鮮",
+        "日本"
+      ],
+      "category": [
+        "diplomacy"
+      ],
+      "causes": [
+        "江華島事件と日本の責任追及"
+      ],
+      "consequences": [
+        "朝鮮が開国したが、清は日朝修好条規を認めなかった"
+      ],
+      "related_events": [
+        "E022"
+      ],
+      "importance": 3,
+      "source": "20.近代的な国際関係と国境・領土の画定 p.13-15",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E024",
+      "date": "1877",
+      "date_precision": "year",
+      "title": "西南戦争",
+      "description": "士族子弟を教育する私学校を設立した西郷隆盛をリーダーに鹿児島の士族が挙兵し、徴兵制による政府軍と戦った。",
+      "people": [
+        "西郷隆盛"
+      ],
+      "places": [
+        "鹿児島",
+        "日本"
+      ],
+      "category": [
+        "military",
+        "politics"
+      ],
+      "causes": [
+        "西郷隆盛による私学校設立と、これを警戒し弾薬を用意した政府の挑発的行動"
+      ],
+      "consequences": [
+        "この後、士族が実力による抵抗を試みることはなくなった"
+      ],
+      "related_events": [
+        "E013",
+        "E016"
+      ],
+      "importance": 3,
+      "source": "20.近代的な国際関係と国境・領土の画定 p.9",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E025",
+      "date": "1877",
+      "date_precision": "year",
+      "title": "露土戦争の勃発",
+      "description": "ロシアが露土戦争を引き起こし、イギリスおよびオーストリアと対立した。",
+      "people": [],
+      "places": [
+        "ロシア",
+        "イギリス",
+        "オーストリア"
+      ],
+      "category": [
+        "military",
+        "diplomacy"
+      ],
+      "causes": [],
+      "consequences": [
+        "1878年にビスマルクが対立調停のためベルリン会議を開いた"
+      ],
+      "related_events": [
+        "E017",
+        "E026"
+      ],
+      "importance": 2,
+      "source": "26.緊迫する国際関係 p.2",
+      "certainty": "inferred"
+    },
+    {
+      "id": "E026",
+      "date": "1878",
+      "date_precision": "year",
+      "title": "ベルリン会議（露土戦争の調停）",
+      "description": "ビスマルクがベルリン会議を開いて露土戦争をめぐるロシアとイギリス・オーストリアの対立を調停した。",
+      "people": [
+        "ビスマルク"
+      ],
+      "places": [
+        "ベルリン"
+      ],
+      "category": [
+        "diplomacy"
+      ],
+      "causes": [
+        "露土戦争によるロシアとイギリス・オーストリアの対立"
+      ],
+      "consequences": [
+        "三帝同盟が有名無実化した"
+      ],
+      "related_events": [
+        "E017",
+        "E025"
+      ],
+      "importance": 2,
+      "source": "26.緊迫する国際関係 p.2",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E027",
+      "date": "1878",
+      "date_precision": "year",
+      "title": "大久保利通の暗殺",
+      "description": "大久保利通が暗殺された。",
+      "people": [
+        "大久保利通"
+      ],
+      "places": [
+        "日本"
+      ],
+      "category": [
+        "politics"
+      ],
+      "causes": [],
+      "consequences": [
+        "自由民権運動がさらなる高まりをみせた"
+      ],
+      "related_events": [
+        "E030"
+      ],
+      "importance": 2,
+      "source": "21.自由民権運動の高まりと立憲国家の成立 p.5",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E028",
+      "date": "1879",
+      "date_precision": "year",
+      "title": "琉球処分",
+      "description": "日本政府が琉球に清との関係断絶を命じた後、琉球藩を廃止して沖縄県を設置し、琉球王国が消滅した。",
+      "people": [],
+      "places": [
+        "琉球",
+        "沖縄県"
+      ],
+      "category": [
+        "politics",
+        "diplomacy"
+      ],
+      "causes": [
+        "政府が琉球に命じた清との関係断絶と宗主権を主張する清の強い抗議"
+      ],
+      "consequences": [
+        "清はこれを認めず、日清戦争後まで未解決となった"
+      ],
+      "related_events": [
+        "E012",
+        "E058"
+      ],
+      "importance": 3,
+      "source": "20.近代的な国際関係と国境・領土の画定 p.11",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E029",
+      "date": "19世紀後半",
+      "date_precision": "century",
+      "title": "リヴィングストンとスタンリーのアフリカ探検",
+      "description": "リヴィングストンやスタンリーの探検によって、アフリカ内陸部への関心が高まった。",
+      "people": [
+        "リヴィングストン",
+        "スタンリー"
+      ],
+      "places": [
+        "アフリカ"
+      ],
+      "category": [
+        "society"
+      ],
+      "causes": [],
+      "consequences": [
+        "アフリカ内陸部への進出と列強による分割の背景となった"
+      ],
+      "related_events": [
+        "E031",
+        "E044"
+      ],
+      "importance": 1,
+      "source": "22.帝国主義と世界分割 p.16",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E030",
+      "date": "1880",
+      "date_precision": "year",
+      "title": "国会期成同盟の結成と国会開設請願書の提出",
+      "description": "民権派が国会期成同盟を結成し、国会開設請願書を政府に提出した。",
+      "people": [
+        "大隈重信",
+        "伊藤博文"
+      ],
+      "places": [
+        "日本"
+      ],
+      "category": [
+        "politics"
+      ],
+      "causes": [
+        "大久保利通暗殺後の自由民権運動の高まり"
+      ],
+      "consequences": [
+        "政府内でも国会開設をめぐり、イギリス流の議院内閣制の早期導入を主張する大隈重信と時期尚早とする伊藤博文らが対立した"
+      ],
+      "related_events": [
+        "E027",
+        "E033"
+      ],
+      "importance": 2,
+      "source": "21.自由民権運動の高まりと立憲国家の成立 p.5",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E031",
+      "date": "1880年代",
+      "date_precision": "period",
+      "title": "ベルギーのコンゴ川流域進出",
+      "description": "ベルギーがコンゴ川流域の領有を目指して積極的に進出を行った。",
+      "people": [],
+      "places": [
+        "コンゴ川流域",
+        "ベルギー",
+        "アフリカ"
+      ],
+      "category": [
+        "diplomacy"
+      ],
+      "causes": [
+        "アフリカ内陸部への関心の高まり"
+      ],
+      "consequences": [
+        "他国の反発を招き、1884年のベルリン会議開催につながった"
+      ],
+      "related_events": [
+        "E029",
+        "E044"
+      ],
+      "importance": 1,
+      "source": "22.帝国主義と世界分割 p.16",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E032",
+      "date": "1881",
+      "date_precision": "year",
+      "title": "開拓使官有物払い下げ事件",
+      "description": "黒田清隆が船舶や工場などの官有物を不当に安値で民間企業に払い下げようとしたことが新聞で報道され、民権派の政府批判が一層勢いを増した。",
+      "people": [
+        "黒田清隆",
+        "大隈重信"
+      ],
+      "places": [
+        "日本",
+        "北海道"
+      ],
+      "category": [
+        "politics",
+        "economy"
+      ],
+      "causes": [],
+      "consequences": [
+        "大隈重信が情報を民間に漏らしたと疑われて追放され、払い下げ中止と明治十四年の政変につながった"
+      ],
+      "related_events": [
+        "E033"
+      ],
+      "importance": 2,
+      "source": "21.自由民権運動の高まりと立憲国家の成立 p.6",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E033",
+      "date": "1881",
+      "date_precision": "year",
+      "title": "明治十四年の政変と国会開設の勅諭",
+      "description": "大隈重信が政府から追放されて伊藤博文らが実権を握り、政府は払い下げを中止するとともに天皇の名で明治23年の国会開設を約す勅諭を出した。",
+      "people": [
+        "大隈重信",
+        "伊藤博文"
+      ],
+      "places": [
+        "日本"
+      ],
+      "category": [
+        "politics"
+      ],
+      "causes": [
+        "国会開設をめぐる政府内の対立",
+        "開拓使官有物払い下げ事件による政府批判の高まり"
+      ],
+      "consequences": [
+        "民権派が国会開設に備えて自由党や立憲改進党を結成した"
+      ],
+      "related_events": [
+        "E030",
+        "E032",
+        "E034",
+        "E039"
+      ],
+      "importance": 3,
+      "source": "21.自由民権運動の高まりと立憲国家の成立 p.6-8",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E034",
+      "date": "1881",
+      "date_precision": "year",
+      "title": "自由党の結成",
+      "description": "民権派が国会開設に備えて、板垣退助を党首として自由党を結成した。",
+      "people": [
+        "板垣退助"
+      ],
+      "places": [
+        "日本"
+      ],
+      "category": [
+        "politics"
+      ],
+      "causes": [
+        "国会開設の勅諭"
+      ],
+      "consequences": [],
+      "related_events": [
+        "E033",
+        "E039"
+      ],
+      "importance": 2,
+      "source": "21.自由民権運動の高まりと立憲国家の成立 p.9",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E035",
+      "date": "1881",
+      "date_precision": "year",
+      "title": "私擬憲法の作成",
+      "description": "各地の民権結社などで憲法の私案（私擬憲法）が作成され、植木枝盛による『東洋大日本国国憲按』などが作られた。",
+      "people": [
+        "植木枝盛"
+      ],
+      "places": [
+        "日本"
+      ],
+      "category": [
+        "politics"
+      ],
+      "causes": [],
+      "consequences": [],
+      "related_events": [
+        "E049"
+      ],
+      "importance": 2,
+      "source": "21.自由民権運動の高まりと立憲国家の成立 p.10",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E036",
+      "date": "1881～1882",
+      "date_precision": "period",
+      "title": "ウラービーの運動",
+      "description": "エジプトで展開された民族運動。",
+      "people": [
+        "ウラービー"
+      ],
+      "places": [
+        "エジプト"
+      ],
+      "category": [
+        "politics",
+        "military"
+      ],
+      "causes": [],
+      "consequences": [],
+      "related_events": [],
+      "importance": 1,
+      "source": "25.アジア諸民族の独立運動・立憲革命 p.2",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E037",
+      "date": "1881～1898",
+      "date_precision": "period",
+      "title": "マフディーの運動",
+      "description": "エジプト＝スーダンで展開された抵抗運動。",
+      "people": [
+        "マフディー"
+      ],
+      "places": [
+        "エジプト＝スーダン"
+      ],
+      "category": [
+        "politics",
+        "military",
+        "religion"
+      ],
+      "causes": [],
+      "consequences": [],
+      "related_events": [],
+      "importance": 1,
+      "source": "25.アジア諸民族の独立運動・立憲革命 p.2",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E038",
+      "date": "1882",
+      "date_precision": "year",
+      "title": "開拓使の廃止と3県分立",
+      "description": "開拓使が廃止され、北海道は3県に分かれた。",
+      "people": [],
+      "places": [
+        "北海道"
+      ],
+      "category": [
+        "politics"
+      ],
+      "causes": [],
+      "consequences": [
+        "1886年に1つに統合された"
+      ],
+      "related_events": [
+        "E003",
+        "E046"
+      ],
+      "importance": 1,
+      "source": "20.近代的な国際関係と国境・領土の画定 p.16",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E039",
+      "date": "1882",
+      "date_precision": "year",
+      "title": "立憲改進党の結成",
+      "description": "大隈重信を党首として立憲改進党が結成された。",
+      "people": [
+        "大隈重信"
+      ],
+      "places": [
+        "日本"
+      ],
+      "category": [
+        "politics"
+      ],
+      "causes": [
+        "国会開設の勅諭"
+      ],
+      "consequences": [],
+      "related_events": [
+        "E033",
+        "E034"
+      ],
+      "importance": 2,
+      "source": "21.自由民権運動の高まりと立憲国家の成立 p.9",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E040",
+      "date": "1882",
+      "date_precision": "year",
+      "title": "伊藤博文らの渡欧と憲法調査",
+      "description": "伊藤博文らが渡欧し、主としてドイツなどの憲法・国家制度を調査して憲法制定・国会開設の準備を進めた。",
+      "people": [
+        "伊藤博文"
+      ],
+      "places": [
+        "ドイツ",
+        "ヨーロッパ"
+      ],
+      "category": [
+        "politics"
+      ],
+      "causes": [],
+      "consequences": [
+        "内閣制度創設や大日本帝国憲法発布につながった"
+      ],
+      "related_events": [
+        "E045",
+        "E049"
+      ],
+      "importance": 2,
+      "source": "21.自由民権運動の高まりと立憲国家の成立 p.11",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E041",
+      "date": "1882",
+      "date_precision": "year",
+      "title": "三国同盟の締結",
+      "description": "独墺同盟にイタリアを加えて三国同盟を結んだ。ただしイタリア・オーストリア間には「未回収のイタリア」問題が存在した。",
+      "people": [
+        "ビスマルク"
+      ],
+      "places": [
+        "ドイツ",
+        "オーストリア",
+        "イタリア"
+      ],
+      "category": [
+        "diplomacy"
+      ],
+      "causes": [
+        "フランスを同盟関係から排除し孤立させるビスマルク外交"
+      ],
+      "consequences": [
+        "1887年の再保障条約で補完され、後に第一次世界大戦の一方の陣営となった"
+      ],
+      "related_events": [
+        "E006",
+        "E047",
+        "E121"
+      ],
+      "importance": 3,
+      "source": "26.緊迫する国際関係 p.3, p.5-6",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E042",
+      "date": "1883",
+      "date_precision": "year",
+      "title": "鹿鳴館などの欧化政策",
+      "description": "欧米諸国から文明国と認められることが条約改正への近道と考え、鹿鳴館などに象徴される極端な欧化政策をとった。",
+      "people": [],
+      "places": [
+        "日本"
+      ],
+      "category": [
+        "diplomacy",
+        "culture",
+        "politics"
+      ],
+      "causes": [
+        "欧米諸国から文明国と認められ条約改正を達成しようとする考え"
+      ],
+      "consequences": [
+        "国民生活の実態とはかけ離れ、好ましく思われなかった"
+      ],
+      "related_events": [
+        "E055"
+      ],
+      "importance": 2,
+      "source": "23.日清戦争 p.4",
+      "certainty": "inferred"
+    },
+    {
+      "id": "E043",
+      "date": "1884",
+      "date_precision": "year",
+      "title": "華族令の公布",
+      "description": "将来の貴族院設置に備えて華族制度を整備し、維新の功臣や軍人、実業家などにも華族の身分が与えられた。",
+      "people": [],
+      "places": [
+        "日本"
+      ],
+      "category": [
+        "politics",
+        "society"
+      ],
+      "causes": [
+        "将来の貴族院設置に備えるため"
+      ],
+      "consequences": [
+        "貴族院の構成基盤となった"
+      ],
+      "related_events": [
+        "E050"
+      ],
+      "importance": 2,
+      "source": "21.自由民権運動の高まりと立憲国家の成立 p.18",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E044",
+      "date": "1884",
+      "date_precision": "year",
+      "title": "ベルリン会議（アフリカ分割）",
+      "description": "ベルギーのコンゴ川流域進出による他国の反発を受けビスマルクによって開かれ、最初に占領した国が領有する先占権が列強の間で認められた。",
+      "people": [
+        "ビスマルク"
+      ],
+      "places": [
+        "ベルリン",
+        "アフリカ"
+      ],
+      "category": [
+        "diplomacy"
+      ],
+      "causes": [
+        "ベルギーのコンゴ川流域進出に対する他国の反発"
+      ],
+      "consequences": [
+        "列強によるアフリカ分割が進んだ"
+      ],
+      "related_events": [
+        "E005",
+        "E031",
+        "E103"
+      ],
+      "importance": 3,
+      "source": "22.帝国主義と世界分割 p.16",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E045",
+      "date": "1885",
+      "date_precision": "year",
+      "title": "内閣制度の創設",
+      "description": "憲法制定・国会開設の準備の中で内閣制度が創設され、初代内閣総理大臣に伊藤博文が就任した。",
+      "people": [
+        "伊藤博文"
+      ],
+      "places": [
+        "日本"
+      ],
+      "category": [
+        "politics"
+      ],
+      "causes": [
+        "伊藤博文らの渡欧憲法調査と憲法制定・国会開設準備"
+      ],
+      "consequences": [],
+      "related_events": [
+        "E040",
+        "E049"
+      ],
+      "importance": 3,
+      "source": "21.自由民権運動の高まりと立憲国家の成立 p.11",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E046",
+      "date": "1886",
+      "date_precision": "year",
+      "title": "北海道3県の統合",
+      "description": "1882年に3県に分かれていた北海道が1つに統合された。",
+      "people": [],
+      "places": [
+        "北海道"
+      ],
+      "category": [
+        "politics"
+      ],
+      "causes": [],
+      "consequences": [],
+      "related_events": [
+        "E003",
+        "E038"
+      ],
+      "importance": 1,
+      "source": "20.近代的な国際関係と国境・領土の画定 p.16",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E047",
+      "date": "1887",
+      "date_precision": "year",
+      "title": "再保障条約の締結",
+      "description": "ドイツ・ロシア間で結ばれ、三国同盟を補完した。",
+      "people": [
+        "ビスマルク"
+      ],
+      "places": [
+        "ドイツ",
+        "ロシア"
+      ],
+      "category": [
+        "diplomacy"
+      ],
+      "causes": [
+        "ビスマルク外交によるフランスの孤立化とドイツの安全保障"
+      ],
+      "consequences": [
+        "1890年に更新を拒否したことで露仏同盟の成立を招いた"
+      ],
+      "related_events": [
+        "E041",
+        "E051",
+        "E054"
+      ],
+      "importance": 2,
+      "source": "26.緊迫する国際関係 p.3, p.6",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E048",
+      "date": "1888",
+      "date_precision": "year",
+      "title": "ヴィルヘルム2世のドイツ皇帝即位",
+      "description": "ビスマルクを信任していたヴィルヘルム1世に代わり、ヴィルヘルム2世がドイツ皇帝に就任した。",
+      "people": [
+        "ヴィルヘルム2世",
+        "ヴィルヘルム1世",
+        "ビスマルク"
+      ],
+      "places": [
+        "ドイツ"
+      ],
+      "category": [
+        "politics"
+      ],
+      "causes": [],
+      "consequences": [
+        "世界政策の追求をめぐりビスマルクと対立し、1890年に罷免した"
+      ],
+      "related_events": [
+        "E051"
+      ],
+      "importance": 2,
+      "source": "26.緊迫する国際関係 p.7-8",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E049",
+      "date": "1889-02-11",
+      "date_precision": "day",
+      "title": "大日本帝国憲法の発布",
+      "description": "天皇の名によって発布された欽定憲法。広範な天皇大権や内閣・議会から独立した統帥権、帝国議会の協賛や国務大臣の輔弼などが定められた。",
+      "people": [
+        "伊藤博文"
+      ],
+      "places": [
+        "日本"
+      ],
+      "category": [
+        "politics"
+      ],
+      "causes": [
+        "国会開設の勅諭と伊藤博文らの憲法調査"
+      ],
+      "consequences": [
+        "1890年の帝国議会開設や、法制度整備による条約改正達成につながった"
+      ],
+      "related_events": [
+        "E040",
+        "E045",
+        "E050",
+        "E055"
+      ],
+      "importance": 3,
+      "source": "21.自由民権運動の高まりと立憲国家の成立 p.12-16",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E050",
+      "date": "1890",
+      "date_precision": "year",
+      "title": "帝国議会の開設",
+      "description": "貴族院と衆議院の両院からなる帝国議会が開設された。衆議院の選挙権は直接国税15円以上をおさめる満25歳以上の男性（全人口の1.1%）に限られた。",
+      "people": [],
+      "places": [
+        "日本"
+      ],
+      "category": [
+        "politics"
+      ],
+      "causes": [
+        "国会開設の勅諭と大日本帝国憲法の発布"
+      ],
+      "consequences": [],
+      "related_events": [
+        "E033",
+        "E043",
+        "E049"
+      ],
+      "importance": 3,
+      "source": "21.自由民権運動の高まりと立憲国家の成立 p.17-18",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E051",
+      "date": "1890",
+      "date_precision": "year",
+      "title": "ビスマルク罷免と再保障条約の更新拒否・世界政策転換",
+      "description": "世界政策（帝国主義政策）を追求し強硬路線で植民地分割に乗り出したヴィルヘルム2世が、ヨーロッパの現状維持を重視するビスマルクを罷免し、ロシアとの再保障条約の更新を拒否した。",
+      "people": [
+        "ヴィルヘルム2世",
+        "ビスマルク"
+      ],
+      "places": [
+        "ドイツ",
+        "ロシア"
+      ],
+      "category": [
+        "politics",
+        "diplomacy"
+      ],
+      "causes": [
+        "ヴィルヘルム2世の世界政策追求と現状維持を重視するビスマルクとの対立"
+      ],
+      "consequences": [
+        "ロシアがフランスと接近して露仏同盟が成立し、またドイツの進出は英仏協商のきっかけとなった"
+      ],
+      "related_events": [
+        "E047",
+        "E048",
+        "E054",
+        "E077"
+      ],
+      "importance": 3,
+      "source": "22.帝国主義と世界分割 p.22 / 26.緊迫する国際関係 p.8",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E052",
+      "date": "1890",
+      "date_precision": "year",
+      "title": "フロンティアの消滅宣言",
+      "description": "アメリカで西漸運動の最前線であった開拓地と未開拓地の境界（フロンティア）の消滅が宣言された。",
+      "people": [],
+      "places": [
+        "アメリカ"
+      ],
+      "category": [
+        "society",
+        "economy"
+      ],
+      "causes": [],
+      "consequences": [
+        "工業化が進む中、アメリカが海外市場を求めて太平洋・カリブ海方面へ進出する契機となった"
+      ],
+      "related_events": [
+        "E065",
+        "E066"
+      ],
+      "importance": 2,
+      "source": "22.帝国主義と世界分割 p.10",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E053",
+      "date": "1891～1892",
+      "date_precision": "period",
+      "title": "タバコ＝ボイコット運動",
+      "description": "カージャール朝イランで展開された反抗運動。",
+      "people": [],
+      "places": [
+        "イラン",
+        "テヘラン",
+        "カージャール朝"
+      ],
+      "category": [
+        "politics",
+        "economy",
+        "society"
+      ],
+      "causes": [],
+      "consequences": [],
+      "related_events": [],
+      "importance": 1,
+      "source": "25.アジア諸民族の独立運動・立憲革命 p.2",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E054",
+      "date": "1891～1894",
+      "date_precision": "period",
+      "title": "露仏同盟の成立",
+      "description": "ドイツを警戒するロシアがフランスと急接近し、露仏同盟が成立した。",
+      "people": [],
+      "places": [
+        "ロシア",
+        "フランス"
+      ],
+      "category": [
+        "diplomacy"
+      ],
+      "causes": [
+        "ドイツの再保障条約更新拒否とドイツへの警戒"
+      ],
+      "consequences": [
+        "1895年、ロシアはフランス・ドイツとともに三国干渉を行った"
+      ],
+      "related_events": [
+        "E051",
+        "E059"
+      ],
+      "importance": 3,
+      "source": "26.緊迫する国際関係 p.9, p.12",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E055",
+      "date": "1894",
+      "date_precision": "year",
+      "title": "日英通商航海条約の調印",
+      "description": "日清戦争直前、外相・陸奥宗光のときに調印され、領事裁判権の撤廃、関税自主権の一部回復、相互の最恵国待遇が認められた。",
+      "people": [
+        "陸奥宗光"
+      ],
+      "places": [
+        "日本",
+        "イギリス"
+      ],
+      "category": [
+        "diplomacy"
+      ],
+      "causes": [
+        "東アジアに進出するロシアを警戒するイギリスの好意的姿勢",
+        "憲法制定や法制度整備の進展により欧米諸国が改正を拒む名目を失ったこと"
+      ],
+      "consequences": [
+        "この後、他の欧米諸国とも改正条約が調印された"
+      ],
+      "related_events": [
+        "E049",
+        "E104"
+      ],
+      "importance": 3,
+      "source": "23.日清戦争 p.5-6",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E056",
+      "date": "1894",
+      "date_precision": "year",
+      "title": "甲午農民戦争（東学の乱）",
+      "description": "朝鮮で民族宗教・東学の組織に率いられた農民が悪政の改革や外国勢力の排斥を求めて反乱を起こした。",
+      "people": [],
+      "places": [
+        "朝鮮"
+      ],
+      "category": [
+        "society",
+        "politics",
+        "religion"
+      ],
+      "causes": [
+        "西学（カトリック）への対抗、悪政の改革や外国勢力の排斥要求"
+      ],
+      "consequences": [
+        "清と日本がともに出兵。農民軍は朝鮮政府と和解したが、日清両国の対立から日清戦争へ発展した"
+      ],
+      "related_events": [
+        "E057"
+      ],
+      "importance": 3,
+      "source": "23.日清戦争 p.7 / 25.アジア諸民族の独立運動・立憲革命 p.2",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E057",
+      "date": "1894-08",
+      "date_precision": "month",
+      "title": "日清戦争の勃発",
+      "description": "朝鮮の内政改革をめぐり対立した日清両国が交戦し（1894年7月豊島沖海戦）、8月に日本が清に宣戦布告。9月の黄海海戦などを経て日本軍が清軍を朝鮮半島から追い出し、遼東半島や威海衛を占領した。",
+      "people": [],
+      "places": [
+        "朝鮮",
+        "遼東半島",
+        "威海衛",
+        "日本",
+        "清"
+      ],
+      "category": [
+        "military",
+        "diplomacy"
+      ],
+      "causes": [
+        "甲午農民戦争に伴う日清両国の朝鮮出兵と朝鮮の内政改革をめぐる対立",
+        "イギリスの対日態度の変化による日本有利な国際情勢"
+      ],
+      "consequences": [
+        "1895年4月の下関条約締結に至り、東アジアの伝統的な冊封体制が解体した"
+      ],
+      "related_events": [
+        "E056",
+        "E058"
+      ],
+      "importance": 3,
+      "source": "23.日清戦争 p.8-13, p.25",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E058",
+      "date": "1895-04",
+      "date_precision": "month",
+      "title": "下関条約の締結",
+      "description": "日清戦争の講和条約。朝鮮の独立承認、遼東半島・台湾・澎湖諸島の日本への割譲、賠償金2億両（約3億円、特別会計3億6450万円）の支払いが定められた。",
+      "people": [],
+      "places": [
+        "下関",
+        "日本",
+        "清",
+        "台湾",
+        "澎湖諸島",
+        "遼東半島"
+      ],
+      "category": [
+        "diplomacy"
+      ],
+      "causes": [
+        "日清戦争における日本軍の勝利"
+      ],
+      "consequences": [
+        "三国干渉による遼東半島返還",
+        "台湾統治の開始",
+        "賠償金の一部による官営八幡製鉄所設立や軍備拡張",
+        "列強による中国分割の加速"
+      ],
+      "related_events": [
+        "E057",
+        "E059",
+        "E060",
+        "E061",
+        "E062"
+      ],
+      "importance": 3,
+      "source": "23.日清戦争 p.13-17, p.21, p.25",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E059",
+      "date": "1895",
+      "date_precision": "year",
+      "title": "三国干渉",
+      "description": "東アジア進出を目指すロシアがフランス・ドイツとともに遼東半島の清への返還を要求し、日本政府はこの勧告を受け入れた。",
+      "people": [],
+      "places": [
+        "遼東半島",
+        "ロシア",
+        "フランス",
+        "ドイツ",
+        "日本",
+        "清"
+      ],
+      "category": [
+        "diplomacy"
+      ],
+      "causes": [
+        "下関条約による日本の遼東半島領有",
+        "ロシアの東アジア進出の狙いと、ロシアの関心を極東に向け欧州の対立を緩和しようとしたドイツの思惑"
+      ],
+      "consequences": [
+        "日本が遼東半島を返還し、朝鮮ではロシアの支援で親露政権が成立した"
+      ],
+      "related_events": [
+        "E054",
+        "E058",
+        "E064"
+      ],
+      "importance": 3,
+      "source": "23.日清戦争 p.14-15 / 26.緊迫する国際関係 p.9",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E060",
+      "date": "1895",
+      "date_precision": "year",
+      "title": "台湾総督府の設置と台湾征服戦争",
+      "description": "遼東半島を返還した日本は新たに領有した台湾の統治に力を注ぎ、台湾総督府を設置して島民の頑強な抵抗を武力で鎮圧した。",
+      "people": [],
+      "places": [
+        "台湾"
+      ],
+      "category": [
+        "politics",
+        "military"
+      ],
+      "causes": [
+        "下関条約による台湾の日本への割譲"
+      ],
+      "consequences": [
+        "日本による台湾統治が始まった"
+      ],
+      "related_events": [
+        "E058"
+      ],
+      "importance": 2,
+      "source": "23.日清戦争 p.18-20",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E061",
+      "date": "1901",
+      "date_precision": "year",
+      "title": "官営八幡製鉄所の設立",
+      "description": "日清戦争の賠償金の一部を投じて官営八幡製鉄所が設立され、日本の重工業の成長を促した。",
+      "people": [],
+      "places": [
+        "日本"
+      ],
+      "category": [
+        "economy"
+      ],
+      "causes": [
+        "下関条約による清からの賠償金支払い"
+      ],
+      "consequences": [
+        "日本の重工業の成長を促した"
+      ],
+      "related_events": [
+        "E058"
+      ],
+      "importance": 2,
+      "source": "23.日清戦争 p.16",
+      "certainty": "inferred"
+    },
+    {
+      "id": "E062",
+      "date": "1895～1899",
+      "date_precision": "period",
+      "title": "列強による中国分割の加速",
+      "description": "日清戦争による冊封体制解体と巨額賠償の資金調達に苦しむ清から、列強が借金と引き換えに租借地・鉄道敷設権・鉱山採掘権などの利権を拡大した。",
+      "people": [],
+      "places": [
+        "清"
+      ],
+      "category": [
+        "diplomacy",
+        "economy"
+      ],
+      "causes": [
+        "日清戦争の敗北による巨額の賠償資金調達難",
+        "日清戦争による冊封体制の解体"
+      ],
+      "consequences": [
+        "アメリカの門戸開放提唱や、清国内の戊戌の変法・義和団戦争を引き起こした"
+      ],
+      "related_events": [
+        "E058",
+        "E068",
+        "E069",
+        "E071"
+      ],
+      "importance": 3,
+      "source": "23.日清戦争 p.21-25",
+      "certainty": "inferred"
+    },
+    {
+      "id": "E063",
+      "date": "1896～1901",
+      "date_precision": "period",
+      "title": "アギナルドらの独立運動",
+      "description": "フィリピンで展開されたアギナルドらの独立運動。",
+      "people": [
+        "アギナルド"
+      ],
+      "places": [
+        "フィリピン"
+      ],
+      "category": [
+        "politics",
+        "military"
+      ],
+      "causes": [],
+      "consequences": [],
+      "related_events": [
+        "E066"
+      ],
+      "importance": 1,
+      "source": "25.アジア諸民族の独立運動・立憲革命 p.2",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E064",
+      "date": "1897",
+      "date_precision": "year",
+      "title": "大韓帝国への国号改称",
+      "description": "日清戦争後、ロシアの支援を受けた親露政権が成立した朝鮮が、日本に対抗する意味もあって国号を大韓帝国と改めた。",
+      "people": [],
+      "places": [
+        "朝鮮",
+        "大韓帝国"
+      ],
+      "category": [
+        "politics",
+        "diplomacy"
+      ],
+      "causes": [
+        "下関条約での朝鮮の独立承認",
+        "ロシアの支援による親露政権成立と日本への対抗"
+      ],
+      "consequences": [],
+      "related_events": [
+        "E058",
+        "E059"
+      ],
+      "importance": 2,
+      "source": "23.日清戦争 p.14",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E065",
+      "date": "1898",
+      "date_precision": "year",
+      "title": "ハワイ併合",
+      "description": "海外市場を求めて太平洋・カリブ海方面へ進出したアメリカがハワイを併合した。",
+      "people": [],
+      "places": [
+        "ハワイ",
+        "アメリカ"
+      ],
+      "category": [
+        "diplomacy"
+      ],
+      "causes": [
+        "1890年のフロンティア消滅と工業化に伴う海外市場の追求"
+      ],
+      "consequences": [],
+      "related_events": [
+        "E052"
+      ],
+      "importance": 2,
+      "source": "22.帝国主義と世界分割 p.10",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E066",
+      "date": "1898",
+      "date_precision": "year",
+      "title": "米西戦争（アメリカ＝スペイン戦争）",
+      "description": "アメリカがキューバ独立支援を理由としてスペインと開戦し、スペインからフィリピン・グアム・プエルトリコを獲得した。",
+      "people": [],
+      "places": [
+        "キューバ",
+        "フィリピン",
+        "グアム",
+        "プエルトリコ",
+        "アメリカ",
+        "スペイン"
+      ],
+      "category": [
+        "military",
+        "diplomacy"
+      ],
+      "causes": [
+        "アメリカのカリブ海・太平洋方面への進出とキューバ独立支援"
+      ],
+      "consequences": [
+        "1901年にキューバを事実上の保護国とし、太平洋への進出が進んだ"
+      ],
+      "related_events": [
+        "E052",
+        "E069",
+        "E072"
+      ],
+      "importance": 3,
+      "source": "22.帝国主義と世界分割 p.12-13 / 23.日清戦争 p.24",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E067",
+      "date": "1898",
+      "date_precision": "year",
+      "title": "ファショダ事件",
+      "description": "ケープ植民地から北進しエジプトから南下するイギリスのアフリカ縦断政策と、アルジェリアからサハラ砂漠を横切りジブチから西進するフランスのアフリカ横断政策が衝突した。",
+      "people": [],
+      "places": [
+        "ファショダ",
+        "スーダン",
+        "アフリカ"
+      ],
+      "category": [
+        "diplomacy",
+        "military"
+      ],
+      "causes": [
+        "イギリスのアフリカ縦断政策とフランスのアフリカ横断政策の衝突"
+      ],
+      "consequences": [
+        "後にドイツの進出をきっかけにフランスが協調に転じ、1904年の英仏協商につながった"
+      ],
+      "related_events": [
+        "E077"
+      ],
+      "importance": 2,
+      "source": "22.帝国主義と世界分割 p.18-21",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E068",
+      "date": "1898",
+      "date_precision": "year",
+      "title": "戊戌の変法と戊戌の政変",
+      "description": "列強の中国分割に危機を感じた康有為らが光緒帝を動かして日本にならった近代化・立憲君主政樹立の改革（戊戌の変法）を行ったが、西太后ら保守派のクーデタ（戊戌の政変）により光緒帝は幽閉され約100日で終わった。",
+      "people": [
+        "康有為",
+        "光緒帝",
+        "西太后"
+      ],
+      "places": [
+        "清"
+      ],
+      "category": [
+        "politics"
+      ],
+      "causes": [
+        "日清戦争後の列強による租借地・勢力範囲設定に対する危機感"
+      ],
+      "consequences": [
+        "立憲君主政を目指す改革が約100日で挫折した"
+      ],
+      "related_events": [
+        "E062"
+      ],
+      "importance": 3,
+      "source": "24.日露戦争から韓国併合へ p.3-4",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E069",
+      "date": "1899～1900",
+      "date_precision": "period",
+      "title": "門戸開放・機会均等・領土保全の提唱",
+      "description": "アメリカ国務長官ジョン＝ヘイが1899年に門戸開放・機会均等、1900年に領土保全を提唱し、中国の領土の現状維持と各国による自由な商業活動を求めた。",
+      "people": [
+        "ジョン＝ヘイ"
+      ],
+      "places": [
+        "アメリカ",
+        "清"
+      ],
+      "category": [
+        "diplomacy",
+        "economy"
+      ],
+      "causes": [
+        "中国に進出拠点を持たずフィリピン獲得の時期が遅かったこと",
+        "列強による中国分割の進行"
+      ],
+      "consequences": [],
+      "related_events": [
+        "E062",
+        "E066",
+        "E132",
+        "E168"
+      ],
+      "importance": 3,
+      "source": "23.日清戦争 p.23-24",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E070",
+      "date": "1899",
+      "date_precision": "year",
+      "title": "南アフリカ戦争の勃発",
+      "description": "アフリカ縦断政策を進めるイギリスが、金とダイヤモンドを背景にオランダ系植民者の子孫の国との戦争を起こし勝利した。",
+      "people": [],
+      "places": [
+        "南アフリカ",
+        "トランスヴァール共和国",
+        "オレンジ自由国"
+      ],
+      "category": [
+        "military",
+        "diplomacy"
+      ],
+      "causes": [
+        "金とダイヤモンドの存在とイギリスのアフリカ縦断政策"
+      ],
+      "consequences": [
+        "長期化が1902年の日英同盟締結の背景となり、1910年に南アフリカ連邦が成立した"
+      ],
+      "related_events": [
+        "E074",
+        "E101"
+      ],
+      "importance": 2,
+      "source": "22.帝国主義と世界分割 p.18 / 26.緊迫する国際関係 p.10",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E071",
+      "date": "1900～1901",
+      "date_precision": "period",
+      "title": "義和団戦争（北清事変）と北京議定書",
+      "description": "「扶清滅洋」を唱える義和団が1900年に北京の外国公使館を包囲し、清が各国に宣戦布告。日露を主力とする8か国連合軍が北京を占領し、1901年に敗北した清は北京議定書を結んで巨額賠償金と外国軍の北京駐留を認めた。",
+      "people": [],
+      "places": [
+        "北京",
+        "山東省",
+        "華北",
+        "清"
+      ],
+      "category": [
+        "military",
+        "diplomacy",
+        "society"
+      ],
+      "causes": [
+        "列強の敷設したものや宗教など外国勢力に対する民衆の反発"
+      ],
+      "consequences": [
+        "戦後ロシアが満洲を事実上占領し日露対立につながった。また清朝は光緒新政に乗り出した"
+      ],
+      "related_events": [
+        "E062",
+        "E073",
+        "E075"
+      ],
+      "importance": 3,
+      "source": "24.日露戦争から韓国併合へ p.5-7 / 25.アジア諸民族の独立運動・立憲革命 p.2, p.11",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E072",
+      "date": "1901",
+      "date_precision": "year",
+      "title": "キューバの事実上の保護国化",
+      "description": "米西戦争後、アメリカがキューバを事実上の保護国とした。",
+      "people": [],
+      "places": [
+        "キューバ",
+        "アメリカ"
+      ],
+      "category": [
+        "diplomacy"
+      ],
+      "causes": [
+        "米西戦争での勝利"
+      ],
+      "consequences": [],
+      "related_events": [
+        "E066"
+      ],
+      "importance": 2,
+      "source": "22.帝国主義と世界分割 p.12",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E073",
+      "date": "1901",
+      "date_precision": "year",
+      "title": "光緒新政の開始",
+      "description": "義和団戦争後、清で西太后を中心として近代国家に向けた政治改革に乗り出した。",
+      "people": [
+        "西太后"
+      ],
+      "places": [
+        "清"
+      ],
+      "category": [
+        "politics"
+      ],
+      "causes": [
+        "義和団戦争での敗北"
+      ],
+      "consequences": [
+        "1905年に科挙を廃止し、1908年に憲法大綱を公布した"
+      ],
+      "related_events": [
+        "E071",
+        "E086",
+        "E099"
+      ],
+      "importance": 2,
+      "source": "25.アジア諸民族の独立運動・立憲革命 p.11",
+      "certainty": "inferred"
+    },
+    {
+      "id": "E074",
+      "date": "1902",
+      "date_precision": "year",
+      "title": "日英同盟の締結",
+      "description": "南アフリカ戦争長期化を背景にアジア権益を守ろうとするイギリスと、ロシアと対立する日本が同盟を結び、中国・韓国の相互の利権を認め合った。",
+      "people": [],
+      "places": [
+        "日本",
+        "イギリス",
+        "清",
+        "韓国"
+      ],
+      "category": [
+        "diplomacy"
+      ],
+      "causes": [
+        "韓国での権益をめぐる日露の対立",
+        "南アフリカ戦争長期化によるイギリスのアジア権益防衛の必要"
+      ],
+      "consequences": [
+        "日露戦争でイギリスの支援につながり、後に第二次日英同盟締結や第一次世界大戦参戦理由となった"
+      ],
+      "related_events": [
+        "E070",
+        "E075",
+        "E079",
+        "E114",
+        "E167"
+      ],
+      "importance": 3,
+      "source": "24.日露戦争から韓国併合へ p.7 / 26.緊迫する国際関係 p.10",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E075",
+      "date": "1904-02",
+      "date_precision": "month",
+      "title": "日露戦争の勃発",
+      "description": "満洲・韓国の優越権をめぐる交渉決裂を受け日露両国が互いに宣戦布告。米英の経済的支援を得て日本が有利に進め（1905年5月日本海海戦）、物量戦による限界とロシア国内の革命運動により講和に至った。",
+      "people": [],
+      "places": [
+        "満洲",
+        "韓国",
+        "日本",
+        "ロシア",
+        "日本海"
+      ],
+      "category": [
+        "military",
+        "diplomacy"
+      ],
+      "causes": [
+        "義和団戦争後のロシアによる満洲の事実上の占領",
+        "韓国・満洲の優越権をめぐる日露交渉の決裂"
+      ],
+      "consequences": [
+        "1905年9月のポーツマス条約締結につながり、アジア各地の独立運動・立憲革命にも影響を与えた"
+      ],
+      "related_events": [
+        "E071",
+        "E074",
+        "E080",
+        "E084"
+      ],
+      "importance": 3,
+      "source": "24.日露戦争から韓国併合へ p.7-10",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E076",
+      "date": "1904",
+      "date_precision": "year",
+      "title": "第1次日韓協約の締結",
+      "description": "日露戦争中に日本が韓国と結び、韓国の外交・財政について日本人顧問を送り込んだ。",
+      "people": [],
+      "places": [
+        "韓国",
+        "日本"
+      ],
+      "category": [
+        "diplomacy",
+        "politics"
+      ],
+      "causes": [],
+      "consequences": [
+        "第2次日韓協約による保護国化へと進んだ"
+      ],
+      "related_events": [
+        "E075",
+        "E082"
+      ],
+      "importance": 2,
+      "source": "24.日露戦争から韓国併合へ p.19",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E077",
+      "date": "1904",
+      "date_precision": "year",
+      "title": "英仏協商の締結",
+      "description": "ドイツの進出をきっかけにフランスが協調に転じ、日露戦争直前にイギリスとアフリカ問題などで妥協して相互の勢力範囲を承認した。",
+      "people": [],
+      "places": [
+        "イギリス",
+        "フランス",
+        "アフリカ"
+      ],
+      "category": [
+        "diplomacy"
+      ],
+      "causes": [
+        "ドイツの進出",
+        "アフリカ問題（ファショダ事件など）の解決"
+      ],
+      "consequences": [
+        "1907年の英露協商とあわせて三国協商の成立につながった"
+      ],
+      "related_events": [
+        "E051",
+        "E067",
+        "E096"
+      ],
+      "importance": 3,
+      "source": "22.帝国主義と世界分割 p.20 / 26.緊迫する国際関係 p.11",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E078",
+      "date": "1905",
+      "date_precision": "year",
+      "title": "竹島（1905年地図記載）",
+      "description": "朝鮮周辺図に「竹島 1905」と記載されている。",
+      "people": [],
+      "places": [
+        "竹島",
+        "日本"
+      ],
+      "category": [
+        "diplomacy"
+      ],
+      "causes": [],
+      "consequences": [],
+      "related_events": [],
+      "importance": 1,
+      "source": "20.近代的な国際関係と国境・領土の画定 p.12",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E079",
+      "date": "1905-05",
+      "date_precision": "month",
+      "title": "第二次日英同盟の締結",
+      "description": "東アジアとインドにおける平和確保と特殊権益擁護をうたい、イギリスが日本の韓国における政治・軍事・経済上の特殊権益を擁護する措置をとる権利を承認した。",
+      "people": [],
+      "places": [
+        "日本",
+        "イギリス",
+        "韓国",
+        "清",
+        "インド"
+      ],
+      "category": [
+        "diplomacy"
+      ],
+      "causes": [],
+      "consequences": [
+        "列強が韓国の訴えを無視して日本の韓国支配を認める根拠となった"
+      ],
+      "related_events": [
+        "E074",
+        "E094"
+      ],
+      "importance": 2,
+      "source": "24.日露戦争から韓国併合へ p.21-22",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E080",
+      "date": "1905-09",
+      "date_precision": "month",
+      "title": "ポーツマス条約の締結",
+      "description": "米大統領セオドア＝ローズヴェルトの調停で結ばれた日露講和条約。韓国への日本の指導・監督権、旅順・大連の租借権と東清鉄道長春・旅順間の譲渡、北緯50度以南の樺太割譲を規定した。",
+      "people": [
+        "セオドア＝ローズヴェルト"
+      ],
+      "places": [
+        "ポーツマス",
+        "韓国",
+        "旅順",
+        "大連",
+        "樺太"
+      ],
+      "category": [
+        "diplomacy"
+      ],
+      "causes": [
+        "日本の兵器補給・国民負担の限界とロシア国内の革命運動による戦争継続困難"
+      ],
+      "consequences": [
+        "講和内容への不満から日比谷焼打ち事件が発生。満鉄設立や韓国保護国化が進んだ"
+      ],
+      "related_events": [
+        "E075",
+        "E081",
+        "E082",
+        "E089"
+      ],
+      "importance": 3,
+      "source": "24.日露戦争から韓国併合へ p.9-10, p.15",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E081",
+      "date": "1905-09",
+      "date_precision": "month",
+      "title": "日比谷焼打ち事件",
+      "description": "ポーツマス条約の内容が戦勝の見返りとして不十分であると不満を抱いた人々により各地で講和反対運動が起こり、条約調印日の講和反対国民大会が暴動化した。",
+      "people": [],
+      "places": [
+        "日比谷",
+        "東京",
+        "日本"
+      ],
+      "category": [
+        "society",
+        "politics"
+      ],
+      "causes": [
+        "ポーツマス条約の内容が戦勝の見返りとして不十分であるとの不満"
+      ],
+      "consequences": [],
+      "related_events": [
+        "E080"
+      ],
+      "importance": 2,
+      "source": "24.日露戦争から韓国併合へ p.16",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E082",
+      "date": "1905",
+      "date_precision": "year",
+      "title": "第2次日韓協約の締結",
+      "description": "日本が第2次日韓協約を結び、韓国の外交権を奪って保護国化した。",
+      "people": [],
+      "places": [
+        "韓国",
+        "日本"
+      ],
+      "category": [
+        "diplomacy",
+        "politics"
+      ],
+      "causes": [
+        "第1次日韓協約およびポーツマス条約・第二次日英同盟での日本の優越権承認"
+      ],
+      "consequences": [
+        "1906年に統監府が設置された"
+      ],
+      "related_events": [
+        "E076",
+        "E080",
+        "E090"
+      ],
+      "importance": 3,
+      "source": "24.日露戦争から韓国併合へ p.19",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E083",
+      "date": "1905",
+      "date_precision": "year",
+      "title": "イラン立憲革命",
+      "description": "専制的支配に対するイスラーム知識人や商工業者らの抗議運動から憲法制定と議会開設を求めて起きたが、1911年に英露の干渉によって挫折した。",
+      "people": [],
+      "places": [
+        "イラン",
+        "テヘラン"
+      ],
+      "category": [
+        "politics"
+      ],
+      "causes": [
+        "専制的支配への抗議",
+        "日露戦争の影響"
+      ],
+      "consequences": [
+        "1911年、英露の干渉により挫折した"
+      ],
+      "related_events": [
+        "E075"
+      ],
+      "importance": 2,
+      "source": "25.アジア諸民族の独立運動・立憲革命 p.2, p.4",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E084",
+      "date": "1905～1909",
+      "date_precision": "period",
+      "title": "ドンズー（東遊）運動",
+      "description": "ベトナムのファン＝ボイ＝チャウらがフランスからの独立と立憲君主政の樹立を目指し、日露戦争に勝利した日本へ留学生を送る運動を推進した。",
+      "people": [
+        "ファン＝ボイ＝チャウ"
+      ],
+      "places": [
+        "ベトナム",
+        "日本"
+      ],
+      "category": [
+        "politics",
+        "diplomacy"
+      ],
+      "causes": [
+        "フランスの支配への武装抵抗継続と兵器調達支援への期待",
+        "日露戦争における日本の対露勝利"
+      ],
+      "consequences": [
+        "日本が一皇族を受け入れずフランスと協調する動きへの批判が残された"
+      ],
+      "related_events": [
+        "E075"
+      ],
+      "importance": 2,
+      "source": "25.アジア諸民族の独立運動・立憲革命 p.2, p.5-7",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E085",
+      "date": "1905",
+      "date_precision": "year",
+      "title": "ベンガル分割令の公布",
+      "description": "イギリスがベンガル地方を東西に分割し、ヒンドゥー教徒とムスリムの分離を図った。",
+      "people": [],
+      "places": [
+        "ベンガル",
+        "インド"
+      ],
+      "category": [
+        "politics"
+      ],
+      "causes": [
+        "ヒンドゥー教徒とムスリムの分離を図るイギリス統治政策"
+      ],
+      "consequences": [
+        "1906年の国民会議派カルカッタ大会での4綱領決議につながった"
+      ],
+      "related_events": [
+        "E091",
+        "E092"
+      ],
+      "importance": 2,
+      "source": "25.アジア諸民族の独立運動・立憲革命 p.8-9",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E086",
+      "date": "1905",
+      "date_precision": "year",
+      "title": "科挙の廃止",
+      "description": "日露戦争後、清が光緒新政の一環として科挙を廃止した。",
+      "people": [
+        "西太后"
+      ],
+      "places": [
+        "清"
+      ],
+      "category": [
+        "politics",
+        "culture"
+      ],
+      "causes": [
+        "日露戦争後の近代国家に向けた政治改革（光緒新政）"
+      ],
+      "consequences": [],
+      "related_events": [
+        "E073",
+        "E099"
+      ],
+      "importance": 2,
+      "source": "25.アジア諸民族の独立運動・立憲革命 p.11",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E087",
+      "date": "1905",
+      "date_precision": "year",
+      "title": "中国同盟会の結成",
+      "description": "東京で孫文を総理として結成され、民族の独立・民権の伸長・民生の安定を意味する三民主義を掲げた。",
+      "people": [
+        "孫文"
+      ],
+      "places": [
+        "東京",
+        "日本",
+        "清"
+      ],
+      "category": [
+        "politics"
+      ],
+      "causes": [
+        "満洲人の専制王朝である清の打倒と共和政を目指す革命運動の高まり"
+      ],
+      "consequences": [
+        "後の辛亥革命や中華民国成立の推進力となった"
+      ],
+      "related_events": [
+        "E107",
+        "E108"
+      ],
+      "importance": 3,
+      "source": "25.アジア諸民族の独立運動・立憲革命 p.2, p.12-13",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E088",
+      "date": "1905～1909ごろ",
+      "date_precision": "period",
+      "title": "朝鮮での反日義兵闘争",
+      "description": "反日武装闘争（義兵闘争）が、1907年の韓国軍解散後に元兵士たちの参加を得て本格化し、1909年に日本政府が軍隊を増派して鎮圧した。",
+      "people": [],
+      "places": [
+        "朝鮮",
+        "韓国"
+      ],
+      "category": [
+        "military",
+        "politics"
+      ],
+      "causes": [
+        "日本の韓国支配強化と1907年の韓国軍解散"
+      ],
+      "consequences": [
+        "1909年に日本政府が軍隊を増派して鎮圧した"
+      ],
+      "related_events": [
+        "E095",
+        "E100",
+        "E102"
+      ],
+      "importance": 2,
+      "source": "24.日露戦争から韓国併合へ p.23 / 25.アジア諸民族の独立運動・立憲革命 p.2",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E089",
+      "date": "1906",
+      "date_precision": "year",
+      "title": "南満州鉄道株式会社（満鉄）の設立",
+      "description": "ポーツマス条約で譲渡された東清鉄道長春・旅順間とその付属利権をもとに設立され、鉄道沿線の炭坑経営なども行った。",
+      "people": [],
+      "places": [
+        "満洲",
+        "長春",
+        "旅順"
+      ],
+      "category": [
+        "economy"
+      ],
+      "causes": [
+        "ポーツマス条約による東清鉄道長春・旅順間と付属利権の日本への譲渡"
+      ],
+      "consequences": [],
+      "related_events": [
+        "E080"
+      ],
+      "importance": 3,
+      "source": "24.日露戦争から韓国併合へ p.15",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E090",
+      "date": "1906",
+      "date_precision": "year",
+      "title": "統監府の設置",
+      "description": "第2次日韓協約に基づき外交を統括する統監府が設置され、初代統監に伊藤博文が就任した。",
+      "people": [
+        "伊藤博文"
+      ],
+      "places": [
+        "韓国"
+      ],
+      "category": [
+        "politics",
+        "diplomacy"
+      ],
+      "causes": [
+        "第2次日韓協約による韓国の保護国化"
+      ],
+      "consequences": [],
+      "related_events": [
+        "E082",
+        "E100"
+      ],
+      "importance": 2,
+      "source": "24.日露戦争から韓国併合へ p.19",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E091",
+      "date": "1906",
+      "date_precision": "year",
+      "title": "国民会議派カルカッタ大会での4綱領決議",
+      "description": "国民会議派がカルカッタ大会で英貨排斥・スワデーシ（国産品愛用）・スワラージ（自治獲得）・民族教育の4綱領を決議した。",
+      "people": [],
+      "places": [
+        "カルカッタ",
+        "インド"
+      ],
+      "category": [
+        "politics",
+        "economy"
+      ],
+      "causes": [
+        "1905年のベンガル分割令公布",
+        "日露戦争の影響"
+      ],
+      "consequences": [],
+      "related_events": [
+        "E085",
+        "E092",
+        "E163"
+      ],
+      "importance": 3,
+      "source": "25.アジア諸民族の独立運動・立憲革命 p.2, p.9",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E092",
+      "date": "1906",
+      "date_precision": "year",
+      "title": "全インド＝ムスリム連盟の結成",
+      "description": "イギリスが対抗勢力として、親英政党である全インド＝ムスリム連盟の結成を支援した。",
+      "people": [],
+      "places": [
+        "インド"
+      ],
+      "category": [
+        "politics",
+        "religion"
+      ],
+      "causes": [
+        "国民会議派による反英運動への対抗"
+      ],
+      "consequences": [],
+      "related_events": [
+        "E085",
+        "E091"
+      ],
+      "importance": 2,
+      "source": "25.アジア諸民族の独立運動・立憲革命 p.10",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E093",
+      "date": "1907",
+      "date_precision": "year",
+      "title": "日露協約の締結",
+      "description": "日露両国が清から得た権益および満洲などでの勢力範囲を相互に承認した。",
+      "people": [],
+      "places": [
+        "日本",
+        "ロシア",
+        "満洲",
+        "清"
+      ],
+      "category": [
+        "diplomacy"
+      ],
+      "causes": [
+        "アメリカの門戸開放要求に対し南満洲の権益を守りたい日本と、対日対立を避けバルカン方面に力を向けたいロシアの利害一致"
+      ],
+      "consequences": [],
+      "related_events": [
+        "E069",
+        "E080"
+      ],
+      "importance": 2,
+      "source": "24.日露戦争から韓国併合へ p.17-18",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E094",
+      "date": "1907",
+      "date_precision": "year",
+      "title": "ハーグ密使事件",
+      "description": "韓国皇帝がハーグ平和会議に密使を送り日本の保護国化の不当性を国際世論に訴えようとしたが、列強に無視され日本は皇帝を退位させた。",
+      "people": [
+        "韓国皇帝"
+      ],
+      "places": [
+        "ハーグ",
+        "韓国"
+      ],
+      "category": [
+        "diplomacy",
+        "politics"
+      ],
+      "causes": [
+        "日本の韓国保護国化"
+      ],
+      "consequences": [
+        "日本は韓国皇帝を退位させ、第3次日韓協約の締結へと進んだ"
+      ],
+      "related_events": [
+        "E079",
+        "E080",
+        "E095"
+      ],
+      "importance": 2,
+      "source": "24.日露戦争から韓国併合へ p.20-22",
+      "certainty": "inferred"
+    },
+    {
+      "id": "E095",
+      "date": "1907",
+      "date_precision": "year",
+      "title": "第3次日韓協約の締結と韓国軍の解散",
+      "description": "日本が第3次日韓協約を結んで韓国の内政権を得て、韓国軍を解散させた。",
+      "people": [],
+      "places": [
+        "韓国",
+        "日本"
+      ],
+      "category": [
+        "diplomacy",
+        "politics",
+        "military"
+      ],
+      "causes": [
+        "ハーグ密使事件と韓国皇帝の退位"
+      ],
+      "consequences": [
+        "韓国軍の元兵士たちの参加を得て義兵闘争が本格化した"
+      ],
+      "related_events": [
+        "E088",
+        "E094"
+      ],
+      "importance": 2,
+      "source": "24.日露戦争から韓国併合へ p.23",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E096",
+      "date": "1907",
+      "date_precision": "year",
+      "title": "英露協商の締結と三国協商の成立",
+      "description": "イギリスとロシアがイランでの勢力範囲を定めて英露協商を結び、露仏同盟・英仏協商とあわせてドイツ包囲網としての三国協商が成立した。",
+      "people": [],
+      "places": [
+        "イギリス",
+        "ロシア",
+        "イラン",
+        "フランス"
+      ],
+      "category": [
+        "diplomacy"
+      ],
+      "causes": [
+        "ドイツの対外進出に対する警戒"
+      ],
+      "consequences": [
+        "三国同盟と三国協商が対立する構造が形成された"
+      ],
+      "related_events": [
+        "E041",
+        "E054",
+        "E077",
+        "E113"
+      ],
+      "importance": 3,
+      "source": "26.緊迫する国際関係 p.11-12",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E097",
+      "date": "1908",
+      "date_precision": "year",
+      "title": "青年トルコ革命",
+      "description": "ミドハト憲法停止後のオスマン帝国でアブデュルハミト2世が専制政治を進める中、憲法復活と議会再開を求めたオスマン人たちが革命を起こし立憲政を復活させた。",
+      "people": [
+        "アブデュルハミト2世"
+      ],
+      "places": [
+        "イスタンブル",
+        "オスマン帝国"
+      ],
+      "category": [
+        "politics"
+      ],
+      "causes": [
+        "アブデュルハミト2世の専制政治",
+        "日露戦争の影響"
+      ],
+      "consequences": [
+        "この混乱に乗じてオーストリアがボスニア・ヘルツェゴヴィナを併合した"
+      ],
+      "related_events": [
+        "E098"
+      ],
+      "importance": 3,
+      "source": "25.アジア諸民族の独立運動・立憲革命 p.2-3 / 26.緊迫する国際関係 p.14",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E098",
+      "date": "1908",
+      "date_precision": "year",
+      "title": "ボスニア・ヘルツェゴヴィナの併合",
+      "description": "青年トルコ革命に乗じて、オーストリアがボスニア・ヘルツェゴヴィナを併合した。",
+      "people": [],
+      "places": [
+        "ボスニア・ヘルツェゴヴィナ",
+        "オーストリア",
+        "セルビア"
+      ],
+      "category": [
+        "diplomacy",
+        "politics"
+      ],
+      "causes": [
+        "青年トルコ革命"
+      ],
+      "consequences": [
+        "セルビアが強く反発してバルカン半島の緊張が高まり、パン＝ゲルマン主義のドイツとパン＝スラヴ主義のロシアの対立につながった"
+      ],
+      "related_events": [
+        "E097",
+        "E109",
+        "E112"
+      ],
+      "importance": 3,
+      "source": "26.緊迫する国際関係 p.14-15",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E099",
+      "date": "1908",
+      "date_precision": "year",
+      "title": "憲法大綱の公布",
+      "description": "清朝が光緒新政の一環として憲法大綱を公布し、9年後までの国会開設を約束した。",
+      "people": [
+        "西太后"
+      ],
+      "places": [
+        "清"
+      ],
+      "category": [
+        "politics"
+      ],
+      "causes": [
+        "光緒新政による政治改革"
+      ],
+      "consequences": [
+        "国会の早期開設を求める運動が展開された"
+      ],
+      "related_events": [
+        "E073"
+      ],
+      "importance": 2,
+      "source": "25.アジア諸民族の独立運動・立憲革命 p.11-12",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E100",
+      "date": "1909",
+      "date_precision": "year",
+      "title": "伊藤博文の射殺",
+      "description": "前統監の伊藤博文が独立運動家の安重根によって射殺された。",
+      "people": [
+        "伊藤博文",
+        "安重根"
+      ],
+      "places": [],
+      "category": [
+        "politics"
+      ],
+      "causes": [
+        "韓国の保護国化と義兵闘争の鎮圧"
+      ],
+      "consequences": [],
+      "related_events": [
+        "E088",
+        "E090",
+        "E102"
+      ],
+      "importance": 2,
+      "source": "24.日露戦争から韓国併合へ p.23",
+      "certainty": "inferred"
+    },
+    {
+      "id": "E101",
+      "date": "1910",
+      "date_precision": "year",
+      "title": "南アフリカ連邦の成立",
+      "description": "南アフリカ戦争でのイギリス勝利を経て、南アフリカ連邦が成立した。",
+      "people": [],
+      "places": [
+        "南アフリカ連邦",
+        "アフリカ"
+      ],
+      "category": [
+        "politics"
+      ],
+      "causes": [
+        "南アフリカ戦争におけるイギリスの勝利"
+      ],
+      "consequences": [],
+      "related_events": [
+        "E070"
+      ],
+      "importance": 2,
+      "source": "22.帝国主義と世界分割 p.18",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E102",
+      "date": "1910",
+      "date_precision": "year",
+      "title": "韓国併合",
+      "description": "日本が韓国併合条約を強要して韓国を植民地化し、行政機関として朝鮮総督府を設置した。",
+      "people": [],
+      "places": [
+        "韓国",
+        "朝鮮",
+        "日本"
+      ],
+      "category": [
+        "diplomacy",
+        "politics"
+      ],
+      "causes": [
+        "第1次～第3次日韓協約による主権の奪取と義兵闘争の鎮圧"
+      ],
+      "consequences": [
+        "日本の強権的支配が続き、後の三・一独立運動につながった"
+      ],
+      "related_events": [
+        "E082",
+        "E088",
+        "E095",
+        "E147"
+      ],
+      "importance": 3,
+      "source": "24.日露戦争から韓国併合へ p.24",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E103",
+      "date": "1910年頃まで",
+      "date_precision": "period",
+      "title": "アフリカ分割の完了",
+      "description": "エチオピアとリベリアを除いて、アフリカが列強によって分割された。",
+      "people": [],
+      "places": [
+        "アフリカ",
+        "エチオピア",
+        "リベリア"
+      ],
+      "category": [
+        "diplomacy"
+      ],
+      "causes": [
+        "ベルリン会議以降のアフリカ分割の進行"
+      ],
+      "consequences": [],
+      "related_events": [
+        "E005",
+        "E044"
+      ],
+      "importance": 3,
+      "source": "22.帝国主義と世界分割 p.24",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E104",
+      "date": "1911",
+      "date_precision": "year",
+      "title": "関税自主権の完全回復",
+      "description": "外相・小村寿太郎のときに関税自主権の完全回復が実現した。",
+      "people": [
+        "小村寿太郎"
+      ],
+      "places": [
+        "日本"
+      ],
+      "category": [
+        "diplomacy",
+        "economy"
+      ],
+      "causes": [],
+      "consequences": [],
+      "related_events": [
+        "E055"
+      ],
+      "importance": 3,
+      "source": "23.日清戦争 p.6",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E105",
+      "date": "1911",
+      "date_precision": "year",
+      "title": "サレカット＝イスラムの結成",
+      "description": "オランダ領東インドでサレカット＝イスラムが結成された。",
+      "people": [],
+      "places": [
+        "オランダ領東インド"
+      ],
+      "category": [
+        "politics",
+        "religion"
+      ],
+      "causes": [],
+      "consequences": [],
+      "related_events": [],
+      "importance": 1,
+      "source": "25.アジア諸民族の独立運動・立憲革命 p.2",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E106",
+      "date": "1911",
+      "date_precision": "year",
+      "title": "四川暴動",
+      "description": "地方有力者が外国から鉄道利権を回収する中、清政府が幹線鉄道の国有化と外国資本による鉄道敷設を計画したため、民族資本家や地方有力者が強く反対して暴動が起きた。",
+      "people": [],
+      "places": [
+        "四川省",
+        "清"
+      ],
+      "category": [
+        "politics",
+        "economy",
+        "society"
+      ],
+      "causes": [
+        "清政府による幹線鉄道国有化と外国資本による鉄道敷設の計画"
+      ],
+      "consequences": [
+        "鎮圧に出動を命じられた武漢駐屯軍が武昌で蜂起し、辛亥革命が始まった"
+      ],
+      "related_events": [
+        "E107"
+      ],
+      "importance": 2,
+      "source": "25.アジア諸民族の独立運動・立憲革命 p.14-15",
+      "certainty": "inferred"
+    },
+    {
+      "id": "E107",
+      "date": "1911",
+      "date_precision": "year",
+      "title": "辛亥革命（武昌蜂起）",
+      "description": "四川暴動を鎮圧するため出動を命じられた武漢駐屯軍が反旗を翻して武昌で蜂起し、多くの省が清からの独立を宣言した。",
+      "people": [],
+      "places": [
+        "武昌",
+        "武漢",
+        "清"
+      ],
+      "category": [
+        "politics",
+        "military"
+      ],
+      "causes": [
+        "四川暴動の鎮圧命令と清打倒を目指す革命運動"
+      ],
+      "consequences": [
+        "1912年1月の中華民国の成立につながった"
+      ],
+      "related_events": [
+        "E087",
+        "E106",
+        "E108"
+      ],
+      "importance": 3,
+      "source": "25.アジア諸民族の独立運動・立憲革命 p.15",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E108",
+      "date": "1912-01",
+      "date_precision": "month",
+      "title": "中華民国の成立と清の滅亡",
+      "description": "アジア最初の共和国として中華民国が成立し孫文が臨時大総統に就任。その後、清の軍隊を掌握する袁世凱と取引し、宣統帝（溥儀）の退位と共和政維持を条件に袁世凱が臨時大総統に就任して清が滅亡した。",
+      "people": [
+        "孫文",
+        "袁世凱",
+        "宣統帝（溥儀）"
+      ],
+      "places": [
+        "中華民国",
+        "清"
+      ],
+      "category": [
+        "politics"
+      ],
+      "causes": [
+        "辛亥革命による多くの省の独立宣言"
+      ],
+      "consequences": [
+        "清が滅亡し、後に袁世凱の独裁と軍閥の乱立を招いた"
+      ],
+      "related_events": [
+        "E107",
+        "E122"
+      ],
+      "importance": 3,
+      "source": "25.アジア諸民族の独立運動・立憲革命 p.15-16",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E109",
+      "date": "1912",
+      "date_precision": "year",
+      "title": "バルカン同盟の形成",
+      "description": "パン＝スラヴ主義の動きを強めるロシアが、セルビア・ブルガリア・モンテネグロ・ギリシアの4か国からなるバルカン同盟を形成させた。",
+      "people": [],
+      "places": [
+        "バルカン半島",
+        "セルビア",
+        "ブルガリア",
+        "モンテネグロ",
+        "ギリシア",
+        "ロシア"
+      ],
+      "category": [
+        "diplomacy"
+      ],
+      "causes": [
+        "ボスニア・ヘルツェゴヴィナ併合後の緊張とロシアのパン＝スラヴ主義"
+      ],
+      "consequences": [
+        "同年にオスマン帝国との第1次バルカン戦争に踏み切った"
+      ],
+      "related_events": [
+        "E098",
+        "E110"
+      ],
+      "importance": 2,
+      "source": "26.緊迫する国際関係 p.15-17",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E110",
+      "date": "1912",
+      "date_precision": "year",
+      "title": "第1次バルカン戦争とアルバニア独立",
+      "description": "バルカン同盟がオスマン帝国との戦争に踏み切り、同年アルバニアが独立した。",
+      "people": [],
+      "places": [
+        "バルカン半島",
+        "オスマン帝国",
+        "アルバニア"
+      ],
+      "category": [
+        "military",
+        "diplomacy"
+      ],
+      "causes": [
+        "バルカン同盟の形成とオスマン帝国の衰退"
+      ],
+      "consequences": [
+        "獲得した領土の配分をめぐり、1913年に第2次バルカン戦争が起きた"
+      ],
+      "related_events": [
+        "E109",
+        "E111"
+      ],
+      "importance": 2,
+      "source": "26.緊迫する国際関係 p.16-17",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E111",
+      "date": "1913",
+      "date_precision": "year",
+      "title": "第2次バルカン戦争",
+      "description": "獲得した領土の配分をめぐる対立から、ブルガリアとそれ以外のバルカン同盟国などとの間で起きた戦争。",
+      "people": [],
+      "places": [
+        "バルカン半島",
+        "ブルガリア",
+        "セルビア",
+        "ギリシア"
+      ],
+      "category": [
+        "military",
+        "diplomacy"
+      ],
+      "causes": [
+        "第1次バルカン戦争で獲得した領土の配分をめぐる対立"
+      ],
+      "consequences": [
+        "セルビアが領土を拡大してオーストリアとの対立が激化し、敗北したブルガリアはオスマン帝国とともにドイツ・オーストリアに接近した"
+      ],
+      "related_events": [
+        "E110",
+        "E112"
+      ],
+      "importance": 2,
+      "source": "26.緊迫する国際関係 p.17-18",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E112",
+      "date": "1914",
+      "date_precision": "year",
+      "title": "サライェヴォ事件",
+      "description": "ボスニアの州都サライェヴォを訪問したオーストリア皇位継承夫妻をセルビア系青年が暗殺した。",
+      "people": [],
+      "places": [
+        "サライェヴォ",
+        "ボスニア"
+      ],
+      "category": [
+        "politics",
+        "diplomacy"
+      ],
+      "causes": [
+        "ボスニア・ヘルツェゴヴィナ併合や第2次バルカン戦争後のオーストリアとセルビアの対立激化"
+      ],
+      "consequences": [
+        "オーストリアによるセルビアへの宣戦布告（第一次世界大戦の勃発）につながった"
+      ],
+      "related_events": [
+        "E098",
+        "E111",
+        "E113"
+      ],
+      "importance": 3,
+      "source": "27.第一次世界大戦 p.3",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E113",
+      "date": "1914-07-28",
+      "date_precision": "day",
+      "title": "第一次世界大戦の勃発",
+      "description": "オーストリアがセルビアに宣戦布告し、ドイツ・オーストリア側（同盟国）とロシア・イギリス・フランス側（協商国・連合国）との、銃後や飛行機・戦車・毒ガス・潜水艦など新兵器を投入する総力戦へ発展した。",
+      "people": [],
+      "places": [
+        "ヨーロッパ",
+        "世界"
+      ],
+      "category": [
+        "military",
+        "diplomacy"
+      ],
+      "causes": [
+        "サライェヴォ事件",
+        "三国同盟と三国協商の対立およびバルカン半島での利害衝突"
+      ],
+      "consequences": [
+        "日本の参戦、ロシア革命、アメリカ参戦、選挙権拡大などを経て、1918年11月に終結した"
+      ],
+      "related_events": [
+        "E096",
+        "E112",
+        "E114",
+        "E121",
+        "E129",
+        "E140",
+        "E143"
+      ],
+      "importance": 3,
+      "source": "27.第一次世界大戦 p.2-3, p.5-9",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E114",
+      "date": "1914-08",
+      "date_precision": "month",
+      "title": "日本の第一次世界大戦参戦",
+      "description": "第2次大隈重信内閣が日英同盟を理由に参戦を決定し、中国・太平洋におけるドイツ権益の獲得と勢力拡大を目指してドイツに宣戦布告した。",
+      "people": [
+        "大隈重信"
+      ],
+      "places": [
+        "日本",
+        "ドイツ",
+        "中国",
+        "太平洋"
+      ],
+      "category": [
+        "diplomacy",
+        "military"
+      ],
+      "causes": [
+        "日英同盟",
+        "中国・太平洋におけるドイツ権益の獲得と勢力拡大の目標"
+      ],
+      "consequences": [
+        "ドイツ領南洋諸島や青島を占領し、二十一か条の要求や大戦景気につながった"
+      ],
+      "related_events": [
+        "E074",
+        "E113",
+        "E115",
+        "E116",
+        "E124"
+      ],
+      "importance": 3,
+      "source": "27.第一次世界大戦 p.13",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E115",
+      "date": "1914-10",
+      "date_precision": "month",
+      "title": "ドイツ領南洋諸島の占領",
+      "description": "日本が赤道以北のドイツ領南洋諸島を占領した。",
+      "people": [],
+      "places": [
+        "南洋諸島",
+        "マリアナ諸島",
+        "マーシャル諸島",
+        "カロリン諸島",
+        "パラオ諸島"
+      ],
+      "category": [
+        "military"
+      ],
+      "causes": [
+        "日本の第一次世界大戦参戦"
+      ],
+      "consequences": [
+        "1920年に日本の委任統治下に置かれた"
+      ],
+      "related_events": [
+        "E114",
+        "E159"
+      ],
+      "importance": 2,
+      "source": "27.第一次世界大戦 p.14-15",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E116",
+      "date": "1914-11",
+      "date_precision": "month",
+      "title": "山東省青島の占領",
+      "description": "日本が山東半島の膠州湾の入り口にある都市・青島を占領した。",
+      "people": [],
+      "places": [
+        "青島",
+        "山東省",
+        "膠州湾",
+        "中華民国"
+      ],
+      "category": [
+        "military"
+      ],
+      "causes": [
+        "日本の第一次世界大戦参戦"
+      ],
+      "consequences": [
+        "二十一か条の要求やパリ講和会議での山東権益問題につながった"
+      ],
+      "related_events": [
+        "E114",
+        "E119",
+        "E151"
+      ],
+      "importance": 2,
+      "source": "27.第一次世界大戦 p.14-15",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E117",
+      "date": "1914",
+      "date_precision": "year",
+      "title": "イギリスによるエジプトの保護国化",
+      "description": "形式上の宗主国であるオスマン帝国が同盟国側で参戦したため、イギリスがエジプトを正式に保護国化した。",
+      "people": [],
+      "places": [
+        "エジプト",
+        "カイロ",
+        "イギリス"
+      ],
+      "category": [
+        "diplomacy",
+        "politics"
+      ],
+      "causes": [
+        "オスマン帝国の同盟国側での参戦"
+      ],
+      "consequences": [
+        "カイロが対オスマン帝国の戦闘拠点となりエジプト人が動員され、戦後のワフド党による反英闘争につながった"
+      ],
+      "related_events": [
+        "E113",
+        "E155"
+      ],
+      "importance": 2,
+      "source": "30.西アジア・南アジアの民族運動 p.6",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E118",
+      "date": "1910年代",
+      "date_precision": "period",
+      "title": "新文化運動の開始",
+      "description": "辛亥革命後も政治的混乱が続く中華民国で、根本的な社会変革を目指す新文化運動が始まった。",
+      "people": [],
+      "places": [
+        "中華民国"
+      ],
+      "category": [
+        "culture",
+        "society"
+      ],
+      "causes": [
+        "辛亥革命後の政治的混乱"
+      ],
+      "consequences": [
+        "雑誌『新青年』の刊行などを通じ若い知識人に影響を与え、五・四運動の背景となった"
+      ],
+      "related_events": [
+        "E108",
+        "E120",
+        "E151"
+      ],
+      "importance": 2,
+      "source": "31.東アジア・東南アジアの民族運動 p.5",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E119",
+      "date": "1915-01",
+      "date_precision": "month",
+      "title": "二十一か条の要求",
+      "description": "日本が中国政府に対し、山東省のドイツ権益処分権や南満州・東部内蒙古での優越的地位、旅順大連租借期限と鉄道期限の99か年延長、日本人顧問傭聘（第5号）などを要求。米英の反発を受け第5号を切り離し最後通牒で大部分を受諾させた。",
+      "people": [],
+      "places": [
+        "中華民国",
+        "山東省",
+        "南満州",
+        "東部内蒙古",
+        "日本"
+      ],
+      "category": [
+        "diplomacy"
+      ],
+      "causes": [
+        "日本の第一次世界大戦参戦と中国における権益拡大の意図"
+      ],
+      "consequences": [
+        "中国側の強い反発を招き、1919年の五・四運動につながった"
+      ],
+      "related_events": [
+        "E114",
+        "E116",
+        "E151"
+      ],
+      "importance": 3,
+      "source": "27.第一次世界大戦 p.15-18",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E120",
+      "date": "1915",
+      "date_precision": "year",
+      "title": "雑誌『新青年』の刊行",
+      "description": "陳独秀らが雑誌『新青年』を刊行して儒教道徳を厳しく批判し、「民主と科学」を掲げて中国社会の革新と旧弊打破を訴え、北京大学の学生ら若い知識人に大きな影響を及ぼした。",
+      "people": [
+        "陳独秀"
+      ],
+      "places": [
+        "中華民国",
+        "北京"
+      ],
+      "category": [
+        "culture",
+        "society"
+      ],
+      "causes": [
+        "新文化運動の展開"
+      ],
+      "consequences": [],
+      "related_events": [
+        "E118",
+        "E151"
+      ],
+      "importance": 2,
+      "source": "31.東アジア・東南アジアの民族運動 p.5",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E121",
+      "date": "1915",
+      "date_precision": "year",
+      "title": "ロンドン条約の締結とイタリアの参戦",
+      "description": "当初中立だったイタリアが、協商国側から「未回収のイタリア」などの獲得を約束され秘密裏にロンドン条約を締結して協商国側で参戦した。",
+      "people": [],
+      "places": [
+        "イタリア",
+        "ロンドン"
+      ],
+      "category": [
+        "diplomacy",
+        "military"
+      ],
+      "causes": [
+        "協商国による「未回収のイタリア」獲得の約束"
+      ],
+      "consequences": [
+        "戦後の対オーストリア条約で南チロル・トリエステを獲得した"
+      ],
+      "related_events": [
+        "E041",
+        "E113",
+        "E152"
+      ],
+      "importance": 2,
+      "source": "27.第一次世界大戦 p.4 / 29.ヴェルサイユ体制とワシントン体制 p.3",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E122",
+      "date": "1915",
+      "date_precision": "year",
+      "title": "袁世凱の帝政復活企図と軍閥の乱立",
+      "description": "袁世凱が独裁を強め帝政復活を企てたが反対運動にあって翌年病死し、中央の求心力が弱まり軍事指導者による地方政権（軍閥）が各地に乱立した。",
+      "people": [
+        "袁世凱"
+      ],
+      "places": [
+        "中華民国"
+      ],
+      "category": [
+        "politics"
+      ],
+      "causes": [
+        "袁世凱による独裁強化と帝政復活の企て"
+      ],
+      "consequences": [
+        "各地に軍閥が乱立し、後の北伐の標的となった"
+      ],
+      "related_events": [
+        "E108",
+        "E154",
+        "E185"
+      ],
+      "importance": 2,
+      "source": "25.アジア諸民族の独立運動・立憲革命 p.17",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E123",
+      "date": "1915",
+      "date_precision": "year",
+      "title": "フセイン・マクマホン協定",
+      "description": "イギリスが独立国家樹立を見返りに、オスマン帝国支配下のアラブ人に戦争の協力を要請した協定。",
+      "people": [
+        "フセイン"
+      ],
+      "places": [
+        "西アジア",
+        "オスマン帝国"
+      ],
+      "category": [
+        "diplomacy"
+      ],
+      "causes": [
+        "第一次世界大戦における対オスマン帝国戦での協力要請"
+      ],
+      "consequences": [
+        "戦後アラブ人との約束は果たされず、イラク・パレスティナ・シリア・レバノンは英仏の委任統治領となった"
+      ],
+      "related_events": [
+        "E125",
+        "E133"
+      ],
+      "importance": 3,
+      "source": "30.西アジア・南アジアの民族運動 p.2, p.4, p.8",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E124",
+      "date": "1915～1918",
+      "date_precision": "period",
+      "title": "大戦景気",
+      "description": "第一次世界大戦中に英・仏・露へ軍需品、アジア市場へ綿織物、アメリカへ生糸を輸出し好景気が到来。船舶不足から海運業・造船業が発展して成金を生み出した一方、急な好景気による物価上昇で多くの民衆が苦しんだ。",
+      "people": [],
+      "places": [
+        "日本"
+      ],
+      "category": [
+        "economy",
+        "society"
+      ],
+      "causes": [
+        "第一次世界大戦による輸出拡大と世界的な船舶不足"
+      ],
+      "consequences": [
+        "成金の出現と物価上昇による民衆の困窮"
+      ],
+      "related_events": [
+        "E114",
+        "E141"
+      ],
+      "importance": 3,
+      "source": "27.第一次世界大戦 p.20-21",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E125",
+      "date": "1916",
+      "date_precision": "year",
+      "title": "サイクス・ピコ協定",
+      "description": "第一次世界大戦でオスマン帝国がドイツ・オーストリア側で参戦したことを受け、イギリス・フランス・ロシアが帝国解体後の分割を決定した秘密協定。",
+      "people": [],
+      "places": [
+        "西アジア",
+        "オスマン帝国",
+        "イギリス",
+        "フランス",
+        "ロシア"
+      ],
+      "category": [
+        "diplomacy"
+      ],
+      "causes": [
+        "オスマン帝国のドイツ・オーストリア側での参戦"
+      ],
+      "consequences": [
+        "ロシア革命後にソヴィエト政権が公表して批判し、戦後のセーヴル条約や英仏委任統治領分割の枠組みとなった"
+      ],
+      "related_events": [
+        "E123",
+        "E133",
+        "E161"
+      ],
+      "importance": 3,
+      "source": "30.西アジア・南アジアの民族運動 p.3-4, p.10",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E126",
+      "date": "1916",
+      "date_precision": "year",
+      "title": "寺内正毅内閣の対中国借款",
+      "description": "寺内正毅内閣が中国政府に巨額の借款を行って日本の権益を拡大しようとした。",
+      "people": [
+        "寺内正毅"
+      ],
+      "places": [
+        "日本",
+        "中華民国"
+      ],
+      "category": [
+        "diplomacy",
+        "economy"
+      ],
+      "causes": [],
+      "consequences": [
+        "アメリカが日本の中国進出を警戒し、1917年11月の石井・ランシング協定締結につながった"
+      ],
+      "related_events": [
+        "E132"
+      ],
+      "importance": 2,
+      "source": "27.第一次世界大戦 p.19",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E127",
+      "date": "1917-02",
+      "date_precision": "month",
+      "title": "日本艦隊の地中海出動",
+      "description": "日本の戦時活動の地図に「1917.2 日本艦隊地中海へ出動」と記載されている。",
+      "people": [],
+      "places": [
+        "地中海"
+      ],
+      "category": [
+        "military"
+      ],
+      "causes": [
+        "日本の第一次世界大戦参戦"
+      ],
+      "consequences": [],
+      "related_events": [
+        "E114"
+      ],
+      "importance": 1,
+      "source": "27.第一次世界大戦 p.15",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E128",
+      "date": "1917-03",
+      "date_precision": "month",
+      "title": "二月革命（西暦三月革命）",
+      "description": "首都ペトログラードの労働者デモ・ストライキに兵士も加わり各地にソヴィエト（評議会）が成立。自由主義派議員中心の臨時政府がつくられニコライ2世が退位して帝政が崩壊し、臨時政府とソヴィエトの二重権力状態となった。",
+      "people": [
+        "ニコライ2世"
+      ],
+      "places": [
+        "ペトログラード",
+        "ロシア"
+      ],
+      "category": [
+        "politics",
+        "society"
+      ],
+      "causes": [
+        "第一次世界大戦の長期化に伴う食糧不足や劣勢な戦況による国民生活の困窮"
+      ],
+      "consequences": [
+        "帝政が崩壊し二重権力状態となったが、臨時政府が戦争を続行したため十月革命へつながった"
+      ],
+      "related_events": [
+        "E113",
+        "E130",
+        "E131"
+      ],
+      "importance": 3,
+      "source": "28.ロシア革命とシベリア出兵 p.2-7",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E129",
+      "date": "1917-04",
+      "date_precision": "month",
+      "title": "アメリカの第一次世界大戦参戦",
+      "description": "中立を保っていたアメリカが、ドイツの無制限潜水艦作戦を理由に協商国側で参戦した。",
+      "people": [],
+      "places": [
+        "アメリカ",
+        "ヨーロッパ"
+      ],
+      "category": [
+        "military",
+        "diplomacy"
+      ],
+      "causes": [
+        "ドイツの無制限潜水艦作戦"
+      ],
+      "consequences": [
+        "協商国側が優位に立ち、同盟国側がつぎつぎと降伏した"
+      ],
+      "related_events": [
+        "E113",
+        "E143"
+      ],
+      "importance": 3,
+      "source": "27.第一次世界大戦 p.22",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E130",
+      "date": "1917-04",
+      "date_precision": "month",
+      "title": "四月テーゼの発表",
+      "description": "ボリシェヴィキ指導者のレーニンが、帝国主義戦争への反対、臨時政府の不信任、すべての国家権力のソヴィエトへの移行、土地の国有化などを掲げた四月テーゼを発表した。",
+      "people": [
+        "レーニン"
+      ],
+      "places": [
+        "ロシア"
+      ],
+      "category": [
+        "politics"
+      ],
+      "causes": [
+        "臨時政府による戦争続行"
+      ],
+      "consequences": [
+        "ボリシェヴィキによる十月革命の指針となった"
+      ],
+      "related_events": [
+        "E128",
+        "E131"
+      ],
+      "importance": 3,
+      "source": "28.ロシア革命とシベリア出兵 p.7-8",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E131",
+      "date": "1917-11",
+      "date_precision": "month",
+      "title": "十月革命（西暦十一月革命）",
+      "description": "レーニンらに指導されたボリシェヴィキがペトログラードで武装蜂起して臨時政府を倒し、世界初の本格的な社会主義政権を樹立。「土地に関する布告」「平和に関する布告」を出した。",
+      "people": [
+        "レーニン"
+      ],
+      "places": [
+        "ペトログラード",
+        "ロシア"
+      ],
+      "category": [
+        "politics",
+        "military"
+      ],
+      "causes": [
+        "臨時政府の戦争続行と四月テーゼに基づくボリシェヴィキの蜂起"
+      ],
+      "consequences": [
+        "憲法制定議会解散やブレスト＝リトフスク条約締結、一党独裁体制と対ソ干渉戦争につながった"
+      ],
+      "related_events": [
+        "E128",
+        "E130",
+        "E134",
+        "E135",
+        "E137",
+        "E139"
+      ],
+      "importance": 3,
+      "source": "28.ロシア革命とシベリア出兵 p.9",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E132",
+      "date": "1917-11",
+      "date_precision": "month",
+      "title": "石井・ランシング協定の締結",
+      "description": "日本の中国進出を警戒するアメリカと特殊利益の承認を求める日本が結び、日本は中国の門戸開放・機会均等・領土保全を承認し、アメリカは日本の特殊権益を承認した。",
+      "people": [],
+      "places": [
+        "日本",
+        "アメリカ",
+        "中華民国"
+      ],
+      "category": [
+        "diplomacy"
+      ],
+      "causes": [
+        "日本の対中国借款など中国進出へのアメリカの警戒と、日本の中国における特殊利益承認要求"
+      ],
+      "consequences": [
+        "1922年の九か国条約調印に伴い破棄された"
+      ],
+      "related_events": [
+        "E069",
+        "E126",
+        "E168"
+      ],
+      "importance": 2,
+      "source": "27.第一次世界大戦 p.19 / 29.ヴェルサイユ体制とワシントン体制 p.13",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E133",
+      "date": "1917",
+      "date_precision": "year",
+      "title": "バルフォア宣言",
+      "description": "イギリスがアラブ人の住むパレスティナにおけるユダヤ人の民族的郷土の建設を支持した宣言。",
+      "people": [],
+      "places": [
+        "パレスティナ",
+        "イギリス"
+      ],
+      "category": [
+        "diplomacy"
+      ],
+      "causes": [],
+      "consequences": [
+        "戦後パレスティナはイギリスの委任統治領となった"
+      ],
+      "related_events": [
+        "E123",
+        "E125"
+      ],
+      "importance": 3,
+      "source": "30.西アジア・南アジアの民族運動 p.4",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E134",
+      "date": "1917年末",
+      "date_precision": "month",
+      "title": "憲法制定議会選挙の実施",
+      "description": "ロシアで憲法制定議会の選挙が行われたが、ボリシェヴィキによる政権掌握を認めない議員が多数を占めた。",
+      "people": [],
+      "places": [
+        "ロシア"
+      ],
+      "category": [
+        "politics"
+      ],
+      "causes": [
+        "十月革命後の政権体制形成"
+      ],
+      "consequences": [
+        "1918年1月にソヴィエト政権が憲法制定議会を武力で解散させた"
+      ],
+      "related_events": [
+        "E131",
+        "E135"
+      ],
+      "importance": 2,
+      "source": "28.ロシア革命とシベリア出兵 p.10",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E135",
+      "date": "1918-01",
+      "date_precision": "month",
+      "title": "憲法制定議会の武力解散",
+      "description": "ボリシェヴィキの政権掌握を認めない議員が多数を占めた憲法制定議会をソヴィエト政権が武力で解散させ、議会政治を否定してボリシェヴィキによる一党独裁体制を強めた。",
+      "people": [],
+      "places": [
+        "ロシア"
+      ],
+      "category": [
+        "politics"
+      ],
+      "causes": [
+        "1917年末の憲法制定議会選挙でボリシェヴィキを認めない議員が多数を占めたこと"
+      ],
+      "consequences": [
+        "ボリシェヴィキによる一党独裁体制が強化された"
+      ],
+      "related_events": [
+        "E131",
+        "E134"
+      ],
+      "importance": 2,
+      "source": "28.ロシア革命とシベリア出兵 p.10-11",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E136",
+      "date": "1918",
+      "date_precision": "year",
+      "title": "十四か条の平和原則の発表",
+      "description": "アメリカ大統領ウィルソンが、秘密外交の廃止・海洋の自由・民族自決・国際的な平和機構の設立などを盛り込んだ「十四か条」を発表した。",
+      "people": [
+        "ウィルソン"
+      ],
+      "places": [
+        "アメリカ"
+      ],
+      "category": [
+        "diplomacy"
+      ],
+      "causes": [],
+      "consequences": [
+        "パリ講和会議の基礎となり、民族自決の理念の広がりや国際連盟創設につながった"
+      ],
+      "related_events": [
+        "E145",
+        "E157",
+        "E158"
+      ],
+      "importance": 3,
+      "source": "29.ヴェルサイユ体制とワシントン体制 p.2, p.8-9",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E137",
+      "date": "1918-03",
+      "date_precision": "month",
+      "title": "ブレスト＝リトフスク条約の締結",
+      "description": "ソヴィエト政権がドイツ・オーストリアなど同盟国と結び、第一次世界大戦から離脱した。",
+      "people": [],
+      "places": [
+        "ブレスト＝リトフスク",
+        "ロシア",
+        "ドイツ",
+        "オーストリア"
+      ],
+      "category": [
+        "diplomacy"
+      ],
+      "causes": [
+        "十月革命と「平和に関する布告」"
+      ],
+      "consequences": [
+        "ソヴィエト政権が戦争から離脱した"
+      ],
+      "related_events": [
+        "E113",
+        "E131"
+      ],
+      "importance": 3,
+      "source": "27.第一次世界大戦 p.22 / 28.ロシア革命とシベリア出兵 p.10",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E138",
+      "date": "1918",
+      "date_precision": "year",
+      "title": "戦時共産主義の実施",
+      "description": "内戦中のソヴィエト政府が穀物の強制徴発や企業の国有化などの経済政策を行った。",
+      "people": [],
+      "places": [
+        "ロシア"
+      ],
+      "category": [
+        "economy",
+        "politics"
+      ],
+      "causes": [
+        "反ソヴィエト勢力との内戦および対ソ干渉戦争"
+      ],
+      "consequences": [
+        "農民・労働者の不満が高まり、1921年の新経済政策（ネップ）へ転換した"
+      ],
+      "related_events": [
+        "E139",
+        "E164"
+      ],
+      "importance": 2,
+      "source": "28.ロシア革命とシベリア出兵 p.13-14",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E139",
+      "date": "1918",
+      "date_precision": "year",
+      "title": "対ソ干渉戦争とロシア内戦",
+      "description": "各地でソヴィエトが権力を握る中、旧ロシア軍の軍人や農民らとの内戦が始まり、革命の波及を恐れるイギリス・フランス・アメリカ・日本などの協商国が反ソヴィエト勢力を支援。ソヴィエト政権は赤軍を創設して対抗し、1921年初めまでに白軍をほぼ制圧、外国軍も撤退した。",
+      "people": [],
+      "places": [
+        "ロシア"
+      ],
+      "category": [
+        "military",
+        "diplomacy"
+      ],
+      "causes": [
+        "ソヴィエトの権力掌握に対する旧ロシア軍・農民らの反発",
+        "革命の波及を恐れた協商国の介入"
+      ],
+      "consequences": [
+        "戦時共産主義が実施され、日本ではシベリア出兵が行われた"
+      ],
+      "related_events": [
+        "E131",
+        "E138",
+        "E142"
+      ],
+      "importance": 3,
+      "source": "28.ロシア革命とシベリア出兵 p.12, p.14",
+      "certainty": "inferred"
+    },
+    {
+      "id": "E140",
+      "date": "1918",
+      "date_precision": "year",
+      "title": "イギリスにおける選挙権の拡大",
+      "description": "第一次世界大戦で女性が貴重な労働力として戦争遂行に貢献したことなどを背景に、1918年に女性への選挙権付与と男性普通選挙が実現した（1928年にさらに拡大）。",
+      "people": [],
+      "places": [
+        "イギリス"
+      ],
+      "category": [
+        "politics",
+        "society"
+      ],
+      "causes": [
+        "第一次世界大戦の総力戦において女性が貴重な労働力として戦争遂行に貢献したこと"
+      ],
+      "consequences": [],
+      "related_events": [
+        "E113"
+      ],
+      "importance": 2,
+      "source": "27.第一次世界大戦 p.6-8",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E141",
+      "date": "1918-07",
+      "date_precision": "month",
+      "title": "米騒動",
+      "description": "シベリア出兵に伴う米の買い占めや都市人口集中・農村労働力不足による米価急上昇を背景に、富山県で米の安売りを求める運動が起こり全国へ拡大。政府は軍隊を出動させて鎮圧にあたったが寺内内閣は総辞職した。",
+      "people": [
+        "寺内正毅"
+      ],
+      "places": [
+        "富山県",
+        "日本"
+      ],
+      "category": [
+        "society",
+        "economy",
+        "politics"
+      ],
+      "causes": [
+        "シベリア出兵に伴う米の買い占め",
+        "都市人口増大による米消費量増加と農村労働力不足による米価急上昇"
+      ],
+      "consequences": [
+        "寺内内閣が総辞職した"
+      ],
+      "related_events": [
+        "E124",
+        "E142"
+      ],
+      "importance": 3,
+      "source": "28.ロシア革命とシベリア出兵 p.20-22",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E142",
+      "date": "1918-08",
+      "date_precision": "month",
+      "title": "シベリア出兵",
+      "description": "寺内内閣がシベリア・北満洲への派兵を決定。各国撤兵後の1922年まで日本だけが出兵を継続したが、内外の批判の高まりの中で撤兵を完了した。",
+      "people": [
+        "寺内正毅"
+      ],
+      "places": [
+        "シベリア",
+        "北満洲",
+        "ウラジオストク",
+        "日本"
+      ],
+      "category": [
+        "military",
+        "diplomacy"
+      ],
+      "causes": [
+        "ロシア革命への対ソ干渉"
+      ],
+      "consequences": [
+        "米の買い占めなどを誘発し米騒動の一因となった。1922年に撤兵を完了した"
+      ],
+      "related_events": [
+        "E139",
+        "E141"
+      ],
+      "importance": 3,
+      "source": "28.ロシア革命とシベリア出兵 p.18-20",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E143",
+      "date": "1918-11",
+      "date_precision": "month",
+      "title": "ドイツ革命と第一次世界大戦の終結",
+      "description": "キール軍港の水兵の反乱からドイツ革命が起きヴィルヘルム2世が亡命。各地に労兵の評議会（レーテ）権力と社会民主党を中心とする臨時政府が成立し、休戦条約に調印して第一次世界大戦が終結した。",
+      "people": [
+        "ヴィルヘルム2世"
+      ],
+      "places": [
+        "キール軍港",
+        "ドイツ"
+      ],
+      "category": [
+        "politics",
+        "military"
+      ],
+      "causes": [
+        "アメリカ参戦後の協商国側の優位とキール軍港での水兵の反乱"
+      ],
+      "consequences": [
+        "第一次世界大戦が終結し、1919年のヴァイマル憲法採択やパリ講和会議につながった"
+      ],
+      "related_events": [
+        "E113",
+        "E129",
+        "E145",
+        "E146",
+        "E153"
+      ],
+      "importance": 3,
+      "source": "27.第一次世界大戦 p.22-23 / 29.ヴェルサイユ体制とワシントン体制 p.16",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E144",
+      "date": "1918",
+      "date_precision": "year",
+      "title": "イエメンの独立・成立",
+      "description": "西アジア地図上に独立・成立の年として「イエメン 1918」と記載されている。",
+      "people": [],
+      "places": [
+        "イエメン",
+        "西アジア"
+      ],
+      "category": [
+        "politics"
+      ],
+      "causes": [],
+      "consequences": [],
+      "related_events": [],
+      "importance": 1,
+      "source": "30.西アジア・南アジアの民族運動 p.14, p.21",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E145",
+      "date": "1919-01",
+      "date_precision": "month",
+      "title": "パリ講和会議の開催",
+      "description": "ウィルソンの「十四か条」を基礎として開かれた講和会議。イギリスやフランスなど戦勝国間の利害対立の抵抗により原則は一部しか実現しなかった。",
+      "people": [
+        "ウィルソン"
+      ],
+      "places": [
+        "パリ",
+        "フランス"
+      ],
+      "category": [
+        "diplomacy"
+      ],
+      "causes": [
+        "第一次世界大戦の終結"
+      ],
+      "consequences": [
+        "ヴェルサイユ条約の締結や国際連盟の創設、山東省旧ドイツ権益の日本継承方針決定（五・四運動の原因）につながった"
+      ],
+      "related_events": [
+        "E136",
+        "E143",
+        "E151",
+        "E152",
+        "E158"
+      ],
+      "importance": 3,
+      "source": "29.ヴェルサイユ体制とワシントン体制 p.2 / 31.東アジア・東南アジアの民族運動 p.7",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E146",
+      "date": "1919",
+      "date_precision": "year",
+      "title": "ドイツ共産党の蜂起と鎮圧",
+      "description": "社会主義革命を目指すドイツ共産党が蜂起したが鎮圧された。",
+      "people": [],
+      "places": [
+        "ドイツ"
+      ],
+      "category": [
+        "politics",
+        "military"
+      ],
+      "causes": [
+        "ドイツ革命後の政権対立"
+      ],
+      "consequences": [],
+      "related_events": [
+        "E143",
+        "E153"
+      ],
+      "importance": 2,
+      "source": "29.ヴェルサイユ体制とワシントン体制 p.16",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E147",
+      "date": "1919-03",
+      "date_precision": "month",
+      "title": "三・一独立運動",
+      "description": "日本の強権的支配が続く中、ロシア革命や民族自決の潮流に影響を受けソウルで「独立万歳」と唱えるデモが始まり朝鮮全土に広まったが、朝鮮総督府が警察・憲兵・軍隊を動員して徹底弾圧した。",
+      "people": [],
+      "places": [
+        "ソウル",
+        "朝鮮"
+      ],
+      "category": [
+        "politics",
+        "society"
+      ],
+      "causes": [
+        "日本の強権的支配",
+        "ロシア革命や民族自決の潮流の影響"
+      ],
+      "consequences": [
+        "原敬内閣が統治方針を文化政治へ変更する契機となった"
+      ],
+      "related_events": [
+        "E102",
+        "E136",
+        "E148"
+      ],
+      "importance": 3,
+      "source": "31.東アジア・東南アジアの民族運動 p.2-4",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E148",
+      "date": "1919",
+      "date_precision": "year",
+      "title": "文化政治への転換",
+      "description": "原敬内閣が朝鮮人の言論・集会・結社などの制限を緩和して武断政治をゆるめ、文化政治とよばれる同化政策に転換した。一方、社会主義運動は厳しく取り締まった。",
+      "people": [
+        "原敬"
+      ],
+      "places": [
+        "朝鮮",
+        "日本"
+      ],
+      "category": [
+        "politics"
+      ],
+      "causes": [
+        "三・一独立運動"
+      ],
+      "consequences": [
+        "文化・教育活動などを部分的に認める一方、1925年に治安維持法を朝鮮にも適用した"
+      ],
+      "related_events": [
+        "E147",
+        "E180"
+      ],
+      "importance": 2,
+      "source": "31.東アジア・東南アジアの民族運動 p.4",
+      "certainty": "inferred"
+    },
+    {
+      "id": "E149",
+      "date": "1919",
+      "date_precision": "year",
+      "title": "コミンテルンの組織",
+      "description": "社会主義革命を世界に広げる目的で組織され、各国の革命勢力を指導した。",
+      "people": [],
+      "places": [
+        "ロシア"
+      ],
+      "category": [
+        "politics",
+        "diplomacy"
+      ],
+      "causes": [],
+      "consequences": [
+        "1921年の中国共産党結成を援助した"
+      ],
+      "related_events": [
+        "E131",
+        "E165"
+      ],
+      "importance": 2,
+      "source": "28.ロシア革命とシベリア出兵 p.13 / 31.東アジア・東南アジアの民族運動 p.11",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E150",
+      "date": "1919",
+      "date_precision": "year",
+      "title": "ローラット法の制定",
+      "description": "第一次世界大戦後にインドの自治要求に対し限定的な政治参加を認める一方、反英運動を弾圧するため令状なしの逮捕や裁判抜きの投獄を可能にするローラット法を制定した。",
+      "people": [],
+      "places": [
+        "インド",
+        "イギリス"
+      ],
+      "category": [
+        "politics",
+        "society"
+      ],
+      "causes": [
+        "戦後のインド人の自治要求と反英運動の高まり"
+      ],
+      "consequences": [
+        "ガンディー指導による非暴力・不服従運動が進められた"
+      ],
+      "related_events": [
+        "E163"
+      ],
+      "importance": 2,
+      "source": "30.西アジア・南アジアの民族運動 p.16-17",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E151",
+      "date": "1919-05",
+      "date_precision": "month",
+      "title": "五・四運動とヴェルサイユ条約調印拒否",
+      "description": "パリ講和会議で山東省の旧ドイツ権益を日本に継承させる方針が決定されたことに抗議し、北京で学生が抗議デモを起こして全国に波及。中国代表団はヴェルサイユ条約の調印を拒否した。",
+      "people": [],
+      "places": [
+        "北京",
+        "中華民国",
+        "山東省"
+      ],
+      "category": [
+        "politics",
+        "society",
+        "diplomacy"
+      ],
+      "causes": [
+        "パリ講和会議における山東省の旧ドイツ権益の日本継承方針",
+        "二十一か条の要求への反発と新文化運動の影響"
+      ],
+      "consequences": [
+        "中国代表団がヴェルサイユ条約の調印を拒否した"
+      ],
+      "related_events": [
+        "E116",
+        "E118",
+        "E119",
+        "E120",
+        "E145",
+        "E152"
+      ],
+      "importance": 3,
+      "source": "31.東アジア・東南アジアの民族運動 p.7-8",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E152",
+      "date": "1919-06",
+      "date_precision": "month",
+      "title": "ヴェルサイユ条約の締結",
+      "description": "ドイツとその同盟国に戦争責任を負わせ、ドイツに巨額の賠償金支払い、全植民地放棄、大幅な軍備制限、アルザス・ロレーヌのフランス割譲、ラインラント非武装化を強制した。",
+      "people": [],
+      "places": [
+        "ヴェルサイユ",
+        "ドイツ",
+        "フランス",
+        "アルザス・ロレーヌ",
+        "ラインラント"
+      ],
+      "category": [
+        "diplomacy"
+      ],
+      "causes": [
+        "パリ講和会議",
+        "ドイツによる再侵攻を防ぎフランスの安全を保障しようとする要求"
+      ],
+      "consequences": [
+        "ドイツ国内で厳しい講和条件への不満が高まり、反ヴェルサイユ体制感情が強まる一因となった。また1923年のルール地方占領の背景となった"
+      ],
+      "related_events": [
+        "E006",
+        "E145",
+        "E151",
+        "E158",
+        "E174"
+      ],
+      "importance": 3,
+      "source": "29.ヴェルサイユ体制とワシントン体制 p.3-5, p.23",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E153",
+      "date": "1919",
+      "date_precision": "year",
+      "title": "ヴァイマル憲法の採択",
+      "description": "ドイツ国民議会が社会権や男女平等の普通選挙、労働者の団結権などを規定し、大統領に強力な権限を与えるヴァイマル憲法を採択した。",
+      "people": [],
+      "places": [
+        "ドイツ"
+      ],
+      "category": [
+        "politics"
+      ],
+      "causes": [
+        "ドイツ革命"
+      ],
+      "consequences": [],
+      "related_events": [
+        "E143",
+        "E146"
+      ],
+      "importance": 3,
+      "source": "29.ヴェルサイユ体制とワシントン体制 p.16",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E154",
+      "date": "1919",
+      "date_precision": "year",
+      "title": "中国国民党の組織",
+      "description": "孫文が中国国民党を組織し、広州に拠点を置いて北京政府（軍閥政権）に対抗し、「連ソ・容共・扶助工農」の方針をとった。",
+      "people": [
+        "孫文"
+      ],
+      "places": [
+        "広州",
+        "中華民国"
+      ],
+      "category": [
+        "politics"
+      ],
+      "causes": [
+        "軍閥政権（北京政府）への対抗"
+      ],
+      "consequences": [
+        "1924年の第一次国共合作につながった"
+      ],
+      "related_events": [
+        "E122",
+        "E179"
+      ],
+      "importance": 3,
+      "source": "31.東アジア・東南アジアの民族運動 p.9",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E155",
+      "date": "1919",
+      "date_precision": "year",
+      "title": "ワフド党の結成とエジプトの反英闘争",
+      "description": "第一次世界大戦直後の民族自決の主張とともに、エジプトでもワフド党が結成されて反英闘争を起こした。",
+      "people": [],
+      "places": [
+        "エジプト"
+      ],
+      "category": [
+        "politics"
+      ],
+      "causes": [
+        "イギリスの保護国化と大戦中の動員",
+        "大戦直後の民族自決の主張"
+      ],
+      "consequences": [
+        "1922年の条件つき独立（エジプト王国成立）につながった"
+      ],
+      "related_events": [
+        "E117",
+        "E171"
+      ],
+      "importance": 2,
+      "source": "30.西アジア・南アジアの民族運動 p.6-7",
+      "certainty": "inferred"
+    },
+    {
+      "id": "E156",
+      "date": "1919",
+      "date_precision": "year",
+      "title": "アフガニスタンの独立・成立",
+      "description": "西アジア地図上に独立・成立の年として「アフガニスタン 1919」と記載されている。",
+      "people": [],
+      "places": [
+        "アフガニスタン"
+      ],
+      "category": [
+        "politics"
+      ],
+      "causes": [],
+      "consequences": [],
+      "related_events": [],
+      "importance": 1,
+      "source": "30.西アジア・南アジアの民族運動 p.14, p.21",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E157",
+      "date": "1918",
+      "date_precision": "year",
+      "title": "東欧諸国の独立",
+      "description": "ロシア帝国とオーストリア＝ハンガリー帝国の解体と「十四か条」に基づく民族自決の理念により、ポーランド、フィンランド、バルト三国（リトアニア・ラトヴィア・エストニア）、チェコスロヴァキアなどが独立。一方、多民族国家も存在し、アジア・アフリカには適用されなかった。",
+      "people": [],
+      "places": [
+        "東欧",
+        "ポーランド",
+        "フィンランド",
+        "リトアニア",
+        "ラトヴィア",
+        "エストニア",
+        "チェコスロヴァキア",
+        "ユーゴスラヴィア"
+      ],
+      "category": [
+        "politics",
+        "diplomacy"
+      ],
+      "causes": [
+        "ロシア帝国とオーストリア＝ハンガリー帝国の解体",
+        "「十四か条」をきっかけに広まった民族自決の理念"
+      ],
+      "consequences": [],
+      "related_events": [
+        "E136",
+        "E152"
+      ],
+      "importance": 3,
+      "source": "29.ヴェルサイユ体制とワシントン体制 p.6-8",
+      "certainty": "inferred"
+    },
+    {
+      "id": "E158",
+      "date": "1920",
+      "date_precision": "year",
+      "title": "国際連盟の創設",
+      "description": "「十四か条」やヴェルサイユ条約に基づいて創設。経済制裁（軍事制裁は不可）、全会一致、一国一票を原則とし、常任理事国は英・仏・伊・日の4か国。アメリカは孤立主義で不参加、ドイツ・ソヴィエト政権は当初除外され、旧独領・旧オスマン領の一部は委任統治となった。",
+      "people": [],
+      "places": [
+        "ジュネーヴ",
+        "ヨーロッパ"
+      ],
+      "category": [
+        "diplomacy"
+      ],
+      "causes": [
+        "「十四か条」およびヴェルサイユ条約"
+      ],
+      "consequences": [
+        "日本による南洋諸島の委任統治や西アジアの英仏委任統治が行われた。1926年にドイツが加盟した"
+      ],
+      "related_events": [
+        "E136",
+        "E145",
+        "E152",
+        "E159",
+        "E184"
+      ],
+      "importance": 3,
+      "source": "29.ヴェルサイユ体制とワシントン体制 p.9-10",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E159",
+      "date": "1920",
+      "date_precision": "year",
+      "title": "日本による南洋諸島の委任統治と山東権益継承",
+      "description": "日本は赤道以北のドイツ領南洋諸島を委任統治し、山東省の旧ドイツ権益を継承することを認められた。",
+      "people": [],
+      "places": [
+        "南洋諸島",
+        "山東省",
+        "日本"
+      ],
+      "category": [
+        "diplomacy"
+      ],
+      "causes": [
+        "第一次世界大戦での占領とヴェルサイユ体制・国際連盟の委任統治制度"
+      ],
+      "consequences": [
+        "山東半島の旧ドイツ権益は1922年のワシントン会議の場の条約で中国に返還された"
+      ],
+      "related_events": [
+        "E115",
+        "E116",
+        "E158",
+        "E170"
+      ],
+      "importance": 2,
+      "source": "27.第一次世界大戦 p.15 / 29.ヴェルサイユ体制とワシントン体制 p.11",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E160",
+      "date": "1920",
+      "date_precision": "year",
+      "title": "戦後恐慌",
+      "description": "日本の貿易推移グラフに1920年の「戦後恐慌」として記載されている。",
+      "people": [],
+      "places": [
+        "日本"
+      ],
+      "category": [
+        "economy"
+      ],
+      "causes": [],
+      "consequences": [],
+      "related_events": [
+        "E124"
+      ],
+      "importance": 1,
+      "source": "27.第一次世界大戦 p.20",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E161",
+      "date": "1920",
+      "date_precision": "year",
+      "title": "セーヴル条約の調印",
+      "description": "第一次世界大戦で敗北したオスマン帝国が連合国と結んだ、サイクス・ピコ協定を踏まえ領土の大幅縮小を含む講和条約。",
+      "people": [],
+      "places": [
+        "オスマン帝国",
+        "アナトリア半島"
+      ],
+      "category": [
+        "diplomacy"
+      ],
+      "causes": [
+        "第一次世界大戦におけるオスマン帝国の敗北",
+        "サイクス・ピコ協定"
+      ],
+      "consequences": [
+        "ムスタファ＝ケマルの祖国解放運動とアンカラ対抗政府樹立、1923年のローザンヌ条約での撤回につながった"
+      ],
+      "related_events": [
+        "E125",
+        "E162",
+        "E177"
+      ],
+      "importance": 2,
+      "source": "30.西アジア・南アジアの民族運動 p.9-10",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E162",
+      "date": "1920",
+      "date_precision": "year",
+      "title": "アンカラ対抗政府の樹立",
+      "description": "軍人ムスタファ＝ケマルが祖国解放運動を展開し、アンカラに対抗政府を樹立した。",
+      "people": [
+        "ムスタファ＝ケマル"
+      ],
+      "places": [
+        "アンカラ",
+        "アナトリア半島"
+      ],
+      "category": [
+        "politics",
+        "military"
+      ],
+      "causes": [
+        "セーヴル条約による領土大幅縮小"
+      ],
+      "consequences": [
+        "1922年のスルタン制廃止と1923年のトルコ共和国宣言につながった"
+      ],
+      "related_events": [
+        "E161",
+        "E172",
+        "E177"
+      ],
+      "importance": 3,
+      "source": "30.西アジア・南アジアの民族運動 p.11",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E163",
+      "date": "1920",
+      "date_precision": "year",
+      "title": "ガンディーによる非暴力・不服従運動の推進",
+      "description": "国民会議派のガンディーの指導のもと非暴力・不服従運動を推進。糸車で綿糸を紡ぎ手織りで綿布を織る運動により英貨排斥・スワデーシと結びつけ、イギリスへの経済的依存を弱めようとした。",
+      "people": [
+        "ガンディー"
+      ],
+      "places": [
+        "インド"
+      ],
+      "category": [
+        "politics",
+        "economy",
+        "society"
+      ],
+      "causes": [
+        "イギリスの統治とローラット法制定"
+      ],
+      "consequences": [
+        "1930年の塩の行進など幅広いインド人の団結へと発展した"
+      ],
+      "related_events": [
+        "E091",
+        "E150",
+        "E193"
+      ],
+      "importance": 3,
+      "source": "30.西アジア・南アジアの民族運動 p.17-20",
+      "certainty": "inferred"
+    },
+    {
+      "id": "E164",
+      "date": "1921",
+      "date_precision": "year",
+      "title": "新経済政策（ネップ）の宣言",
+      "description": "戦時共産主義に対する農民・労働者の不満が高まったため、穀物の徴発をやめ小規模の私企業を認める新経済政策（ネップ）を宣言した。",
+      "people": [],
+      "places": [
+        "ロシア"
+      ],
+      "category": [
+        "economy",
+        "politics"
+      ],
+      "causes": [
+        "戦時共産主義に対する農民・労働者の不満の高まり"
+      ],
+      "consequences": [],
+      "related_events": [
+        "E138"
+      ],
+      "importance": 3,
+      "source": "28.ロシア革命とシベリア出兵 p.14",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E165",
+      "date": "1921",
+      "date_precision": "year",
+      "title": "中国共産党の結成",
+      "description": "コミンテルンの援助を受け、陳独秀らが中国共産党を結成した。",
+      "people": [
+        "陳独秀"
+      ],
+      "places": [
+        "中華民国"
+      ],
+      "category": [
+        "politics"
+      ],
+      "causes": [
+        "コミンテルンの援助"
+      ],
+      "consequences": [
+        "1924年の第一次国共合作により国民党と提携した"
+      ],
+      "related_events": [
+        "E149",
+        "E179"
+      ],
+      "importance": 3,
+      "source": "31.東アジア・東南アジアの民族運動 p.11",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E166",
+      "date": "1921",
+      "date_precision": "year",
+      "title": "ワシントン会議の開催",
+      "description": "第一次世界大戦後の東アジア・太平洋の国際秩序（ワシントン体制）形成のため、アメリカの提唱で開かれた会議。",
+      "people": [],
+      "places": [
+        "ワシントン",
+        "アメリカ",
+        "東アジア",
+        "太平洋"
+      ],
+      "category": [
+        "diplomacy"
+      ],
+      "causes": [
+        "アメリカが中心となって日本の進出を抑え、各国の利害を調整する目的"
+      ],
+      "consequences": [
+        "四か国条約・九か国条約・ワシントン海軍軍縮条約・山東権益返還条約が締結され、アメリカの外交上の勝利といわれた"
+      ],
+      "related_events": [
+        "E167",
+        "E168",
+        "E169",
+        "E170"
+      ],
+      "importance": 3,
+      "source": "29.ヴェルサイユ体制とワシントン体制 p.12, p.15",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E167",
+      "date": "1921",
+      "date_precision": "year",
+      "title": "四か国条約の調印と日英同盟の破棄",
+      "description": "ワシントン会議で調印され、太平洋地域における領土の現状維持を定め、これに伴い日英同盟が破棄された。",
+      "people": [],
+      "places": [
+        "ワシントン",
+        "太平洋"
+      ],
+      "category": [
+        "diplomacy"
+      ],
+      "causes": [
+        "ワシントン会議"
+      ],
+      "consequences": [
+        "日英同盟が破棄された"
+      ],
+      "related_events": [
+        "E074",
+        "E166"
+      ],
+      "importance": 3,
+      "source": "29.ヴェルサイユ体制とワシントン体制 p.13",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E168",
+      "date": "1922",
+      "date_precision": "year",
+      "title": "九か国条約の調印と石井・ランシング協定の破棄",
+      "description": "ワシントン会議で調印され、中国の独立と主権の尊重、門戸開放の原則を確認し、これに伴い石井・ランシング協定が破棄された。",
+      "people": [],
+      "places": [
+        "ワシントン",
+        "中華民国"
+      ],
+      "category": [
+        "diplomacy"
+      ],
+      "causes": [
+        "ワシントン会議"
+      ],
+      "consequences": [
+        "石井・ランシング協定が破棄された"
+      ],
+      "related_events": [
+        "E069",
+        "E132",
+        "E166"
+      ],
+      "importance": 3,
+      "source": "29.ヴェルサイユ体制とワシントン体制 p.13",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E169",
+      "date": "1922",
+      "date_precision": "year",
+      "title": "ワシントン海軍軍縮条約の調印",
+      "description": "英・米・日・仏・伊の5か国の主力艦の保有トン数と保有比率（5：5：3：1.67：1.67）を定めた。",
+      "people": [],
+      "places": [
+        "ワシントン"
+      ],
+      "category": [
+        "diplomacy",
+        "military"
+      ],
+      "causes": [
+        "ワシントン会議"
+      ],
+      "consequences": [],
+      "related_events": [
+        "E166"
+      ],
+      "importance": 3,
+      "source": "29.ヴェルサイユ体制とワシントン体制 p.14",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E170",
+      "date": "1922",
+      "date_precision": "year",
+      "title": "山東半島の旧ドイツ権益返還条約の締結",
+      "description": "ワシントン会議の場を借りて日中間で、山東半島の旧ドイツ権益を中国に返還する条約が結ばれた。",
+      "people": [],
+      "places": [
+        "山東半島",
+        "中華民国",
+        "日本"
+      ],
+      "category": [
+        "diplomacy"
+      ],
+      "causes": [
+        "ワシントン会議"
+      ],
+      "consequences": [],
+      "related_events": [
+        "E159",
+        "E166"
+      ],
+      "importance": 2,
+      "source": "29.ヴェルサイユ体制とワシントン体制 p.14",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E171",
+      "date": "1922",
+      "date_precision": "year",
+      "title": "エジプト王国の成立",
+      "description": "イギリスが条件つきの独立を認めてエジプト王国が成立したが、スエズ運河地帯の駐留権など多くの特権を維持したためエジプト人による抗議が続いた。",
+      "people": [],
+      "places": [
+        "エジプト",
+        "スエズ運河地帯"
+      ],
+      "category": [
+        "politics",
+        "diplomacy"
+      ],
+      "causes": [
+        "ワフド党による反英闘争"
+      ],
+      "consequences": [
+        "特権維持に対する抗議が続き、1936年に主権をほぼ回復した"
+      ],
+      "related_events": [
+        "E155",
+        "E198"
+      ],
+      "importance": 2,
+      "source": "30.西アジア・南アジアの民族運動 p.7",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E172",
+      "date": "1922",
+      "date_precision": "year",
+      "title": "スルタン制の廃止（オスマン帝国の滅亡）",
+      "description": "スンナ派イスラーム王朝の君主の称号であったスルタン制が廃止され、オスマン帝国が滅亡した。",
+      "people": [
+        "ムスタファ＝ケマル"
+      ],
+      "places": [
+        "アナトリア半島",
+        "オスマン帝国"
+      ],
+      "category": [
+        "politics"
+      ],
+      "causes": [
+        "ムスタファ＝ケマルの祖国解放運動とアンカラ対抗政府の樹立"
+      ],
+      "consequences": [
+        "1923年のトルコ共和国宣言・トルコ革命へと進んだ"
+      ],
+      "related_events": [
+        "E162",
+        "E177",
+        "E178"
+      ],
+      "importance": 3,
+      "source": "30.西アジア・南アジアの民族運動 p.11",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E173",
+      "date": "1922年末",
+      "date_precision": "month",
+      "title": "ソヴィエト社会主義共和国連邦（ソ連）の成立",
+      "description": "ソヴィエト＝ロシアがウクライナ・ザカフカース（ジョージア・アゼルバイジャン・アルメニア）・ベラルーシの3共和国と結合し、ソ連が成立した。",
+      "people": [],
+      "places": [
+        "ソ連",
+        "ウクライナ",
+        "ザカフカース",
+        "ベラルーシ",
+        "ジョージア",
+        "アゼルバイジャン",
+        "アルメニア"
+      ],
+      "category": [
+        "politics"
+      ],
+      "causes": [],
+      "consequences": [],
+      "related_events": [
+        "E131"
+      ],
+      "importance": 3,
+      "source": "28.ロシア革命とシベリア出兵 p.15-16",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E174",
+      "date": "1923",
+      "date_precision": "year",
+      "title": "ルール地方占領とドイツのインフレ",
+      "description": "賠償金の遅れを理由にフランスがベルギーとともに鉱工業の中心であるルール地方を占領。ドイツ政府が労働者に生産停止で抵抗させ紙幣増刷で賃金支援をしたため、インフレが急速に進んだ。",
+      "people": [],
+      "places": [
+        "ルール地方",
+        "ドイツ",
+        "フランス",
+        "ベルギー"
+      ],
+      "category": [
+        "diplomacy",
+        "economy"
+      ],
+      "causes": [
+        "ヴェルサイユ条約の賠償金の支払い遅れ"
+      ],
+      "consequences": [
+        "急激なインフレが発生し、シュトレーゼマン内閣による新紙幣発行での収束へつながった"
+      ],
+      "related_events": [
+        "E152",
+        "E176"
+      ],
+      "importance": 3,
+      "source": "29.ヴェルサイユ体制とワシントン体制 p.18-19",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E175",
+      "date": "1923",
+      "date_precision": "year",
+      "title": "関東大震災",
+      "description": "日本の貿易推移グラフに1923年の「関東大震災」として記載されている。",
+      "people": [],
+      "places": [
+        "日本"
+      ],
+      "category": [
+        "society",
+        "economy"
+      ],
+      "causes": [],
+      "consequences": [],
+      "related_events": [],
+      "importance": 2,
+      "source": "27.第一次世界大戦 p.20",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E176",
+      "date": "1923",
+      "date_precision": "year",
+      "title": "シュトレーゼマン内閣によるインフレ収束とドイツ経済回復",
+      "description": "シュトレーゼマン内閣が新紙幣を発行してインフレをおさめ、アメリカからの投資（資金流入）によってドイツ経済が回復し始めた。",
+      "people": [
+        "シュトレーゼマン"
+      ],
+      "places": [
+        "ドイツ",
+        "アメリカ"
+      ],
+      "category": [
+        "economy",
+        "politics"
+      ],
+      "causes": [
+        "ルール地方占領に伴う急速なインフレ"
+      ],
+      "consequences": [
+        "ドイツが賠償金を支払い、英仏がアメリカへ戦債を返済する資金循環が成立し、ロカルノ条約への環境が整った"
+      ],
+      "related_events": [
+        "E174",
+        "E182"
+      ],
+      "importance": 2,
+      "source": "29.ヴェルサイユ体制とワシントン体制 p.20",
+      "certainty": "inferred"
+    },
+    {
+      "id": "E177",
+      "date": "1923",
+      "date_precision": "year",
+      "title": "ローザンヌ条約の締結とトルコ共和国の宣言（トルコ革命）",
+      "description": "連合国とローザンヌ条約を結んでセーヴル条約の領土分割を撤回させ、トルコ共和国を宣言してムスタファ＝ケマルが初代大統領に就任。西欧をモデルに西暦採用・ローマ字表記の文字改革・女性参政権拡大などの国民国家建設を推進した。",
+      "people": [
+        "ムスタファ＝ケマル"
+      ],
+      "places": [
+        "トルコ",
+        "ローザンヌ"
+      ],
+      "category": [
+        "diplomacy",
+        "politics",
+        "culture"
+      ],
+      "causes": [
+        "アンカラ対抗政府による祖国解放運動とスルタン制廃止"
+      ],
+      "consequences": [
+        "1924年のカリフ制廃止など政教分離・世俗化が進められた"
+      ],
+      "related_events": [
+        "E161",
+        "E162",
+        "E172",
+        "E178"
+      ],
+      "importance": 3,
+      "source": "30.西アジア・南アジアの民族運動 p.12-13",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E178",
+      "date": "1924",
+      "date_precision": "year",
+      "title": "カリフ制の廃止",
+      "description": "トルコ共和国でカリフ制（イスラームの最高指導者・宗教的権威）を廃止し、政教分離・世俗化を進めた。",
+      "people": [
+        "ムスタファ＝ケマル"
+      ],
+      "places": [
+        "トルコ"
+      ],
+      "category": [
+        "politics",
+        "religion"
+      ],
+      "causes": [
+        "トルコ革命による西欧モデルの国民国家建設推進"
+      ],
+      "consequences": [],
+      "related_events": [
+        "E172",
+        "E177"
+      ],
+      "importance": 2,
+      "source": "30.西アジア・南アジアの民族運動 p.13",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E179",
+      "date": "1924",
+      "date_precision": "year",
+      "title": "第一次国共合作の成立",
+      "description": "軍閥の打倒と中国統一を目指し、中国国民党が中国共産党の党員に党籍を残したまま国民党へ入党することを認めて提携した。",
+      "people": [
+        "孫文"
+      ],
+      "places": [
+        "中華民国"
+      ],
+      "category": [
+        "politics"
+      ],
+      "causes": [
+        "中国国民党の「連ソ・容共・扶助工農」方針",
+        "軍閥の打倒と中国統一という共通目標"
+      ],
+      "consequences": [
+        "1926年の北伐開始の基盤となったが、1927年の上海クーデタで分裂した"
+      ],
+      "related_events": [
+        "E154",
+        "E165",
+        "E185",
+        "E186"
+      ],
+      "importance": 3,
+      "source": "31.東アジア・東南アジアの民族運動 p.9, p.11",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E180",
+      "date": "1925",
+      "date_precision": "year",
+      "title": "治安維持法の朝鮮への適用",
+      "description": "文化政治のもとで社会主義運動を厳しく取り締まるため、治安維持法が朝鮮にも適用された。",
+      "people": [],
+      "places": [
+        "朝鮮"
+      ],
+      "category": [
+        "politics"
+      ],
+      "causes": [
+        "朝鮮における社会主義運動への取り締まり強化"
+      ],
+      "consequences": [],
+      "related_events": [
+        "E148"
+      ],
+      "importance": 2,
+      "source": "31.東アジア・東南アジアの民族運動 p.4",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E181",
+      "date": "1925",
+      "date_precision": "year",
+      "title": "上海での労働争議と反帝国主義運動の拡大",
+      "description": "上海での労働争議を背景に、反帝国主義運動が中国全国に拡大した。",
+      "people": [],
+      "places": [
+        "上海",
+        "中華民国"
+      ],
+      "category": [
+        "society",
+        "politics"
+      ],
+      "causes": [
+        "上海での労働争議"
+      ],
+      "consequences": [
+        "1926年の北伐開始の背景となった"
+      ],
+      "related_events": [
+        "E185"
+      ],
+      "importance": 2,
+      "source": "31.東アジア・東南アジアの民族運動 p.13",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E182",
+      "date": "1925",
+      "date_precision": "year",
+      "title": "ロカルノ条約の締結",
+      "description": "ドイツがヨーロッパ諸国との間でドイツ西部国境の現状維持と不可侵を確認した条約。",
+      "people": [
+        "シュトレーゼマン"
+      ],
+      "places": [
+        "ロカルノ",
+        "ドイツ",
+        "ヨーロッパ"
+      ],
+      "category": [
+        "diplomacy"
+      ],
+      "causes": [
+        "シュトレーゼマン内閣による経済回復と国際協調外交"
+      ],
+      "consequences": [
+        "ドイツの孤立化を基調とする戦後秩序の転換点となり、1926年のドイツの国際連盟加盟が実現した"
+      ],
+      "related_events": [
+        "E176",
+        "E184",
+        "E191"
+      ],
+      "importance": 3,
+      "source": "29.ヴェルサイユ体制とワシントン体制 p.21",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E183",
+      "date": "1925",
+      "date_precision": "year",
+      "title": "パフレヴィー朝の創始",
+      "description": "第一次世界大戦中に英露軍が進駐したイランで、レザー＝ハーンがガージャール朝を倒してパフレヴィー朝をひらき、トルコと同様の政教分離などの近代化政策を進めた。",
+      "people": [
+        "レザー＝ハーン"
+      ],
+      "places": [
+        "イラン",
+        "テヘラン"
+      ],
+      "category": [
+        "politics"
+      ],
+      "causes": [
+        "第一次世界大戦中の英露軍進駐"
+      ],
+      "consequences": [
+        "1935年に国名をペルシアからイランに改めた"
+      ],
+      "related_events": [
+        "E197"
+      ],
+      "importance": 2,
+      "source": "30.西アジア・南アジアの民族運動 p.14-15",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E184",
+      "date": "1926",
+      "date_precision": "year",
+      "title": "ドイツの国際連盟加盟",
+      "description": "ロカルノ条約の締結を経て、ドイツの国際連盟加盟が実現した。",
+      "people": [],
+      "places": [
+        "ドイツ"
+      ],
+      "category": [
+        "diplomacy"
+      ],
+      "causes": [
+        "1925年のロカルノ条約締結"
+      ],
+      "consequences": [],
+      "related_events": [
+        "E158",
+        "E182"
+      ],
+      "importance": 2,
+      "source": "29.ヴェルサイユ体制とワシントン体制 p.21",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E185",
+      "date": "1926-07",
+      "date_precision": "month",
+      "title": "北伐の開始",
+      "description": "蒋介石率いる国民革命軍が、浙江財閥など中国の民族資本の支援を受けて軍閥の打倒と中国統一を目指して北伐を開始した。",
+      "people": [
+        "蒋介石"
+      ],
+      "places": [
+        "広州",
+        "中華民国"
+      ],
+      "category": [
+        "military",
+        "politics"
+      ],
+      "causes": [
+        "第一次国共合作と1925年の反帝国主義運動拡大",
+        "軍閥の乱立"
+      ],
+      "consequences": [
+        "日本は満洲権益を守るため山東出兵を実施し、1928年6月に北伐が完了した"
+      ],
+      "related_events": [
+        "E122",
+        "E179",
+        "E181",
+        "E186",
+        "E187",
+        "E189"
+      ],
+      "importance": 3,
+      "source": "31.東アジア・東南アジアの民族運動 p.10, p.13, p.15",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E186",
+      "date": "1927-04",
+      "date_precision": "month",
+      "title": "上海クーデタと南京国民政府の樹立（国共分裂）",
+      "description": "北伐途上で上海を掌握した蒋介石が、労働・農民運動の拡大による資本家・地主の利益侵害を恐れ、財閥の支持などから共産党や労働運動勢力を弾圧（上海クーデタ）。南京に国民政府を樹立し、共産党との対立が決定的となった。",
+      "people": [
+        "蒋介石"
+      ],
+      "places": [
+        "上海",
+        "南京",
+        "中華民国"
+      ],
+      "category": [
+        "politics",
+        "military"
+      ],
+      "causes": [
+        "共産党指導の労働・農民運動拡大による資本家・地主の利益への脅威",
+        "財閥の支持を得ていた蒋介石による共産党排除の意図"
+      ],
+      "consequences": [
+        "国共分裂が決定的となった"
+      ],
+      "related_events": [
+        "E179",
+        "E185"
+      ],
+      "importance": 3,
+      "source": "31.東アジア・東南アジアの民族運動 p.10, p.15-16",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E187",
+      "date": "1927～1928",
+      "date_precision": "period",
+      "title": "山東出兵と済南事件",
+      "description": "外相を兼任した田中義一首相の内閣が、北伐に対して満洲権益を実力で守るため日本人居留民の保護を名目に3次にわたり山東出兵を実施。第2次出兵の際に日本軍と国民革命軍（北伐軍）が武力衝突を起こした（済南事件）。",
+      "people": [
+        "田中義一"
+      ],
+      "places": [
+        "山東省",
+        "済南",
+        "青島",
+        "中華民国"
+      ],
+      "category": [
+        "military",
+        "diplomacy"
+      ],
+      "causes": [
+        "中国の北伐に対する満洲の日本権益防衛方針と日本人居留民保護の名目"
+      ],
+      "consequences": [],
+      "related_events": [
+        "E185",
+        "E188"
+      ],
+      "importance": 3,
+      "source": "31.東アジア・東南アジアの民族運動 p.17-18",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E188",
+      "date": "1928-06",
+      "date_precision": "month",
+      "title": "張作霖爆殺事件",
+      "description": "北伐軍の進撃で支援していた満洲軍閥の張作霖軍が敗北すると、関東軍の一部が満洲直接支配を目指して独断で、満洲へ帰還途上の張作霖を奉天郊外で列車ごと爆破して殺害した。",
+      "people": [
+        "張作霖"
+      ],
+      "places": [
+        "奉天",
+        "満洲"
+      ],
+      "category": [
+        "military",
+        "politics"
+      ],
+      "causes": [
+        "北伐軍の進撃による張作霖軍の敗北",
+        "関東軍の一部における張作霖排除・満洲直接支配論の台頭"
+      ],
+      "consequences": [
+        "張作霖の息子・張学良が日本に対抗して国民政府の満洲支配を認めた"
+      ],
+      "related_events": [
+        "E185",
+        "E187",
+        "E190"
+      ],
+      "importance": 3,
+      "source": "31.東アジア・東南アジアの民族運動 p.10, p.19-20",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E189",
+      "date": "1928-06",
+      "date_precision": "month",
+      "title": "北伐の完了",
+      "description": "北伐軍が北京に入城し、北伐が完了した。",
+      "people": [
+        "蒋介石"
+      ],
+      "places": [
+        "北京",
+        "中華民国"
+      ],
+      "category": [
+        "military",
+        "politics"
+      ],
+      "causes": [
+        "北伐の進展"
+      ],
+      "consequences": [
+        "1928年12月の張学良の合流により中国全土の統一がほぼ達成された"
+      ],
+      "related_events": [
+        "E185",
+        "E190"
+      ],
+      "importance": 3,
+      "source": "31.東アジア・東南アジアの民族運動 p.10, p.20",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E190",
+      "date": "1928-12",
+      "date_precision": "month",
+      "title": "張学良の国民政府合流と中国全土のほぼ統一",
+      "description": "張作霖の息子・張学良が日本に対抗して国民政府の満洲支配を認め、中国全土の統一がほぼ達成された（ただし共産党との対立や各地軍閥の勢力は維持された）。",
+      "people": [
+        "張学良",
+        "張作霖"
+      ],
+      "places": [
+        "満洲",
+        "中華民国"
+      ],
+      "category": [
+        "politics",
+        "diplomacy"
+      ],
+      "causes": [
+        "張作霖爆殺事件による対日対抗",
+        "北伐の完了"
+      ],
+      "consequences": [
+        "中国全土の統一がほぼ達成された"
+      ],
+      "related_events": [
+        "E188",
+        "E189"
+      ],
+      "importance": 3,
+      "source": "31.東アジア・東南アジアの民族運動 p.20",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E191",
+      "date": "1928",
+      "date_precision": "year",
+      "title": "不戦条約（ケロッグ＝ブリアン条約）の締結",
+      "description": "国際紛争解決のために戦争に訴えることを非難し国家政策の手段としての戦争を放棄する条約。はじめ15か国、のちに63か国が調印し、国際協調外交が頂点に達した。",
+      "people": [],
+      "places": [
+        "ヨーロッパ",
+        "世界"
+      ],
+      "category": [
+        "diplomacy"
+      ],
+      "causes": [
+        "国際協調外交の進展"
+      ],
+      "consequences": [
+        "国際協調外交が頂点に達した"
+      ],
+      "related_events": [
+        "E182"
+      ],
+      "importance": 3,
+      "source": "29.ヴェルサイユ体制とワシントン体制 p.22-23",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E192",
+      "date": "1929",
+      "date_precision": "year",
+      "title": "プールナ＝スワラージ（完全独立）の決議",
+      "description": "インド国民会議派内の急進派ネルーらがプールナ＝スワラージ（完全独立）を決議した。",
+      "people": [
+        "ネルー"
+      ],
+      "places": [
+        "インド"
+      ],
+      "category": [
+        "politics"
+      ],
+      "causes": [],
+      "consequences": [],
+      "related_events": [
+        "E163",
+        "E193"
+      ],
+      "importance": 3,
+      "source": "30.西アジア・南アジアの民族運動 p.17",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E193",
+      "date": "1930",
+      "date_precision": "year",
+      "title": "塩の行進",
+      "description": "ガンディーが、宗教や階層にかかわらず誰もが使用する生活必需品である塩を民族運動のシンボルとして幅広いインド人の参加・団結を図り、イギリスの塩の専売制度に抵抗して実施した。",
+      "people": [
+        "ガンディー"
+      ],
+      "places": [
+        "インド"
+      ],
+      "category": [
+        "politics",
+        "society"
+      ],
+      "causes": [
+        "イギリスの塩の専売制度",
+        "幅広いインド人の民族運動への参加・団結の追求"
+      ],
+      "consequences": [],
+      "related_events": [
+        "E163",
+        "E192"
+      ],
+      "importance": 3,
+      "source": "30.西アジア・南アジアの民族運動 p.17, p.20",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E194",
+      "date": "1932",
+      "date_precision": "year",
+      "title": "サウジアラビア王国の建国",
+      "description": "聖典『コーラン』とムハンマドの言行に従うことを主張するワッハーブ派を率いたイブン＝サウードが、フセインを破ってアラビア半島の大部分を統一し、サウジアラビア王国を建国した。",
+      "people": [
+        "イブン＝サウード",
+        "フセイン"
+      ],
+      "places": [
+        "アラビア半島",
+        "サウジアラビア王国"
+      ],
+      "category": [
+        "politics",
+        "religion"
+      ],
+      "causes": [
+        "イブン＝サウードによるアラビア半島の大部分の統一"
+      ],
+      "consequences": [],
+      "related_events": [
+        "E123"
+      ],
+      "importance": 2,
+      "source": "30.西アジア・南アジアの民族運動 p.8, p.14, p.21",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E195",
+      "date": "1932",
+      "date_precision": "year",
+      "title": "イラクの独立",
+      "description": "イギリスの委任統治領であったイラクの地図上に独立・成立の年として「1932」と記載されている。",
+      "people": [],
+      "places": [
+        "イラク",
+        "バグダード"
+      ],
+      "category": [
+        "politics",
+        "diplomacy"
+      ],
+      "causes": [],
+      "consequences": [],
+      "related_events": [
+        "E123",
+        "E125"
+      ],
+      "importance": 2,
+      "source": "30.西アジア・南アジアの民族運動 p.4-5, p.14, p.21",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E196",
+      "date": "1932",
+      "date_precision": "year",
+      "title": "満洲国の建国",
+      "description": "日本の勢力図の地図上に「1932年建国」として満洲国が記載されている。",
+      "people": [],
+      "places": [
+        "満洲国",
+        "長春"
+      ],
+      "category": [
+        "politics",
+        "diplomacy"
+      ],
+      "causes": [],
+      "consequences": [],
+      "related_events": [],
+      "importance": 2,
+      "source": "29.ヴェルサイユ体制とワシントン体制 p.11",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E197",
+      "date": "1935",
+      "date_precision": "year",
+      "title": "ペルシアからイランへの国名改称",
+      "description": "パフレヴィー朝が近代化政策を進める中、国名をペルシアからイランに改めた。",
+      "people": [
+        "レザー＝ハーン"
+      ],
+      "places": [
+        "イラン"
+      ],
+      "category": [
+        "politics"
+      ],
+      "causes": [
+        "パフレヴィー朝による近代化政策"
+      ],
+      "consequences": [],
+      "related_events": [
+        "E183"
+      ],
+      "importance": 2,
+      "source": "30.西アジア・南アジアの民族運動 p.15",
+      "certainty": "explicit"
+    },
+    {
+      "id": "E198",
+      "date": "1936",
+      "date_precision": "year",
+      "title": "エジプトの主権ほぼ回復",
+      "description": "エジプトがスエズ運河地帯の駐留権の継続を条件として、主権をほぼ回復した。",
+      "people": [],
+      "places": [
+        "エジプト",
+        "スエズ運河地帯"
+      ],
+      "category": [
+        "diplomacy",
+        "politics"
+      ],
+      "causes": [
+        "1922年のエジプト王国成立後も続いたエジプト人による抗議"
+      ],
+      "consequences": [],
+      "related_events": [
+        "E171"
+      ],
+      "importance": 2,
+      "source": "30.西アジア・南アジアの民族運動 p.7",
+      "certainty": "explicit"
+    }
+  ]
+}

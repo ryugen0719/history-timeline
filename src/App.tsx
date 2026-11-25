@@ -10,7 +10,11 @@ import { PeopleDirectoryView } from './components/PeopleDirectoryView';
 import { PersonPhotoModal } from './components/PersonPhotoModal';
 import { PlaceTimelineView } from './components/PlaceTimelineView';
 import { TimelineView } from './components/TimelineView';
-import { SAMPLE_DATASETS } from './data/sampleDatasets';
+import {
+  DEFAULT_TIMELINE_VERSION,
+  resolveInitialTimelineState,
+  SAMPLE_DATASETS,
+} from './data/sampleDatasets';
 import {
   COLOR_PALETTE,
   DEFAULT_COLOR_LABELS,
@@ -43,7 +47,6 @@ import {
   extractPeopleDirectory,
   filterEvents,
   mergeHistoricalDatabases,
-  parseHistoricalJson,
   sortEventsChronologically,
   toggleSelectedEventId,
 } from './utils/timelineParser';
@@ -59,6 +62,8 @@ const STORAGE_KEY_COLORS = 'history_timeline_archive_colors_v1';
 const STORAGE_KEY_COLOR_LABELS = 'history_timeline_archive_color_labels_v1';
 const STORAGE_KEY_WIKI_CHECKED = 'history_timeline_archive_wiki_checked_v1';
 const STORAGE_KEY_EVENT_IMAGES = 'history_timeline_archive_event_images_v1';
+const STORAGE_KEY_DEFAULT_VERSION =
+  'history_timeline_archive_default_version_v1';
 
 const DEFAULT_FILTERS: TimelineFilters = {
   search: '',
@@ -81,26 +86,21 @@ const ALL_CATEGORIES: EventCategory[] = [
   'science',
 ];
 
-function loadInitialState(): { db: HistoricalDatabase; title: string } {
+function loadInitialState() {
   try {
-    const savedJson = localStorage.getItem(STORAGE_KEY_DB);
-    const savedTitle = localStorage.getItem(STORAGE_KEY_TITLE);
-    if (savedJson) {
-      const parsed = parseHistoricalJson(savedJson);
-      if (parsed.ok && parsed.data) {
-        return {
-          db: parsed.data,
-          title: savedTitle || '保存された歴史年表',
-        };
-      }
-    }
+    return resolveInitialTimelineState({
+      savedJson: localStorage.getItem(STORAGE_KEY_DB),
+      savedTitle: localStorage.getItem(STORAGE_KEY_TITLE),
+      savedDefaultVersion: localStorage.getItem(STORAGE_KEY_DEFAULT_VERSION),
+    });
   } catch {
-    // Fallback to sample dataset if localStorage is unavailable
+    // Fallback to default dataset if localStorage is unavailable
+    return {
+      db: SAMPLE_DATASETS[0].data,
+      title: SAMPLE_DATASETS[0].name,
+      migratedFromLegacyDefault: false,
+    };
   }
-  return {
-    db: SAMPLE_DATASETS[0].data,
-    title: SAMPLE_DATASETS[0].name,
-  };
 }
 
 function loadJsonFromStorage<T>(key: string, fallback: T): T {
@@ -124,7 +124,9 @@ export default function App() {
     loadJsonFromStorage<PersonProfilesMap>(STORAGE_KEY_PEOPLE, {})
   );
   const [eventColors, setEventColors] = useState<EventColorsMap>(() =>
-    loadJsonFromStorage<EventColorsMap>(STORAGE_KEY_COLORS, {})
+    initial.migratedFromLegacyDefault
+      ? {}
+      : loadJsonFromStorage<EventColorsMap>(STORAGE_KEY_COLORS, {})
   );
   const [eventImages, setEventImages] = useState<EventImagesMap>(() =>
     loadJsonFromStorage<EventImagesMap>(STORAGE_KEY_EVENT_IMAGES, {})
@@ -187,6 +189,10 @@ export default function App() {
     try {
       localStorage.setItem(STORAGE_KEY_DB, JSON.stringify(database));
       localStorage.setItem(STORAGE_KEY_TITLE, datasetTitle);
+      localStorage.setItem(
+        STORAGE_KEY_DEFAULT_VERSION,
+        DEFAULT_TIMELINE_VERSION
+      );
     } catch {
       // Ignore storage quota errors
     }

@@ -22,8 +22,12 @@ test('resolveMacroRegion maps granular historical places to coherent macro-regio
   assert.equal(resolveMacroRegion('不明'), '場所不明');
 });
 
+const BAKUMATSU_EVENTS = SAMPLE_DATASETS.find(
+  (d) => d.id === 'bakumatsu-meiji'
+)!.data.events;
+
 test('groupEventsByRegion consolidates Bakumatsu dataset from 18+ raw places into <= 6 regions', () => {
-  const bakumatsu = SAMPLE_DATASETS[0].data.events;
+  const bakumatsu = BAKUMATSU_EVENTS;
   const macroGroups = groupEventsByRegion(bakumatsu, 'macro');
   const exactGroups = groupEventsByRegion(bakumatsu, 'exact');
 
@@ -34,8 +38,24 @@ test('groupEventsByRegion consolidates Bakumatsu dataset from 18+ raw places int
   assert.ok(macroGroups[0].subPlaces.includes('東京'));
 });
 
+test('default dataset is 第三回定期考査範囲 with 198 events and coherent world-history macro regions', () => {
+  const defaultDataset = SAMPLE_DATASETS[0];
+  assert.equal(defaultDataset.id, 'term3-exam');
+  assert.equal(defaultDataset.name, '第三回定期考査範囲');
+  assert.equal(defaultDataset.data.events.length, 198);
+
+  assert.equal(resolveMacroRegion('中華民国'), '東アジア（中国・朝鮮）');
+  assert.equal(resolveMacroRegion('オランダ領東インド'), '南アジア・東南アジア');
+  assert.equal(resolveMacroRegion('オスマン帝国'), '西アジア・北アフリカ');
+  assert.equal(resolveMacroRegion('バルカン半島'), 'ロシア・東欧');
+
+  const macroGroups = groupEventsByRegion(defaultDataset.data.events, 'macro');
+  assert.ok(macroGroups.length <= 7);
+  assert.ok(macroGroups.some((g) => g.region === '東アジア（中国・朝鮮）'));
+});
+
 test('computeRegionRelationships identifies shared events and cross-region causal links', () => {
-  const bakumatsu = SAMPLE_DATASETS[0].data.events;
+  const bakumatsu = BAKUMATSU_EVENTS;
   const macroGroups = groupEventsByRegion(bakumatsu, 'macro');
   const links = computeRegionRelationships(bakumatsu, macroGroups, 'macro');
 
@@ -55,7 +75,7 @@ test('computeRegionRelationships identifies shared events and cross-region causa
 });
 
 test('getEventYearBucket and formatSubDateInYearRow organize rows by year cleanly', () => {
-  const bakumatsu = SAMPLE_DATASETS[0].data.events;
+  const bakumatsu = BAKUMATSU_EVENTS;
   const perry = bakumatsu.find((e) => e.id === 'E001')!;
   const ansei = bakumatsu.find((e) => e.id === 'E004')!;
 
@@ -69,7 +89,7 @@ test('getEventYearBucket and formatSubDateInYearRow organize rows by year cleanl
 });
 
 test('buildRegionMatrixRows prevents duplicate cards, preserves chronological bands, and tracks hiddenRegions', () => {
-  const bakumatsu = SAMPLE_DATASETS[0].data.events;
+  const bakumatsu = BAKUMATSU_EVENTS;
   const macroGroups = groupEventsByRegion(bakumatsu, 'macro');
   const visibleRegions = macroGroups.map((g) => g.region);
   const allSet = new Set(visibleRegions);

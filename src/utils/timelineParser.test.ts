@@ -22,6 +22,11 @@ import {
   type HistoricalEvent,
   type TimelineFilters,
 } from '../types/timeline';
+import {
+  DEFAULT_TIMELINE_VERSION,
+  resolveInitialTimelineState,
+  SAMPLE_DATASETS,
+} from '../data/sampleDatasets';
 
 const BASE_FILTERS: TimelineFilters = {
   search: '',
@@ -372,4 +377,59 @@ test('toggleSelectedEventId selects new id and clears when tapping the already-s
   assert.equal(toggleSelectedEventId(null, 'E001'), 'E001');
   assert.equal(toggleSelectedEventId('E001', 'E001'), null);
   assert.equal(toggleSelectedEventId('E001', 'E004'), 'E004');
+});
+
+test('parseHistoricalDate orders 年末 after monthly dates within the same year', () => {
+  const nov1917 = parseHistoricalDate('1917-11', 'month');
+  const end1917 = parseHistoricalDate('1917年末', 'month');
+  const jan1918 = parseHistoricalDate('1918-01', 'month');
+
+  assert.ok(nov1917.sortValue < end1917.sortValue);
+  assert.ok(end1917.sortValue < jan1918.sortValue);
+  assert.equal(end1917.eraLabel, '1910年代');
+});
+
+test('resolveInitialTimelineState defaults to 第三回定期考査範囲, migrates legacy default once, and preserves custom datasets', () => {
+  const bakumatsu = SAMPLE_DATASETS.find((d) => d.id === 'bakumatsu-meiji')!;
+  const french = SAMPLE_DATASETS.find((d) => d.id === 'french-revolution')!;
+
+  // 1. Fresh load -> 第三回定期考査範囲 (198 events)
+  const fresh = resolveInitialTimelineState({
+    savedJson: null,
+    savedTitle: null,
+    savedDefaultVersion: null,
+  });
+  assert.equal(fresh.title, '第三回定期考査範囲');
+  assert.equal(fresh.db.events.length, 198);
+  assert.equal(fresh.migratedFromLegacyDefault, false);
+
+  // 2. Returning user with untouched old default -> auto-upgrades to 第三回定期考査範囲
+  const migrated = resolveInitialTimelineState({
+    savedJson: JSON.stringify(bakumatsu.data),
+    savedTitle: bakumatsu.name,
+    savedDefaultVersion: null,
+  });
+  assert.equal(migrated.title, '第三回定期考査範囲');
+  assert.equal(migrated.db.events.length, 198);
+  assert.equal(migrated.migratedFromLegacyDefault, true);
+
+  // 3. User explicitly switches back to Bakumatsu after migration -> respected
+  const explicitBakumatsu = resolveInitialTimelineState({
+    savedJson: JSON.stringify(bakumatsu.data),
+    savedTitle: bakumatsu.name,
+    savedDefaultVersion: DEFAULT_TIMELINE_VERSION,
+  });
+  assert.equal(explicitBakumatsu.title, bakumatsu.name);
+  assert.equal(explicitBakumatsu.db.events.length, 14);
+  assert.equal(explicitBakumatsu.migratedFromLegacyDefault, false);
+
+  // 4. Returning user who imported a different dataset -> preserved
+  const custom = resolveInitialTimelineState({
+    savedJson: JSON.stringify(french.data),
+    savedTitle: french.name,
+    savedDefaultVersion: null,
+  });
+  assert.equal(custom.title, french.name);
+  assert.equal(custom.db.events.length, 9);
+  assert.equal(custom.migratedFromLegacyDefault, false);
 });
