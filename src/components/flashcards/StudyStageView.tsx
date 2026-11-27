@@ -30,7 +30,10 @@ import type {
   StudyMode,
   StudySessionConfig,
 } from '../../types/flashcards';
-import { getCardRecentHistory } from '../../utils/answerHistory';
+import {
+  buildCardAttemptIndicator,
+  type CardAttemptIndicator,
+} from '../../utils/answerHistory';
 import { parseTagMeta } from '../../utils/flashcardParser';
 import {
   calculateRetentionPercent,
@@ -56,6 +59,8 @@ interface StudyStageViewProps {
   allCardsMap: Record<string, Flashcard>;
   srsMap: SrsProgressMap;
   answerHistory?: AnswerHistoryEntry[];
+  showCardAttemptDots: boolean;
+  onToggleCardAttemptDots: (enabled: boolean) => void;
   onRateCard: (
     cardId: string,
     rating: SrsRating,
@@ -239,11 +244,54 @@ function MiniCardCurveSvg({ progress }: { progress: SrsProgress }) {
   );
 }
 
+function CardAttemptDots({
+  indicator,
+}: {
+  indicator: CardAttemptIndicator;
+}) {
+  return (
+    <div
+      className="inline-flex items-center gap-2 text-[11px] text-[#78716C]"
+      aria-label={`${indicator.viewNumber}回目（正解${indicator.correctCount}回・不正解${indicator.incorrectCount}回）`}
+    >
+      <span className="font-mono tabular-nums font-medium text-[#57534E]">
+        {indicator.viewNumber}回目
+      </span>
+      <span className="inline-flex items-center gap-1" aria-hidden="true">
+        {indicator.hiddenCount > 0 && (
+          <span className="font-mono text-[10px] text-[#A8A29E] mr-0.5">
+            +{indicator.hiddenCount}
+          </span>
+        )}
+        {indicator.dots.map((dot) => {
+          const dotClass =
+            dot.status === 'correct'
+              ? 'bg-[#16A34A]'
+              : dot.status === 'incorrect'
+                ? 'bg-[#DC2626]'
+                : dot.status === 'legacy'
+                  ? 'bg-[#A8A29E]'
+                  : 'border-[1.5px] border-[#9A3412]/75 bg-white';
+          return (
+            <span
+              key={dot.key}
+              title={dot.label}
+              className={`inline-block w-2 h-2 rounded-full ${dotClass}`}
+            />
+          );
+        })}
+      </span>
+    </div>
+  );
+}
+
 export function StudyStageView({
   initialSession,
   allCardsMap,
   srsMap,
   answerHistory,
+  showCardAttemptDots,
+  onToggleCardAttemptDots,
   onRateCard,
   onUndoCardRate,
   onToggleStar,
@@ -358,12 +406,15 @@ export function StudyStageView({
     [currentCard, srsMap]
   );
 
-  const currentCardRecentHistory = useMemo(
+  const currentCardAttemptIndicator = useMemo(
     () =>
-      currentCard && answerHistory
-        ? getCardRecentHistory(answerHistory, currentCard.id, 5)
-        : [],
-    [currentCard, answerHistory]
+      currentCard
+        ? buildCardAttemptIndicator(answerHistory ?? [], currentCard.id, {
+            totalReviewsFallback: currentProgress?.totalReviews ?? 0,
+            includeCurrentView: true,
+          })
+        : null,
+    [currentCard, answerHistory, currentProgress]
   );
 
   const ratingPreviews = useMemo(
@@ -982,8 +1033,25 @@ export function StudyStageView({
                     }`}
                   >
                     <div className="lg:col-span-6 space-y-1">
-                      <div className="text-xs text-[#78716C] font-mono tabular-nums">
-                        No.{card.number} · {card.unit}
+                      <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
+                        <div className="text-xs text-[#78716C] font-mono tabular-nums">
+                          No.{card.number} · {card.unit}
+                        </div>
+                        {showCardAttemptDots && (
+                          <CardAttemptDots
+                            indicator={buildCardAttemptIndicator(
+                              answerHistory ?? [],
+                              card.id,
+                              {
+                                totalReviewsFallback: getSrsProgress(
+                                  srsMap,
+                                  card.id
+                                ).totalReviews,
+                                includeCurrentView: rated === undefined,
+                              }
+                            )}
+                          />
+                        )}
                       </div>
                       <p className="text-[15px] text-[#1C1917] leading-relaxed">{qText}</p>
                     </div>
@@ -1212,30 +1280,36 @@ export function StudyStageView({
 
               {/* Question & Answer Canvas */}
               <div className="p-5 sm:p-8 min-h-[230px] sm:min-h-[290px] flex flex-col justify-between gap-5">
-                {config.mode === 'flip' ? (
-                  <button
-                    type="button"
-                    onClick={() => setIsFlipped((prev) => !prev)}
-                    aria-label={isFlipped ? '解答を隠す' : 'タップして解答を表示'}
-                    className="w-full text-left space-y-3.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#9A3412] rounded-lg"
-                  >
-                    <p className="text-[19px] sm:text-2xl font-serif font-semibold text-[#1C1917] leading-relaxed">
-                      {promptText}
-                    </p>
+                <div className="space-y-3">
+                  {showCardAttemptDots && currentCardAttemptIndicator && (
+                    <CardAttemptDots indicator={currentCardAttemptIndicator} />
+                  )}
 
-                    {!isFlipped && (
-                      <div className="text-xs text-[#A8A29E] sm:hidden">
-                        問題文をタップしても解答を表示できます
-                      </div>
-                    )}
-                  </button>
-                ) : (
-                  <div className="space-y-3.5">
-                    <p className="text-[19px] sm:text-2xl font-serif font-semibold text-[#1C1917] leading-relaxed">
-                      {promptText}
-                    </p>
-                  </div>
-                )}
+                  {config.mode === 'flip' ? (
+                    <button
+                      type="button"
+                      onClick={() => setIsFlipped((prev) => !prev)}
+                      aria-label={isFlipped ? '解答を隠す' : 'タップして解答を表示'}
+                      className="w-full text-left space-y-3.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#9A3412] rounded-lg"
+                    >
+                      <p className="text-[19px] sm:text-2xl font-serif font-semibold text-[#1C1917] leading-relaxed">
+                        {promptText}
+                      </p>
+
+                      {!isFlipped && (
+                        <div className="text-xs text-[#A8A29E] sm:hidden">
+                          問題文をタップしても解答を表示できます
+                        </div>
+                      )}
+                    </button>
+                  ) : (
+                    <div className="space-y-3.5">
+                      <p className="text-[19px] sm:text-2xl font-serif font-semibold text-[#1C1917] leading-relaxed">
+                        {promptText}
+                      </p>
+                    </div>
+                  )}
+                </div>
 
                 {showHint && !isFlipped && (
                   <div className="text-xs text-[#9A3412] bg-[#FBF9F5] border border-[#E6E0D6] rounded-lg px-3.5 py-2 self-start">
@@ -1313,40 +1387,6 @@ export function StudyStageView({
                             <span>{parseTagMeta(t).displayLabel}</span>
                           </span>
                         ))}
-                      </div>
-                    )}
-
-                    {currentCardRecentHistory.length > 0 && (
-                      <div className="pt-1 flex items-center gap-2 text-[11px] text-[#78716C]">
-                        <span>直近の履歴:</span>
-                        <div className="inline-flex items-center gap-1">
-                          {[...currentCardRecentHistory].reverse().map((h) => {
-                            const dotColor =
-                              h.rating === 1
-                                ? 'bg-[#DC2626]'
-                                : h.rating === 2
-                                  ? 'bg-[#D97706]'
-                                  : h.rating === 3
-                                    ? 'bg-[#2563EB]'
-                                    : 'bg-[#16A34A]';
-                            const label =
-                              h.rating === 1
-                                ? 'もう一度'
-                                : h.rating === 2
-                                  ? '難しい'
-                                  : h.rating === 3
-                                    ? '普通'
-                                    : '簡単';
-                            return (
-                              <span
-                                key={h.id}
-                                title={label}
-                                aria-label={label}
-                                className={`inline-block w-2 h-2 rounded-full ${dotColor}`}
-                              />
-                            );
-                          })}
-                        </div>
                       </div>
                     )}
                   </div>
@@ -1662,6 +1702,32 @@ export function StudyStageView({
                       handleUpdateConfig({ recordToSrs: e.target.checked })
                     }
                     className="accent-[#9A3412] w-5 h-5"
+                  />
+                </label>
+
+                <label className="flex items-center justify-between gap-3 px-3.5 py-2.5 bg-white border border-[#E6E0D6] rounded-lg text-xs text-[#1C1917] min-h-[46px] cursor-pointer">
+                  <div className="space-y-0.5">
+                    <div>閲覧回数・正誤ドットを表示</div>
+                    <div className="text-[10px] text-[#78716C] flex items-center gap-2">
+                      <span className="inline-flex items-center gap-1">
+                        <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#16A34A]" />
+                        正解
+                      </span>
+                      <span className="inline-flex items-center gap-1">
+                        <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#DC2626]" />
+                        不正解
+                      </span>
+                      <span className="inline-flex items-center gap-1">
+                        <span className="inline-block w-1.5 h-1.5 rounded-full border border-[#9A3412]/75 bg-white" />
+                        今回
+                      </span>
+                    </div>
+                  </div>
+                  <input
+                    type="checkbox"
+                    checked={showCardAttemptDots}
+                    onChange={(e) => onToggleCardAttemptDots(e.target.checked)}
+                    className="accent-[#9A3412] w-5 h-5 shrink-0"
                   />
                 </label>
               </div>

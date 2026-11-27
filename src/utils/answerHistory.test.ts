@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import type { AnswerHistoryEntry } from '../types/flashcards';
 import {
   appendAnswerHistory,
+  buildCardAttemptIndicator,
   computeHistorySummary,
   filterAnswerHistory,
   formatHistoryDateHeading,
@@ -165,5 +166,73 @@ test('getCardRecentHistory returns at most limit recent entries for a card', () 
   assert.deepEqual(
     recent.map((e) => e.id),
     ['h4', 'h2']
+  );
+});
+
+test('buildCardAttemptIndicator shows 1st view as 1 current dot and tracks chronological correct/incorrect dots', () => {
+  // First time seeing card c1 -> 1回目 with 1 hollow current dot
+  const first = buildCardAttemptIndicator([], 'c1');
+  assert.equal(first.viewNumber, 1);
+  assert.equal(first.priorCount, 0);
+  assert.deepEqual(
+    first.dots.map((d) => d.status),
+    ['current']
+  );
+
+  // History is newest-first: h2 (correct, rating 3) then h1 (incorrect, rating 1)
+  const history = [
+    makeEntry({ id: 'h2', cardId: 'c1', rating: 3, answeredAt: 2000 }),
+    makeEntry({ id: 'h_other', cardId: 'c2', rating: 1, answeredAt: 1500 }),
+    makeEntry({ id: 'h1', cardId: 'c1', rating: 1, answeredAt: 1000 }),
+  ];
+
+  // Active card view (3rd time): oldest -> newest [incorrect, correct, current]
+  const third = buildCardAttemptIndicator(history, 'c1');
+  assert.equal(third.viewNumber, 3);
+  assert.equal(third.priorCount, 2);
+  assert.equal(third.correctCount, 1);
+  assert.equal(third.incorrectCount, 1);
+  assert.equal(third.hiddenCount, 0);
+  assert.deepEqual(
+    third.dots.map((d) => d.status),
+    ['incorrect', 'correct', 'current']
+  );
+
+  // Already rated in Red Sheet (includeCurrentView: false) -> 2回目, filled dots only
+  const rated = buildCardAttemptIndicator(history, 'c1', {
+    includeCurrentView: false,
+  });
+  assert.equal(rated.viewNumber, 2);
+  assert.deepEqual(
+    rated.dots.map((d) => d.status),
+    ['incorrect', 'correct']
+  );
+});
+
+test('buildCardAttemptIndicator caps visible dots with hiddenCount and accounts for legacy reviews', () => {
+  const history: AnswerHistoryEntry[] = [];
+  for (let i = 12; i >= 1; i--) {
+    history.push(
+      makeEntry({
+        id: `h${i}`,
+        cardId: 'c1',
+        rating: i % 2 === 0 ? 3 : 1,
+        answeredAt: i * 1000,
+      })
+    );
+  }
+
+  const capped = buildCardAttemptIndicator(history, 'c1', { maxDots: 10 });
+  assert.equal(capped.viewNumber, 13);
+  assert.equal(capped.dots.length, 10);
+  assert.equal(capped.hiddenCount, 3);
+  assert.equal(capped.dots[capped.dots.length - 1].status, 'current');
+
+  // Legacy SRS count without matching answerHistory rows
+  const legacy = buildCardAttemptIndicator([], 'c9', { totalReviewsFallback: 2 });
+  assert.equal(legacy.viewNumber, 3);
+  assert.deepEqual(
+    legacy.dots.map((d) => d.status),
+    ['legacy', 'legacy', 'current']
   );
 });

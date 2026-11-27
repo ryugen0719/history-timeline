@@ -122,6 +122,7 @@ export interface FlashcardBackupPayload {
 export interface HubLaunchPrefs {
   mode: StudyMode;
   orderMode: 'unit' | 'shuffle';
+  showCardAttemptDots: boolean;
 }
 
 export interface PersistedStudySession {

@@ -59,6 +59,7 @@ const STORAGE_KEY_HUB_PREFS = 'chrononote_flashcards_hub_prefs_v1';
 const DEFAULT_HUB_PREFS: HubLaunchPrefs = {
   mode: 'flip',
   orderMode: 'unit',
+  showCardAttemptDots: true,
 };
 
 function loadFromStorage<T>(key: string, fallback: T): T {
@@ -228,6 +229,10 @@ export function FlashcardWorkspace() {
         saved?.orderMode === 'shuffle' || saved?.orderMode === 'unit'
           ? saved.orderMode
           : DEFAULT_HUB_PREFS.orderMode,
+      showCardAttemptDots:
+        typeof saved?.showCardAttemptDots === 'boolean'
+          ? saved.showCardAttemptDots
+          : DEFAULT_HUB_PREFS.showCardAttemptDots,
     };
   });
 
@@ -945,6 +950,10 @@ export function FlashcardWorkspace() {
           allCardsMap={allCardsMap}
           srsMap={srsMap}
           answerHistory={answerHistory}
+          showCardAttemptDots={hubPrefs.showCardAttemptDots}
+          onToggleCardAttemptDots={(enabled) =>
+            setHubPrefs((prev) => ({ ...prev, showCardAttemptDots: enabled }))
+          }
           onRateCard={handleRateCard}
           onUndoCardRate={handleUndoCardRate}
           onToggleStar={handleToggleStar}

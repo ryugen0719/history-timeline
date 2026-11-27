@@ -205,3 +205,111 @@ export function getCardRecentHistory(
   }
   return matched;
 }
+
+export type CardAttemptDotStatus = 'correct' | 'incorrect' | 'legacy' | 'current';
+
+export interface CardAttemptDot {
+  key: string;
+  status: CardAttemptDotStatus;
+  label: string;
+}
+
+export interface CardAttemptIndicator {
+  viewNumber: number;
+  priorCount: number;
+  correctCount: number;
+  incorrectCount: number;
+  hiddenCount: number;
+  dots: CardAttemptDot[];
+}
+
+export interface BuildCardAttemptIndicatorOptions {
+  totalReviewsFallback?: number;
+  includeCurrentView?: boolean;
+  maxDots?: number;
+}
+
+const RATING_LABELS: Record<SrsRating, string> = {
+  1: 'もう一度',
+  2: '難しい',
+  3: '普通',
+  4: '簡単',
+};
+
+/**
+ * Computes which view/attempt number the user is on for a card and the sequence of
+ * dots representing each viewing (oldest -> newest), colored by correct/incorrect.
+ */
+export function buildCardAttemptIndicator(
+  history: AnswerHistoryEntry[],
+  cardId: string,
+  options: BuildCardAttemptIndicatorOptions = {}
+): CardAttemptIndicator {
+  const {
+    totalReviewsFallback = 0,
+    includeCurrentView = true,
+    maxDots = 10,
+  } = options;
+
+  // history is newest-first; collect matching entries and reverse to chronological order
+  const chronological: AnswerHistoryEntry[] = [];
+  for (let i = history.length - 1; i >= 0; i--) {
+    const entry = history[i];
+    if (entry.cardId === cardId) {
+      chronological.push(entry);
+    }
+  }
+
+  const legacyGap = Math.max(0, totalReviewsFallback - chronological.length);
+  const priorCount = chronological.length + legacyGap;
+
+  let correctCount = 0;
+  let incorrectCount = 0;
+
+  const allDots: CardAttemptDot[] = [];
+  for (let i = 0; i < legacyGap; i++) {
+    allDots.push({
+      key: `legacy-${i + 1}`,
+      status: 'legacy',
+      label: `${i + 1}回目: 過去の学習記録`,
+    });
+  }
+
+  for (let i = 0; i < chronological.length; i++) {
+    const entry = chronological[i];
+    const isCorrect = entry.rating >= 2;
+    if (isCorrect) {
+      correctCount += 1;
+    } else {
+      incorrectCount += 1;
+    }
+    const ordinal = legacyGap + i + 1;
+    allDots.push({
+      key: entry.id,
+      status: isCorrect ? 'correct' : 'incorrect',
+      label: `${ordinal}回目: ${isCorrect ? '正解' : '不正解'}（${RATING_LABELS[entry.rating]}）`,
+    });
+  }
+
+  const viewNumber = includeCurrentView ? priorCount + 1 : Math.max(1, priorCount);
+  if (includeCurrentView) {
+    allDots.push({
+      key: 'current',
+      status: 'current',
+      label: `今回（${viewNumber}回目）`,
+    });
+  }
+
+  const cap = Math.max(1, maxDots);
+  const hiddenCount = Math.max(0, allDots.length - cap);
+  const visibleDots = hiddenCount > 0 ? allDots.slice(hiddenCount) : allDots;
+
+  return {
+    viewNumber,
+    priorCount,
+    correctCount,
+    incorrectCount,
+    hiddenCount,
+    dots: visibleDots,
+  };
+}
