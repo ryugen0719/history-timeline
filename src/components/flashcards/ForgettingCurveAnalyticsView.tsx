@@ -1,12 +1,14 @@
 import { useMemo, useState } from 'react';
-import { ChevronDown, ChevronRight, Play } from 'lucide-react';
+import { BarChart3, ChevronDown, ChevronRight, History, Play } from 'lucide-react';
 import type {
+  AnswerHistoryEntry,
   DailyStudyLogsMap,
   ExamScope,
   Flashcard,
   SrsProgressMap,
   StudySessionConfig,
 } from '../../types/flashcards';
+import { filterAnswerHistory } from '../../utils/answerHistory';
 import {
   buildChapterHierarchy,
   buildTagCategoryGroups,
@@ -18,17 +20,21 @@ import {
   getSrsProgress,
   isCardDue,
   isCardMastered,
-  isCardWeak,
 } from '../../utils/srsEngine';
+import { AnswerHistoryView } from './AnswerHistoryView';
 
 interface ForgettingCurveAnalyticsViewProps {
   scopes: ExamScope[];
   cards: Flashcard[];
   srsMap: SrsProgressMap;
   dailyLogs: DailyStudyLogsMap;
+  answerHistory: AnswerHistoryEntry[];
   activeScopeId: string;
   streakDays: number;
   onLaunchSession: (config: StudySessionConfig) => void;
+  onReviewCardIds: (cardIds: string[], label: string) => void;
+  onClearHistory: () => void;
+  onGoToHub: () => void;
 }
 
 function EbbinghausCurveChart({
@@ -204,15 +210,25 @@ export function ForgettingCurveAnalyticsView({
   cards,
   srsMap,
   dailyLogs,
+  answerHistory,
   activeScopeId,
   streakDays,
   onLaunchSession,
+  onReviewCardIds,
+  onClearHistory,
+  onGoToHub,
 }: ForgettingCurveAnalyticsViewProps) {
+  const [activeTab, setActiveTab] = useState<'overview' | 'history'>('overview');
   const [curveStage, setCurveStage] = useState<1 | 2 | 3>(3);
   const [showUnitsDetail, setShowUnitsDetail] = useState(false);
   const [showCurveModel, setShowCurveModel] = useState(false);
 
   const nowMs = Date.now();
+
+  const scopeHistoryCount = useMemo(
+    () => filterAnswerHistory(answerHistory, { scopeId: activeScopeId }).length,
+    [answerHistory, activeScopeId]
+  );
 
   const scopeCards = useMemo(
     () =>
@@ -318,8 +334,61 @@ export function ForgettingCurveAnalyticsView({
 
   return (
     <div className="max-w-4xl mx-auto space-y-5">
-      {/* TIER 1: Actionable Summary */}
-      <section className="bg-white border border-[#E6E0D6] rounded-2xl sm:rounded-xl p-5 sm:p-6 space-y-5">
+      {/* Clean 2-Segment Sub-View Switcher: Overview | Answer History */}
+      <div
+        role="tablist"
+        aria-label="記録表示切替"
+        className="grid grid-cols-2 sm:inline-flex items-center gap-1 p-1 bg-[#F4F0E8] rounded-xl sm:rounded-lg w-full sm:w-auto"
+      >
+        <button
+          type="button"
+          role="tab"
+          aria-selected={activeTab === 'overview'}
+          onClick={() => setActiveTab('overview')}
+          className={`inline-flex items-center justify-center gap-1.5 min-h-[40px] sm:min-h-[34px] px-4 text-xs sm:text-sm font-medium rounded-lg sm:rounded-md transition-colors whitespace-nowrap ${
+            activeTab === 'overview'
+              ? 'bg-white text-[#1C1917] shadow-xs'
+              : 'text-[#57534E] hover:text-[#1C1917]'
+          }`}
+        >
+          <BarChart3 className="w-4 h-4" aria-hidden="true" />
+          忘却曲線・統計
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={activeTab === 'history'}
+          onClick={() => setActiveTab('history')}
+          className={`inline-flex items-center justify-center gap-1.5 min-h-[40px] sm:min-h-[34px] px-4 text-xs sm:text-sm font-medium rounded-lg sm:rounded-md transition-colors whitespace-nowrap ${
+            activeTab === 'history'
+              ? 'bg-white text-[#1C1917] shadow-xs'
+              : 'text-[#57534E] hover:text-[#1C1917]'
+          }`}
+        >
+          <History className="w-4 h-4" aria-hidden="true" />
+          回答履歴
+          {scopeHistoryCount > 0 && (
+            <span className="font-mono text-xs tabular-nums text-[#9A3412] ml-0.5">
+              {scopeHistoryCount}
+            </span>
+          )}
+        </button>
+      </div>
+
+      {activeTab === 'history' ? (
+        <AnswerHistoryView
+          scopes={scopes}
+          cards={cards}
+          answerHistory={answerHistory}
+          activeScopeId={activeScopeId}
+          onReviewCardIds={onReviewCardIds}
+          onClearHistory={onClearHistory}
+          onGoToHub={onGoToHub}
+        />
+      ) : (
+        <>
+          {/* TIER 1: Actionable Summary */}
+          <section className="bg-white border border-[#E6E0D6] rounded-2xl sm:rounded-xl p-5 sm:p-6 space-y-5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h2 className="text-lg sm:text-xl font-serif font-bold text-[#1C1917]">
@@ -648,6 +717,8 @@ export function ForgettingCurveAnalyticsView({
           </div>
         )}
       </section>
+        </>
+      )}
     </div>
   );
 }

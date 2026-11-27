@@ -20,14 +20,17 @@ import {
   X,
 } from 'lucide-react';
 import type {
+  AnswerHistoryEntry,
   Flashcard,
   PersistedStudySession,
+  RateCardMeta,
   SrsProgress,
   SrsProgressMap,
   SrsRating,
   StudyMode,
   StudySessionConfig,
 } from '../../types/flashcards';
+import { getCardRecentHistory } from '../../utils/answerHistory';
 import { parseTagMeta } from '../../utils/flashcardParser';
 import {
   calculateRetentionPercent,
@@ -52,12 +55,19 @@ interface StudyStageViewProps {
   initialSession: PersistedStudySession;
   allCardsMap: Record<string, Flashcard>;
   srsMap: SrsProgressMap;
+  answerHistory?: AnswerHistoryEntry[];
   onRateCard: (
     cardId: string,
     rating: SrsRating,
-    recordToSrs: boolean
-  ) => { previous: SrsProgress; requeueInSession: boolean };
-  onUndoCardRate: (cardId: string, previous: SrsProgress, wasRecorded: boolean) => void;
+    recordToSrs: boolean,
+    meta?: RateCardMeta
+  ) => { previous: SrsProgress; requeueInSession: boolean; historyEntryId?: string };
+  onUndoCardRate: (
+    cardId: string,
+    previous: SrsProgress,
+    wasRecorded: boolean,
+    historyEntryId?: string
+  ) => void;
   onToggleStar: (cardId: string) => void;
   onToggleSuspend: (cardId: string) => void;
   onEditCard: (card: Flashcard) => void;
@@ -70,9 +80,15 @@ interface UndoEntry {
   cardId: string;
   previousProgress: SrsProgress;
   wasRecorded: boolean;
+  historyEntryId?: string;
   previousQueueIds: string[];
   previousIndex: number;
   previousRating: SrsRating;
+  previousTypedAnswer: string;
+  previousTypingChecked: null | {
+    verdict: 'exact' | 'partial' | 'mismatch';
+    coreExpected: string;
+  };
 }
 
 const RATING_BUTTONS: Array<{
@@ -227,6 +243,7 @@ export function StudyStageView({
   initialSession,
   allCardsMap,
   srsMap,
+  answerHistory,
   onRateCard,
   onUndoCardRate,
   onToggleStar,
@@ -341,6 +358,14 @@ export function StudyStageView({
     [currentCard, srsMap]
   );
 
+  const currentCardRecentHistory = useMemo(
+    () =>
+      currentCard && answerHistory
+        ? getCardRecentHistory(answerHistory, currentCard.id, 5)
+        : [],
+    [currentCard, answerHistory]
+  );
+
   const ratingPreviews = useMemo(
     () => (currentProgress ? previewRatingIntervals(currentProgress) : null),
     [currentProgress]
@@ -395,10 +420,20 @@ export function StudyStageView({
   const handleRate = useCallback(
     (rating: SrsRating) => {
       if (!currentCard) return;
-      const { previous, requeueInSession } = onRateCard(
+      const meta: RateCardMeta = {
+        mode: config.mode,
+        ...(config.mode === 'typing' && typedAnswer.trim()
+          ? { typedAnswer: typedAnswer.trim() }
+          : {}),
+        ...(config.mode === 'typing' && typingChecked
+          ? { typingVerdict: typingChecked.verdict }
+          : {}),
+      };
+      const { previous, requeueInSession, historyEntryId } = onRateCard(
         currentCard.id,
         rating,
-        config.recordToSrs
+        config.recordToSrs,
+        meta
       );
 
       setUndoStack((prev) => [
@@ -407,9 +442,12 @@ export function StudyStageView({
           cardId: currentCard.id,
           previousProgress: previous,
           wasRecorded: config.recordToSrs,
+          historyEntryId,
           previousQueueIds: queueIds,
           previousIndex: currentIndex,
           previousRating: rating,
+          previousTypedAnswer: typedAnswer,
+          previousTypingChecked: typingChecked,
         },
       ]);
 
@@ -439,7 +477,10 @@ export function StudyStageView({
     [
       currentCard,
       onRateCard,
+      config.mode,
       config.recordToSrs,
+      typedAnswer,
+      typingChecked,
       queueIds,
       currentIndex,
       resetCardInteractionState,
@@ -449,7 +490,12 @@ export function StudyStageView({
   const handleUndo = useCallback(() => {
     const last = undoStack[undoStack.length - 1];
     if (!last) return;
-    onUndoCardRate(last.cardId, last.previousProgress, last.wasRecorded);
+    onUndoCardRate(
+      last.cardId,
+      last.previousProgress,
+      last.wasRecorded,
+      last.historyEntryId
+    );
     setUndoStack((prev) => prev.slice(0, -1));
     setQueueIds(last.previousQueueIds);
     setCurrentIndex(last.previousIndex);
@@ -458,6 +504,8 @@ export function StudyStageView({
       [last.previousRating]: Math.max(0, prev[last.previousRating] - 1),
     }));
     setIsFlipped(true);
+    setTypedAnswer(last.previousTypedAnswer);
+    setTypingChecked(last.previousTypingChecked);
     setShowHint(false);
     setSwipeOffsetX(0);
     setSwipeFeedback(null);
@@ -978,7 +1026,9 @@ export function StudyStageView({
                               return next;
                             });
                           } else {
-                            onRateCard(card.id, 1, config.recordToSrs);
+                            onRateCard(card.id, 1, config.recordToSrs, {
+                              mode: 'redsheet',
+                            });
                             setRedSheetRated((prev) => ({ ...prev, [card.id]: 1 }));
                           }
                         }}
@@ -1001,7 +1051,9 @@ export function StudyStageView({
                               return next;
                             });
                           } else {
-                            onRateCard(card.id, 3, config.recordToSrs);
+                            onRateCard(card.id, 3, config.recordToSrs, {
+                              mode: 'redsheet',
+                            });
                             setRedSheetRated((prev) => ({ ...prev, [card.id]: 3 }));
                           }
                         }}
@@ -1261,6 +1313,40 @@ export function StudyStageView({
                             <span>{parseTagMeta(t).displayLabel}</span>
                           </span>
                         ))}
+                      </div>
+                    )}
+
+                    {currentCardRecentHistory.length > 0 && (
+                      <div className="pt-1 flex items-center gap-2 text-[11px] text-[#78716C]">
+                        <span>直近の履歴:</span>
+                        <div className="inline-flex items-center gap-1">
+                          {[...currentCardRecentHistory].reverse().map((h) => {
+                            const dotColor =
+                              h.rating === 1
+                                ? 'bg-[#DC2626]'
+                                : h.rating === 2
+                                  ? 'bg-[#D97706]'
+                                  : h.rating === 3
+                                    ? 'bg-[#2563EB]'
+                                    : 'bg-[#16A34A]';
+                            const label =
+                              h.rating === 1
+                                ? 'もう一度'
+                                : h.rating === 2
+                                  ? '難しい'
+                                  : h.rating === 3
+                                    ? '普通'
+                                    : '簡単';
+                            return (
+                              <span
+                                key={h.id}
+                                title={label}
+                                aria-label={label}
+                                className={`inline-block w-2 h-2 rounded-full ${dotColor}`}
+                              />
+                            );
+                          })}
+                        </div>
                       </div>
                     )}
                   </div>

@@ -12,6 +12,7 @@ import {
   TERM3_SCOPE_ID,
 } from '../../data/initialFlashcards';
 import type {
+  AnswerHistoryEntry,
   DailyStudyLogsMap,
   ExamScope,
   Flashcard,
@@ -19,11 +20,16 @@ import type {
   FlashcardSubView,
   HubLaunchPrefs,
   PersistedStudySession,
+  RateCardMeta,
   SrsProgress,
   SrsProgressMap,
   SrsRating,
   StudySessionConfig,
 } from '../../types/flashcards';
+import {
+  appendAnswerHistory,
+  removeAnswerHistoryEntry,
+} from '../../utils/answerHistory';
 import { buildStudyQueue } from '../../utils/flashcardFilter';
 import { exportFlashcardsToCsv } from '../../utils/flashcardParser';
 import { reconcilePersistedSession } from '../../utils/studySession';
@@ -46,6 +52,7 @@ const STORAGE_KEY_SCOPES = 'chrononote_flashcards_scopes_v1';
 const STORAGE_KEY_CARDS = 'chrononote_flashcards_cards_v1';
 const STORAGE_KEY_SRS = 'chrononote_flashcards_srs_v1';
 const STORAGE_KEY_LOGS = 'chrononote_flashcards_logs_v1';
+const STORAGE_KEY_HISTORY = 'chrononote_flashcards_history_v1';
 const STORAGE_KEY_SESSION = 'chrononote_flashcards_active_session_v1';
 const STORAGE_KEY_HUB_PREFS = 'chrononote_flashcards_hub_prefs_v1';
 
@@ -197,6 +204,11 @@ export function FlashcardWorkspace() {
     loadFromStorage<DailyStudyLogsMap>(STORAGE_KEY_LOGS, {})
   );
 
+  const [answerHistory, setAnswerHistory] = useState<AnswerHistoryEntry[]>(() => {
+    const saved = loadFromStorage<unknown>(STORAGE_KEY_HISTORY, []);
+    return Array.isArray(saved) ? (saved as AnswerHistoryEntry[]) : [];
+  });
+
   const [subView, setSubView] = useState<FlashcardSubView>('hub');
   const [activeScopeId, setActiveScopeId] = useState<string>(
     () => initialData.scopes[0]?.id ?? TERM3_SCOPE_ID
@@ -288,6 +300,14 @@ export function FlashcardWorkspace() {
       // Ignore storage quota errors
     }
   }, [dailyLogs]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY_HISTORY, JSON.stringify(answerHistory));
+    } catch {
+      // Ignore storage quota errors
+    }
+  }, [answerHistory]);
 
   useEffect(() => {
     try {
@@ -426,8 +446,64 @@ export function FlashcardWorkspace() {
     []
   );
 
+  const handleLaunchCustomCardIds = useCallback(
+    (cardIds: string[], label: string) => {
+      const uniqueValidIds: string[] = [];
+      const seen = new Set<string>();
+      for (const id of cardIds) {
+        if (!seen.has(id) && allCardsMap[id]) {
+          seen.add(id);
+          uniqueValidIds.push(id);
+        }
+      }
+      if (uniqueValidIds.length === 0) {
+        showToast('対象の問題が見つかりませんでした。');
+        return;
+      }
+      const now = Date.now();
+      const config: StudySessionConfig = {
+        scopeId: activeScopeId,
+        chapter: 'all',
+        unit: 'all',
+        selectedTags: [],
+        tagMatchMode: 'and',
+        filterPreset: 'all',
+        orderMode: 'unit',
+        swapFrontBack: false,
+        recordToSrs: true,
+        mode: hubPrefs.mode,
+        label,
+      };
+      const nextSession: PersistedStudySession = {
+        sessionId: `sess-${now}-${Math.random().toString(36).slice(2, 6)}`,
+        config,
+        queueIds: uniqueValidIds,
+        currentIndex: 0,
+        ratingCounts: { 1: 0, 2: 0, 3: 0, 4: 0 },
+        againCardIds: [],
+        redSheetRated: {},
+        updatedAt: now,
+      };
+      setActiveSession(nextSession);
+      setSavedSession(nextSession);
+      setSubView('study');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    },
+    [allCardsMap, activeScopeId, hubPrefs.mode, showToast]
+  );
+
+  const handleClearAnswerHistory = useCallback(() => {
+    setAnswerHistory([]);
+    showToast('回答履歴をクリアしました。');
+  }, [showToast]);
+
   const handleRateCard = useCallback(
-    (cardId: string, rating: SrsRating, recordToSrs: boolean) => {
+    (
+      cardId: string,
+      rating: SrsRating,
+      recordToSrs: boolean,
+      meta?: RateCardMeta
+    ) => {
       const previous = getSrsProgress(srsMap, cardId);
       const nowMs = Date.now();
       const { next, requeueInSession } = scheduleNextReview(previous, rating, nowMs);
@@ -461,13 +537,43 @@ export function FlashcardWorkspace() {
         });
       }
 
-      return { previous, requeueInSession };
+      const card = allCardsMap[cardId];
+      let historyEntryId: string | undefined;
+      if (card) {
+        historyEntryId = `hist-${nowMs}-${Math.random().toString(36).slice(2, 7)}`;
+        const entry: AnswerHistoryEntry = {
+          id: historyEntryId,
+          cardId: card.id,
+          scopeId: card.scopeId,
+          cardNumber: card.number,
+          unit: card.unit,
+          front: card.front,
+          back: card.back,
+          rating,
+          mode: meta?.mode ?? 'flip',
+          typedAnswer: meta?.typedAnswer,
+          typingVerdict: meta?.typingVerdict,
+          recordedToSrs: recordToSrs,
+          answeredAt: nowMs,
+        };
+        setAnswerHistory((prev) => appendAnswerHistory(prev, entry));
+      }
+
+      return { previous, requeueInSession, historyEntryId };
     },
-    [srsMap]
+    [srsMap, allCardsMap]
   );
 
   const handleUndoCardRate = useCallback(
-    (cardId: string, previous: SrsProgress, wasRecorded: boolean) => {
+    (
+      cardId: string,
+      previous: SrsProgress,
+      wasRecorded: boolean,
+      historyEntryId?: string
+    ) => {
+      if (historyEntryId) {
+        setAnswerHistory((prev) => removeAnswerHistoryEntry(prev, historyEntryId));
+      }
       if (!wasRecorded) return;
       setSrsMap((prev) => ({
         ...prev,
@@ -622,6 +728,9 @@ export function FlashcardWorkspace() {
         setSrsMap(cleaned.srsMap);
       }
       if (backup.dailyLogs) setDailyLogs(backup.dailyLogs);
+      if (Array.isArray(backup.answerHistory)) {
+        setAnswerHistory(backup.answerHistory);
+      }
       showToast(
         cleaned.removedCount > 0
           ? `バックアップから ${cleaned.cards.length} 問を復元しました（重複 ${cleaned.removedCount} 問を自動除外）。`
@@ -693,6 +802,7 @@ export function FlashcardWorkspace() {
       cards,
       srsMap,
       dailyLogs,
+      answerHistory,
     };
     downloadTextFile(
       `chrononote-flashcards-backup-${getLocalDateKey()}.json`,
@@ -700,7 +810,7 @@ export function FlashcardWorkspace() {
       'application/json'
     );
     showToast('バックアップをJSON保存しました。');
-  }, [scopes, cards, srsMap, dailyLogs, showToast]);
+  }, [scopes, cards, srsMap, dailyLogs, answerHistory, showToast]);
 
   const handleRestoreInitialTerm3 = useCallback(() => {
     const freshTerm3 = buildInitialTerm3Flashcards();
@@ -769,7 +879,7 @@ export function FlashcardWorkspace() {
               }`}
             >
               <BarChart3 className="w-4 h-4" aria-hidden="true" />
-              記録・忘却曲線
+              記録・履歴
             </button>
 
             <button
@@ -834,6 +944,7 @@ export function FlashcardWorkspace() {
           initialSession={activeSession}
           allCardsMap={allCardsMap}
           srsMap={srsMap}
+          answerHistory={answerHistory}
           onRateCard={handleRateCard}
           onUndoCardRate={handleUndoCardRate}
           onToggleStar={handleToggleStar}
@@ -854,9 +965,13 @@ export function FlashcardWorkspace() {
           cards={cards}
           srsMap={srsMap}
           dailyLogs={dailyLogs}
+          answerHistory={answerHistory}
           activeScopeId={activeScopeId}
           streakDays={streakDays}
           onLaunchSession={handleLaunchSession}
+          onReviewCardIds={handleLaunchCustomCardIds}
+          onClearHistory={handleClearAnswerHistory}
+          onGoToHub={() => setSubView('hub')}
         />
       )}
 

@@ -85,6 +85,30 @@ export interface ParsedTagMeta {
   displayLabel: string;
 }
 
+export type TypingVerdict = 'exact' | 'partial' | 'mismatch';
+
+export interface AnswerHistoryEntry {
+  id: string;
+  cardId: string;
+  scopeId: string;
+  cardNumber: number;
+  unit: string;
+  front: string;
+  back: string;
+  rating: SrsRating;
+  mode: StudyMode;
+  typedAnswer?: string;
+  typingVerdict?: TypingVerdict;
+  recordedToSrs: boolean;
+  answeredAt: number;
+}
+
+export interface RateCardMeta {
+  mode: StudyMode;
+  typedAnswer?: string;
+  typingVerdict?: TypingVerdict;
+}
+
 export interface FlashcardBackupPayload {
   version: 1;
   exportedAt: string;
@@ -92,6 +116,7 @@ export interface FlashcardBackupPayload {
   cards: Flashcard[];
   srsMap?: SrsProgressMap;
   dailyLogs?: DailyStudyLogsMap;
+  answerHistory?: AnswerHistoryEntry[];
 }
 
 export interface HubLaunchPrefs {
